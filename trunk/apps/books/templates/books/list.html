@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block subject %}书籍列表{% endblock %}
+{% block content %}
+<div id="documents">正在装入请等待...{% include "utils/ajax_loading.html" %}</div>
+<div id="pages"></div>
+{% endblock %}
+{% block css %}
+<style type="text/css" media="screen">
+	#bd { font-size: 15px; text-align: justify;}
+</style>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/site_media/js/jQuery.js"></script>
+<script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
+<script type="text/javascript" src="/site_media/js/paginate.js"></script>
+<script type="text/javascript">
+var ajax_url = '/booklist/ajax_list/';
+function createtable(target, data){
+	var table = $('<table width="100%"><tbody></tbody></table>')
+	$.each(data, function(n){
+		var tr = $('<tr><td width="1%">$icon</td><td><dl><dt><i>$title</i></dt><dd>Author: $author <br>$description</dd></dl></td></tr>'.template(this));
+		table.append(tr);
+		var d = this;
+		tr.click(function(){
+			window.location = '/book/$id/'.template(d);
+		});
+	});
+	$(target).empty().append(table);
+//	$("tbody tr:even", target).addClass("alt");
+	$("tbody tr")
+	    .mouseover(function(){
+	        $(this).addClass("over");
+	    })
+	    .mouseout(function(e){
+	        $(this).removeClass("over");
+	    });
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createtable('#documents', data[2]);
+		$('#pages').empty().paginate(ajax_url, data[0], data[1]).append('<br style="clear:both;"/>');
+		$('#pages a').click(function(){
+			var href = this.href;
+			$.get(href, handle_list);
+			return false;
+		});
+	}
+}
+
+$(document).ready(function (){
+	$.post(ajax_url, {}, handle_list);
+});
+</script>
+{% endblock %}
