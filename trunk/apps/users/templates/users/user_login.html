@@ -1,0 +1,48 @@
+{% if user.is_anonymous %}
+<script type="text/javascript">
+$(document).ready(function (){
+	var user_login = new AjaxForm('#user_login');
+});
+</script>
+<form action="/login/" method="post" id="user_login">
+<dl>
+	<dt>用户名：</dt>
+	<dd><input name="username" type="text" id="username"/></dd>
+	<dt>口　令：</dt>
+	<dd>
+	  <input name="password" type="password" id="password"/>
+	</dd>
+	<dd><input type="submit" value="登录" /></dd>
+</dl>
+</form>
+{% else %}
+<style type="text/css">
+<!--
+.personal {
+	width: 58px;
+	border: 1px solid #ccc;
+	padding: 4px;
+}
+.personal p {
+	margin: 0px;
+	padding: 4px;
+}
+-->
+</style>
+
+<table border="0" width="100%">
+	<tr align="center">
+		<td align="center">
+			<div class="personal">
+				{% if user.userprofile.get_portrait_url %}
+					<img src="/site_media/{{ user.userprofile.get_portrait_url }}/"/>
+				{% else %}
+					<img src="/site_media/img/user.jpg/"/>
+				{% endif %}
+				<p>{{ user.username }}</p>
+			</div>
+		</td>
+	</tr>
+</table>
+
+{% endif %}

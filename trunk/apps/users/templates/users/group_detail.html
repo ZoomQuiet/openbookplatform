@@ -1,0 +1,52 @@
+{% load i18n utiltags %}
+{% extends "groupbase.html" %}
+{% block menu %}{% call "menu.html" with currentpage="grouphome" %}{% endblock %}
+{% block submenu %}{% call "submenu.html" with currentpage="home" %}{% endblock %}
+{% block body %}
+{% catch as header %}
+    <h1>{{ group.name }}</h1>
+    <p><img src="/site_media/{{ group.get_icon_url }}"/></p>
+{% endcatch %}
+{% catch as content %}
+    <p>管理员：{{ group.get_managers }}</p>
+    <div class="block">
+        <p>{{ group.description }}</p>
+    </div>
+    <p>状态：此小组为{% if group.public %}<font color="red">公开</font>{% else %}<font color="red">私有</font>{% endif %}小组 此小组<font color="red">{% if group.freejoin %}可自由{% else %}需邀请{% endif %}</font>加入</p>
+    {% endcatch %}
+{% catch as sidebar %}
+    <h1>功能</h1>
+    {% catch as deletegroup %}
+        <p><a class="admin" href="/group/{{ group.id }}/delete/">删除小组</a></p>
+    {% endcatch %}
+    {% call "utils/superuser.html" with content=deletegroup %}
+    {% catch as membermanage %}
+        <p><a class="admin" href="/group/{{ group.id }}/edit/">小组信息修改</a></p>
+    {% endcatch %}
+    {% call "users/manage.html" with content=membermanage %}
+    {% pyif not group.is_member(user) and group.freejoin %}
+        {% if user.is_anonymous %}
+            <p>加入此小组 [你需要先<a class="admin" href="/register/">注册</a>方可加入]</p>
+        {% else %}
+            <p><a class="admin" href="/group/{{ group.id }}/join/">加入此小组</a></p>
+        {% endif %}
+    {% endif %}
+    {% pyif group.is_member(user) %}
+        <p><a class="admin" href="/group/{{ group.id }}/delmember/{{ user.id }}/">退出小组</a></p>
+    {% endif %}
+    <h1>人员列表</h1>
+    <h3>管理员</h3>
+    <ul>
+    {% for u in group.managers.all %}
+        <li><a href="/user/{{ u.id }}/">{{ u.username }}</a></li>
+    {% endfor %}
+    </ul>
+    <h3>组员</h3>
+    <ul>
+    {% for u in group.members.all %}
+        <li><a href="/user/{{ u.id }}/">{{ u.username }}</a></li>
+    {% endfor %}
+    </ul>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}
+{% endblock %}

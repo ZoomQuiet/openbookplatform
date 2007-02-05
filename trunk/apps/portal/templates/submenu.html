@@ -1,0 +1,12 @@
+{% load utiltags %}
+{% expr [('home', '小组首页', '/group/%d/' % group.id), ('task', '任务管理', '/group/%d/task/' % group.id), ('document', '文档管理', '/group/%d/document/' % group.id), ('forum', '小组讨论', '/group/%d/forum/' % group.id)] as submenuitems %}
+{% if not user.is_anonymous %}
+    <div class="submenu">
+        <ul id="MainTabs">
+        {% for item in submenuitems %}
+            {% expr item[0] as name %}
+            <li><a href="{{ item.2 }}"{% ifequal name currentpage %} class="current"{% endifequal %}>{{ item.1 }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}

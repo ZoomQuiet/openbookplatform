@@ -1,0 +1,6 @@
+{% load utiltags %}
+{% catch as subtitle %}标签 － {{ tag.name }}{% endcatch %}
+{% catch as createtaglist %}var ul = $('<ul><li><a href="{{ url_prefix }}">全部</a></li></ul>');{% endcatch %}
+{% catch as ajax_url %}{{ url_prefix }}tag/{{ tag.id }}/list/{% endcatch %}
+{% catch as tags %}<input type="text" name="tags" value="{{ tag.name }}" maxlength="100" size="30"/>{% endcatch %}
+{% include "users/group_document.html" %}

@@ -1,0 +1,61 @@
+{# input parameters: url_prefix #}
+{% load utiltags %}
+<script type="text/javascript">
+{% catch as tmp_url %}{{ url_prefix }}/comment/{% endcatch %}
+var ajax_url = '{{ ajax_url|default:tmp_url }}';
+function createtable(target, count, data){
+	$(target).empty().append('<h2>共 $0 条回复</h2>'.template([count]));
+    $.each(data, function(n){
+        var div = $('<div class="comment_entry"></div>');
+		div.append('<img class="left smallportrait" src="/site_media/$user_portrait" width="32" height="32"/><p>#$num <a href="/user/$user_id/">$user_name</a> $createtime</p>'.template(this));
+		div.append('<p>$content</p>'.template(this));
+        $(target).append(div);
+    });
+}
+
+function handle_list(data){
+    var result = data.evalJson();
+    if (result.response == 'ok'){
+        var data = result.data;
+        createtable('#comments', data[2], data[3]);
+        $('#comments_pages').empty().paginate(ajax_url, data[0], data[1]).append('<br style="clear:both;"/>');
+        $('#comments_pages a').click(function(){
+            var href = this.href;
+            $.post(href, {}, handle_list);
+            return false;
+        });
+    }
+}
+
+$(document).ready(function (){
+	$.post(ajax_url, {}, handle_list);
+	on_success_finish = function(obj, data){
+	    setTimeout(function(){
+	        $('#comment_message').clearmessage();
+	        $('#comment_form').each(function(){
+	            this.reset();
+	        });
+			$.post(ajax_url, {}, handle_list);
+	    }, 1000);
+	}
+	new AjaxForm('#comment_form', 
+        {'on_success_finish':on_success_finish, 
+         'messageid':'comment_message'});
+});
+</script>
+<div id="comments">正在装入请等待...{% include "utils/ajax_loading.html" %}</div>
+<div id="comments_pages"></div>
+<form enctype="multipart/form-data" action="{{ url_prefix }}/addcomment/" method="post" id="comment_form">
+    <div class="basic_form" id="commentpost">
+        <div id="comment_message"></div>
+        <div class="block">
+            <dl>
+                <dt class="required"><lable for="">回复内容：</lable></dt>
+                <dd><textarea cols="50" rows="6" name="content"></textarea><dd>
+            </dl>
+        </div>
+        <div class="action">
+            <input type="submit" value="发布" />
+        </div>
+    </div>
+</form>

@@ -1,0 +1,9 @@
+<fieldset>
+<legend>{{ fieldset.title }}</legend>
+<div class="aligned">
+{% for f in fieldset.fields %}
+<p><label>{{ f.formfield.verbose_name }}</label> 
+{{ f }}{% if f.errors %}<span class="errornote"> * {{ f.errors|join:", " }}</span>{% endif %}</p>
+{% endfor %}
+</div>
+</fieldset>

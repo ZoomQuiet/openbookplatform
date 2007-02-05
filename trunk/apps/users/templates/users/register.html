@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+{% block body %}
+<script type="text/javascript">
+$(document).ready(function (){
+	var user_login = new AjaxForm('#register');
+});
+</script>
+{% catch as header %}
+    <h1>个人信息</h1>
+{% endcatch %}
+{% catch as content %}
+<form action="/register/" method="post" id="register">
+    <div class="basic_form">
+        <div id="message"></div>
+        <h2>基本信息</h2>
+        {% if baseform.errors %}<p class="errornote">{% trans "Please correct blow errors." %}</p>
+        <ul class="errorlist">
+        {% for e in baseform.errors %}
+            <li><a href="javascript:document.getElementById('id_{{ e.0 }}').focus()"><b>{{ e.1 }}:</b> {{ e.2 }}</a></li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        {% call "utils/add_field.html" with description="输入用户名" label="用户名：" field=form.username %}
+        {% call "utils/add_field.html" with description="输入邮箱" label="邮　箱：" field=form.email %}
+        <p class="blockintro">设置新口令</p>
+        <div class="block">
+            <dl>
+                <dt class="required">口　　令：</dt>
+                <dd>{{ form.password }}<dd>
+            </dl>
+            <dl>
+                <dt class="required">重输口令：</dt>
+                <dd>{{ form.password1 }}<dd>
+            </dl>
+        </div>
+        <div class="action">
+            <input type="submit" value="提交" />
+        </div>
+    </div>
+</form>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content %}
+{% endblock %}

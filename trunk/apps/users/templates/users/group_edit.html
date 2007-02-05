@@ -1,0 +1,73 @@
+{% load i18n utiltags %}
+{% extends "base.html" %}
+{% block menu %}{% call "menu.html" with currentpage="grouphome" %}{% endblock %}
+{% block body %}
+{% catch as header %}
+    <h1>修改：{{ group.name }}</h1>
+    <p><img src="/site_media/{{ group.get_icon_url }}"/></p>
+{% endcatch %}
+{% catch as content %}
+    <form enctype="multipart/form-data" action="/group/{{ group.id }}/edit/" method="post">
+        <div class="basic_form">
+            {% if form.errors %}<p class="errornote">{% trans "Please correct blow errors." %}</p>
+            <ul class="errorlist">
+            {% for e in form.errors %}
+                <li><a href="javascript:document.getElementById('id_{{ e.0 }}').focus()"><b>{{ e.1 }}:</b> {{ e.2 }}</a></li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+            <p class="blockintro">在这里你可以创建/修改一个小组，请填充必要的信息。</p>
+            <div class="block">
+                <dl>
+                    <dt class="required"><lable for="">{{ form.name.formfield.label }}</lable></dt>
+                    <dd>{{ form.name }}<dd>
+                </dl>
+                <dl>
+                    <dt><lable for="">{{ form.icon.formfield.label }}</lable></dt>
+                    <dd>{{ form.icon }}<dd>
+                </dl>
+                <dl>
+                    <dt><lable for="">{{ form.description.formfield.label }}</lable></dt>
+                    <dd>{{ form.description }}<dd>
+                </dl>
+            </div>
+            {% catch as manager %}
+            <p class="blockintro">可以给这个小组增加若干个管理员。请输入管理员的ID号，多个ID之间使用空格分开。</p>
+            <div class="block">
+                <dl>
+                    <dt><lable for="">{{ form.managers.formfield.label }}</lable></dt>
+                    <dd>{{ form.managers }}<dd>
+                </dl>
+            </div>
+            {% endcatch %}
+            {% call "utils/superuser.html" with content=manager %}
+            <div class="action">
+                <input type="submit" value="保存" />
+            </div>
+        </div>
+    </form>
+{% endcatch %}
+{% catch as sidebar %}
+	<p><a class="admin" href="/group/{{ group.id }}/">返回小组首页</a></p>
+    <h1>人员列表</h1>
+    <div class="block">
+        <p class="blockintro">在这里可以增加本小组成员。可以一次输入多个用户ID，ID间使用空格分开</p>
+        <form action="/group/{{ group.id }}/addmember/" method="post">
+            <input type="text" name="members"/><input type="submit" value="增加人员"/>
+        </form>
+    </div>
+    <h3>管理员</h3>
+    <ul>
+    {% for u in group.managers.all %}
+        <li><a href="/user/{{ u.id }}/">{{ u.username }}</a></li>
+    {% endfor %}
+    </ul>
+    <h3>组员</h3>
+    <ul id="members">
+    {% for u in group.members.all %}
+        <li><a href="/user/{{ u.id }}/">{{ u.username }}</a> {% if user.is_superuser %}<a class="admin" href="/group/{{ group.id }}/delmember/{{ u.id }}/">[删除]</a>{% endif %}</li>
+    {% endfor %}
+    </ul>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}
+{% endblock %}

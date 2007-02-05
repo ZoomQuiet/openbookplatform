@@ -1,0 +1,15 @@
+{% load utiltags %}
+<div class="aligned">
+	<form {{ form.enctype }} action="{{ form.path }}" method="post">
+    {% for f in form.fields %}
+	{% expr f.formfield.__class__.__name__ as f_classname %}
+	{% ifnotequal f_classname "HiddenField" %}
+    <p><label>{% if f.formfield.is_required %}<b>{% endif %}{{ f.formfield.verbose_name }}{% if f.formfield.is_required %}</b>{% endif %}</label> 
+	{{ f }}{% if f.errors %}<span class="errornote"> * {{ f.errors|join:", " }}</span>{% endif %}</p>
+	{% else %}
+	{{ f }}
+	{% endifnotequal %}
+    {% endfor %}
+	<p align="center">{% for b in form.buttons %}{{ b }}&nbsp;{% endfor %}</p>
+	</form>
+</div>

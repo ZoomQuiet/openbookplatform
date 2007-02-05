@@ -1,0 +1,14 @@
+{% load utiltags %}
+{% if not user.is_anonymous %}
+    {% expr [('info', '个人信息', '/user/%d/' % user.id), ('edit', '信息修改', '/user/%d/edit/' % user.id), ('document', '文档管理', '/user/%d/document/' % user.id), ('message', '消息管理', '/user/%d/message/' % user.id)] as submenuitems %}
+    {% pyif not user.is_anonymous() and person.id == user.id %}
+        <div class="submenu">
+            <ul id="MainTabs">
+            {% for item in submenuitems %}
+                {% expr item[0] as name %}
+                <li><a href="{{ item.2 }}"{% ifequal name currentpage %} class="current"{% endifequal %}>{{ item.1 }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endif %}
