@@ -49,3 +49,6 @@ def chapter(request, book_id, chapter_num):
         context_instance=RequestContext(request, {'book':book, 
             'chapter':chapter, 'next':next, 'prev':prev}))
     
+def chapter_comments(request, book_id, chapter_num):
+    return ajax.ajax_ok([])
+    

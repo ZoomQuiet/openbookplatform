@@ -1,8 +1,33 @@
+{% load utiltags %}
 {% extends "base.html" %}
 {% block title %}{{ book.title }}{% endblock %}
 {% block subject %}{{ chapter.title }}{% endblock %}
 {% block content %}
-{{ chapter.content }}
+{% pycall utils.rst2html.rst2html(chapter.content) %}
 {% endblock %}
 {% block nav1 %}<a href="/">The Open Book Platform</a>{% endblock %}
-{% block nav %}<div class="nav">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> 目录 </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">&raquo; {{ next.title }}</a>{% endif %}</div>{% endblock %}
+{% block nav %}<div class="nav">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> 目录 </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/site_media/js/jQuery.js"></script>
+<script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
+<script type="text/javascript">
+var ajax_url = '/book/{{ book.id }}/{{ chapter.num }}/comments/';
+function createcomments(data){
+    $('.cn').each(function(){
+        $(this).append('<div class="comment-indicator has-comments" style="height: $0;"><span>11</span></div>'.template([$(this).css('height')]))
+    });
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createcomments(data);
+	}
+}
+
+$(document).ready(function (){
+	$.post(ajax_url, {}, handle_list);
+});
+</script>
+{% endblock %}

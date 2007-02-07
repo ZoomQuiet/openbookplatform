@@ -126,10 +126,10 @@ dt .literal, table .literal { background:none; }
 div.comment-indicator { position: absolute; width: 20px; z-index: 999; text-align: center; color: black; font-size: 11px; left: -44px; top: 0; }
 li.cn div.comment-indicator { left: -74px; }
 div.admonition div.comment-indicator { left: -45px; }
-div.comment-indicator:hover { background-color: #406b4e; }
+div.comment-indicator:hover { background-color: #1C2F21; }
 div.comment-indicator span { position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; }
-div.comment-indicator:hover span { background-image: url(images/comment-hover.png); }
-div.has-comments > span, div.has-comments:hover > span { background-image: url(images/comment-active.png); }
+div.comment-indicator:hover span { background-image: url(/site_media/img/comment-hover.png); }
+div.has-comments > span, div.has-comments:hover > span { background-image: url(/site_media/img/comment-active.png); }
 
 /*** help tab ***/
 #comment-tabs-help h4 { margin-top: 0; }
