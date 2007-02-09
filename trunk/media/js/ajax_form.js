@@ -30,7 +30,7 @@ __data_handle = function(target, data){
             if (next)
                 window.location = next;
             else if (r['message']){
-                $('#' + (obj.options['messageid'] || 'message')).setmessage(r['message']);
+                $((obj.options['messageid'] || '#message')).setmessage(r['message']);
             }
             if(obj.options['on_success_finish'])
                 obj.options['on_success_finish'](obj, r);
@@ -81,7 +81,10 @@ __data_handle = function(target, data){
     var f = AjaxForm('#upload_form', {'on_finish':on_finish});
 */
 AjaxForm = function(form, options){
-    this.options = options || {};
+    this.options = {
+        trigger: "input.submit,input[@type='submit']",
+    };
+    $.extend(this.options, options);
     this.form = $(form);
     this.hookajax();
 }
@@ -99,7 +102,8 @@ Object.extend(AjaxForm.prototype, {
         var e = this.form;
         //disable form submit event
         e.submit(function(){return false;});
-        $("input.submit,input[@type='submit']", e).click(function(){
+        
+        $(obj.options['trigger']).click(function(){
             var url = obj.options['url'] || '';
             if (!url)
                 url = obj.form.attr('action');

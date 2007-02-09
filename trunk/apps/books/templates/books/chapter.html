@@ -1,21 +1,97 @@
 {% load utiltags %}
 {% extends "base.html" %}
+
 {% block title %}{{ book.title }}{% endblock %}
+
 {% block subject %}{{ chapter.title }}{% endblock %}
-{% block content %}
-{% pycall utils.rst2html.rst2html(chapter.content) %}
-{% endblock %}
+
 {% block nav1 %}<a href="/">The Open Book Platform</a>{% endblock %}
+
 {% block nav %}<div class="nav">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> 目录 </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+
+{% block css %}
+<link href="/site_media/js/model.css" rel="stylesheet" type="text/css" />
+<link href="/site_media/js/tabs.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block js %}
 <script type="text/javascript" src="/site_media/js/jQuery.js"></script>
+<script type="text/javascript" src="/site_media/js/dimensions.js"></script>
 <script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
+<script type="text/javascript" src="/site_media/js/iutil.js"></script>
+<script type="text/javascript" src="/site_media/js/iresizable.js"></script>
+<script type="text/javascript" src="/site_media/js/model.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.tabs.pack.js"></script>
+<script type="text/javascript" src="/site_media/js/ajax_form.js"></script>
+<script type="text/javascript" src="/site_media/js/jq-corner.js"></script>
 <script type="text/javascript">
-var ajax_url = '/book/{{ book.id }}/{{ chapter.num }}/comments/';
-function createcomments(data){
+var ajax_url = '/book/{{ book.id }}/{{ chapter.num }}/commentsinfo/';
+var comment_num;
+function createcomments(data, fresh){
+    var fresh = fresh || 'yes';
     $('.cn').each(function(){
-        $(this).append('<div class="comment-indicator has-comments" style="height: $0;"><span>11</span></div>'.template([$(this).css('height')]))
+        var id = $(this).attr('id');
+        var div;
+        var height = $(this).css('height');
+        var top = this.offsetTop;
+        if (data[id]){
+            div = '<div class="comment-indicator has-comments" style="height: $0;"><span>$1</span></div>'.template([height, data[id]]);
+        }else{
+            div = '<div class="comment-indicator" style="height: $0;"><span></span></div>'.template([$(this).css('height')]);
+        }
+        $(div).appendTo(this).click(function(){
+            $('#highlight-floater').remove();
+            $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 123px; top: $0; height: $1;"/>'.template([top+'px', height]));
+            $('#comments').triggerTab(1);
+            $('input[@name="comment_num"]', '#comments').val(id);
+            comment_num = id;
+        });
     });
+    if (fresh == 'yes'){
+        $('#comments').tabs({onClick:onClick}).model({trigger:'div.comment-indicator'}, null, unload);
+    }
+}
+
+createcommentslist = function(data, o){
+    var ol = $('<ol></ol>');
+    $.each(data, function(){
+        ol.append('<li class="comment"><dl><dt>$username <span class="meta">$createtime</span> $status</dt><dd><p>$content</p></dd></dl></li>'.template(this));
+    });
+    $(o).empty().append(ol);
+}
+
+onClick = function(t, o){
+    if($(t).attr('tabindex') == 2){
+        $.post('/book/{{ book.id }}/{{ chapter.num }}/'+comment_num+'/', {}, function(data){
+            var result = data.evalJson();
+            if (result.response == 'ok'){
+            	var data = result.data;
+            	createcommentslist(data, o);
+            }
+        });
+    }
+    if($(t).attr('tabindex') == 3){
+        $.post('/book/{{ book.id }}/{{ chapter.num }}/allcomments/', {}, function(data){
+            var result = data.evalJson();
+            if (result.response == 'ok'){
+                var data = result.data;
+                createcommentslist(data, o);
+            }
+        });
+    }
+}
+
+$.fn.center = function (){
+    var w = $(this);
+    w.css({'height':400, 'width':'500px'});
+    w.css('top', $(window).height()/2 - w.height()/2).
+    css('left', $(window).width()/2 - w.width()/2)
+    return this;
+}
+
+function unload(w){
+    w.slideUp('high').hide();
+    $('#highlight-floater').remove();
 }
 
 function handle_list(data){
@@ -26,8 +102,72 @@ function handle_list(data){
 	}
 }
 
+function handle_post(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createcomments(data, 'no');
+	}
+}
+
 $(document).ready(function (){
 	$.post(ajax_url, {}, handle_list);
+    on_success_finish = function(obj, r){
+        $.post(ajax_url, {}, handle_post);
+    }
+    var commentform = new AjaxForm('#commentform', 
+        {'trigger':'#comment-submit', 
+        'messageid':'#comments-message',
+        'on_success_finish':on_success_finish});
 });
 </script>
+{% endblock %}
+
+{% block content %}
+{% pycall utils.rst2html.rst2html(chapter.content) %}
+{% endblock %}
+
+{% block other %}
+<div id="comments" style="display: none;">
+    <ul class="anchors">
+        <li><a href="#comment-tabs-form" tabindex="1"><strong>Post a comment</strong></a></li>
+        <li><a href="#comment-tabs" tabindex="2"><strong>Comments on this block</strong></a></li>
+        <li><a href="#comment-tabs-all" tabindex="3"><strong>All comments</strong></a></li>
+    </ul>
+
+    <div class="tab yui-ext-tabitembody" id="comment-tabs-form">
+        <div class="bd">
+            <form id="commentform" method="post" action="/book/{{ book.id }}/{{ chapter.num }}/addcomment/">
+                <p>
+                    <input type="hidden" value="" name="comment_num"/>
+                    <label>Name (required)</label>
+                    <input type="text" tabindex="1" value="" name="username"/>
+                </p>
+                <p>
+                    <label>E-mail (required; will not be displayed)</label>
+                    <input type="text" tabindex="2" value="" name="email"/>
+                </p>
+                <p>
+                    <label>Website</label>
+                    <input type="text" tabindex="3" value="" name="url"/>
+                </p>
+                <p>
+                    <label>Comment (required)</label>
+                    <textarea rows="12" cols="30" tabindex="4" name="content"/></textarea>
+                </p>
+            </form>
+        </div>
+        <div class="ft">
+            <div id="comments-message" class="" style="display:none;">Loading comments...</div>
+            <div id="comments-submit-wrapper">
+                <input type="submit" value="Post comment" id="comment-submit" style="visibility: visible;"/>
+            </div>
+        </div>
+    </div>
+    <div class="tab yui-ext-tabitembody comment-tabs" id="comment-tabs">
+    </div>
+    <div class="tab yui-ext-tabitembody comment-tabs" id="comment-tabs-all">
+    </div>
+    
+</div>
 {% endblock %}

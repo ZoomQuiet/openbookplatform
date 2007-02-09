@@ -34,7 +34,6 @@ def code(name, arguments, options, content, lineno,
         lang = 'python'
     style, text = highlight(block_text[content_offset:], lang)
     text = re_space.sub(r_space, text)
-    print text
     g_style[lang] = style
     return [highlight_block(text)]
 
@@ -47,6 +46,8 @@ def to_html(text, level=2):
     parts = publish_parts(source, writer=SimpleWrite(), settings_overrides={'initial_header_level':level})
     if g_style:
         style = '<style>' + '\n'.join(g_style.values()) + '</style>'
+    else:
+        style = ''
     return  style + '\n' + parts['body']
 
 def parts(file):

@@ -8,7 +8,7 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
-# Version 1.4 2007-01-20
+# Version 1.5 2007-02-08
 #
 # Update 1.0 2007-01-18
 #
@@ -25,6 +25,9 @@
 #
 # Update 1.4 2007-01-21
 #    * support mysql
+#
+# Update 1.5 2007-02-08
+#    * If the filename is not exists, then skip it
 #
 
 import os, sys
@@ -131,7 +134,7 @@ def loaddb(app_labels, format, options):
         transaction.rollback_unless_managed()
     
     if errornum:
-        print "There are %d errors found!" % errornum
+        print "There are %d errors found! The database has been rollbacked!" % errornum
     else:
         print "Successful!"
     
@@ -151,6 +154,10 @@ def load_model(cursor, model, format, options):
         
     if verbose:
         print '..Dealing %s for %s format...\n' % (filename, format)
+    if not os.path.exists(filename):
+        if verbose:
+            print '..%s does not exists, so Skip it..\n' % filename
+        return
     try:
         objs = {}
         if format == 'py':

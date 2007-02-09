@@ -27,8 +27,8 @@ $.zip = function(keys, values){
 }
 
 $.fn.setmessage = function(msg){
-    $(this).empty().append('<center><table border="0" cellspan="0"><tr><td><div><b>$0</b></div></td></tr></table></center>'.template([msg])).show();
-    $(this).find('div').css({backgroundColor:'#FAD163', padding:'2px 20px 2px 20px'}).corner('round 5px');
+    $(this).empty().append('<div><b>$0</b></div>'.template([msg])).show();
+    $(this).find('div').css({'text-align':'center', backgroundColor:'#FAD163', padding:'2px 20px 2px 16px'}).corner('round 5px');
     return this;
 }
 $.fn.clearmessage = function(){

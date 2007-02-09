@@ -85,26 +85,23 @@ dt .literal, table .literal { background:none; }
 
 /*** comment stuff ***/
 .cn { position: relative; }
-#comments { padding: 0; border: 1px #092e20 solid; left: 300; top:0; position: absolute;  z-index: 10; background-color: #E0FFB8; width: 600px; height: 400px; color: black; overflow: hidden; display: none; text-align: left; }
-#comment-tabs { padding: 6px; }
-#comments .ft { height:50px; overflow:hidden; padding: 6px; }
-#comments .tabset .hd li a { background-color: #487858; color:white; }
-#comments .tabset .hd li.on em { color: #092e20; }
-#comments .yui-ext-tabbody { font-size: 90%; background-color: white; border: 1px #999 solid; border-top: none; height: 285px; overflow: auto; padding: 1em; }
-#comments div.tab input { width: 100%; }
+#comments { padding: 0; left: 300; top:0; width: 99%; position: absolute;  z-index: 10; background-color: #E0FFB8; color: black; overflow: hidden; display: none; text-align: left; }
+#comments .tab .ft { height:30px; overflow:hidden; padding: 6px; }
+#comments div.tab { margin-left: 6px;border: 1px #666 solid; margin-top:0px; background-color:#fff; width:98%; height:320px;overflow: auto; }
+#comments div.tab .bd input { width: 97%; margin-left: 6px;}
 #comments div.tab input#id_name { width: 70%; }
 #comments div.tab input#id_remember_me { width: auto; }
-#comments div.tab label { font-weight: bold; display: block; color: #487858; }
-#comments div.tab textarea { width: 100%; height: 100px; }
+#comments div.tab label { font-weight: bold; display: block; color: #487858; margin-left: 6px; }
+#comments div.tab textarea { width: 97%; height: 80px;  margin-left: 6px;}
 #comments div.tab p { margin-bottom: 0; }
 #comments div.tab span.actions { float: right; margin-top: -15px; }
 #comments div.tab span.thanks { color: black; font-weight: bold; color: #F7C754; position: relative;}
 #comments-close { margin-left:5px;margin-right:15px; }
-#comments-head .close { position: absolute; top: 3px; right: 4px; height: 13px; width: 17px; margin:0; padding: 0; overflow: hidden; text-indent:-999px; background: url(images/close.png) no-repeat top left;}
+#comments-head .close { position: absolute; top: 3px; right: 4px; height: 13px; width: 17px; margin:0; padding: 0; overflow: hidden; text-indent:-999px; background: url(/site_media/img/close.png) no-repeat top left;}
 #comments-head { background-color: #487858; color: white; padding: 2px 4px; font-weight: bold; margin: 0 0 6px 0; position: relative;}
-#comments-message { font-size: 90%; padding-left: 20px; float:left; clear:none; width:270px; }
-#comments-message.loading { background: url(images/loading.gif) no-repeat center left; }
-#comments-message.error { background: url(images/error.png) no-repeat center left; color: red; font-weight: bold; }
+#comments-message { font-size: 90%; margin:0; padding:0; float:left; clear:none; width:250px; }
+#comments-message.loading { background: url(/site_media/img/loading.gif) no-repeat center left; }
+#comments-message.error { background: url(/site_media/img/error.png) no-repeat center left; color: red; font-weight: bold; }
 #comments-submit-wrapper { float:right; clear:none;white-space:nowrap; width: 150px; text-align: right;}
 #comments-submit-wrapper input { font-size: 11px; }
 #highlight-floater { position: absolute; z-index: 5; background: #487858; top:0; left:0; width:100%; height: 10px; visibility: hidden; border-top: 1px black solid; border-bottom: 1px black solid; border-left: 20px black solid;}
@@ -115,12 +112,12 @@ dt .literal, table .literal { background:none; }
 #comments .yresizable-handle-southeast { background-image: url(yui-ext/images/sizer/se-handle-dark.gif); border: 0px; }
 
 /*** comment list tab ***/
-#comment-tabs div.tab ol { padding: 0; margin: 0; font-size: 90%; }
-#comment-tabs div.tab dl { margin-bottom: 0; }
-#comment-tabs div.tab li { border-bottom: 1px #E0FFB8 solid; }
-#comment-tabs div.tab li span.meta { font-weight:normal; color: #487858; font-size: 90%; }
-#comment-tabs div.tab a:hover { background-color:#E0FFB8; color:#234f32; text-decoration:none; }
-#comment-tabs div.tab a:link, #comment-tabs div.tab a:visited { color:#ab5603; }
+.comment-tabs ol { padding: 0; margin: 0; font-size: 90%; }
+.comment-tabs dl { margin-bottom: 0; }
+.comment-tabs li { border-bottom: 1px #E0FFB8 solid; }
+.comment-tabs li span.meta { font-weight:normal; color: #487858; font-size: 90%; }
+.comment-tabs a:hover { background-color:#E0FFB8; color:#234f32; text-decoration:none; }
+.comment-tabs a:link, .comment-tabs a:visited { color:#ab5603; }
 
 /*** comment indicator ***/
 div.comment-indicator { position: absolute; width: 20px; z-index: 999; text-align: center; color: black; font-size: 11px; left: -44px; top: 0; }
@@ -142,7 +139,6 @@ div.has-comments > span, div.has-comments:hover > span { background-image: url(/
 /*** IE hacks ***/
 * pre { width: 100%; }
 * div.has-comments span { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="http://media.djangobook.com/images/comment-active.png", sizingMethod="scale"); }
-* #comments div.tab input { width: 95%; }
 
 /* pageMod  */
 
@@ -221,4 +217,4 @@ background: #ecf6fc;
 tr.over td, td.over {
 background: #8FEFA8;
 }
-
+.error { color:red;font-size:9px;font-weight:bold;}

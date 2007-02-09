@@ -2,6 +2,7 @@ from apps.books.models import Book, Chapter
 from utils.lib_page import Page
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+from manipulator import AddCommentManipulator
 from utils import ajax
 
 def list(request):
@@ -49,6 +50,51 @@ def chapter(request, book_id, chapter_num):
         context_instance=RequestContext(request, {'book':book, 
             'chapter':chapter, 'next':next, 'prev':prev}))
     
-def chapter_comments(request, book_id, chapter_num):
-    return ajax.ajax_ok([])
+def chapter_comments_info(request, book_id, chapter_num):
+    chapter = Chapter.objects.get(num=chapter_num)
+    objs = chapter.commentinfo_set.all()
+    result = {}
+    def _get_data(result, obj):
+        result[obj.comment_num] = obj.count
+    for obj in objs:
+        _get_data(result, obj)
     
+    return ajax.ajax_ok(result)
+    
+def add_comment(request, book_id, chapter_num):
+    m = AddCommentManipulator(request, chapter_num)
+    f, obj = m.validate_and_save(request)
+    if f:
+        return ajax.ajax_ok(message='ok')
+    return ajax.ajax_fail(obj, message='error')
+   
+def _get_comment_data(result, obj):
+    if obj.website:
+        username = '<a rel="nofollow" href="%s">%s</a>' % (obj.website, obj.username)
+    else:
+        username = obj.username
+    status = ''
+    if obj.status == 1:
+        status = '<span class="thanks" title="%s">√</span>' % obj.reply
+
+    result.append({'username':username,
+        'content':obj.content, 'status':status,
+        'createtime':obj.createtime.strftime("%b %d,%Y %I:%m %p")})
+
+def chapter_comments(request, book_id, chapter_num):
+    chapter = Chapter.objects.get(num=chapter_num)
+    objs = chapter.comment_set.all()
+    result = []
+    for obj in objs:
+        _get_comment_data(result, obj)
+    
+    return ajax.ajax_ok(result)
+    
+def chapter_num_comments(request, book_id, chapter_num, comment_num):
+    chapter = Chapter.objects.get(num=chapter_num)
+    objs = chapter.comment_set.filter(comment_num=comment_num)
+    result = []
+    for obj in objs:
+        _get_comment_data(result, obj)
+    
+    return ajax.ajax_ok(result)
