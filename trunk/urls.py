@@ -3,6 +3,9 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     (r'^$', 'apps.portal.views.index'),
+    (r'^login/$', 'apps.users.views.auth.user_login'),
+    (r'^logout/$', 'apps.users.views.auth.user_logout'),
+    (r'^register/$', 'apps.users.views.auth.user_register'),
     (r'^license/$', 'apps.portal.views.license'),
     (r'^booklist/$', 'apps.books.views.list'),
     (r'^booklist/ajax_list/$', 'apps.books.views.ajax_list'),

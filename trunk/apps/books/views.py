@@ -67,7 +67,8 @@ def add_comment(request, book_id, chapter_num):
     if f:
         return ajax.ajax_ok(message='ok')
     return ajax.ajax_fail(obj, message='error')
-   
+
+from utils.textconvert import plaintext2html
 def _get_comment_data(result, obj):
     if obj.website:
         username = '<a rel="nofollow" href="%s">%s</a>' % (obj.website, obj.username)
@@ -78,7 +79,7 @@ def _get_comment_data(result, obj):
         status = '<span class="thanks" title="%s">√</span>' % obj.reply
 
     result.append({'username':username,
-        'content':obj.content, 'status':status,
+        'content':plaintext2html(obj.content), 'status':status,
         'createtime':obj.createtime.strftime("%b %d,%Y %I:%m %p")})
 
 def chapter_comments(request, book_id, chapter_num):

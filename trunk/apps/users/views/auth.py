@@ -52,7 +52,6 @@ def user_register(request):
             user = authenticate(username=obj.username, password=obj.password)
             if user and user.is_staff:
                 login(request, user)
-                # TODO: set last_login with an event.
                 user.last_login = datetime.datetime.now()
                 user.save()
             return ajax.ajax_ok(True, next='/')

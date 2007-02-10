@@ -1,6 +1,6 @@
 # Django settings for openbook project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -78,7 +78,6 @@ INSTALLED_APPS = (
 
     'apps.users',
     'apps.books',
-    'apps.comment',
     'apps.easyform',
     'apps.common',
     'apps.portal',

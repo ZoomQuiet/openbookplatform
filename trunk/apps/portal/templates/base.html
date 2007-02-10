@@ -19,7 +19,7 @@
             <td width="50%" align="right">{% block nav2 %}{% if not user.is_anonymous %}
             {{ user.username }} (<a href="/logout/">注销</a>)
             {% else %}
-            <a href="/register/">注册</a>
+            <a href="/login/">登录</a> | <a href="/register/">注册</a>
             {% endif %}
              <a href="/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
 {% endblock %}</td>
