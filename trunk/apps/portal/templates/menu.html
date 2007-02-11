@@ -1,14 +1,7 @@
 {% load utiltags %}
-{% expr [('homepage', '首页', '/')] as menuitems %}
-{% if not user.is_anonymous %}
-    {% expr [('personal', '个人管理', '/user/%d/' % user.id)] as adminmenuitems %}
-{% endif %}
-{% pyif not user.is_anonymous() and lastgroup %}
-    {% expr menuitems.append(('grouphome', lastgroup.name + '首页', '/group/%d/' % lastgroup.id)) as null %}
-{% endif %}
-{% expr menuitems.extend([('group', '小组', '/group/'), ('user', '成员', '/user/')]) as null %}
+{% expr [('homepage', 'Homepage', '/'), ('personal', 'Personal', '/user/%d/' % user.id), ('book', 'Book', '/user/%d/book/' % user.id)] as menuitems %}
 {% pyif not user.is_anonymous() and user.is_superuser %}
-    {% expr adminmenuitems.append(('admin', 'Admin', '/admin/')) as null %}
+    {% expr [('admin', 'Admin', '/admin/')] as adminmenuitems %}
 {% endif %}
 <div id="Tabs">
     <ul id="MainTabs">

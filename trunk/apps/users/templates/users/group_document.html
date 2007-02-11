@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% load i18n utiltags %}
-{% block menu %}{% call "menu.html" with currentpage="grouphome" %}{% endblock %}
-{% block submenu %}{% call "submenu.html" with currentpage="document" %}{% endblock %}
-{% block body %}
-    {% expr group.is_manager(user) as is_manager %}
-    {% include "document/inc_list.html" %}
-{% endblock %}

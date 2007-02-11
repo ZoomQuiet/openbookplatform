@@ -1,0 +1,121 @@
+{% load i18n utiltags %}
+<script type="text/javascript">
+{% catch as tmp_url %}/user/{{ user.id }}/book/{{ book.id }}/chapters/{% endcatch %}
+var ajax_url = '{{ ajax_url|default:tmp_url }}';
+var hide = {{ hideflag|default:"true" }};
+function createtable(target, data){
+	var table = $('<table width="100%"><tbody></tbody></table>')
+	$.each(data, function(n){
+		var tr = $('<tr><td width="1%">$checkbox</td><td><dl><dt><i>$title ($date)</i></dt><dd>$abstract</dd></dl></td></tr>'.template(this));
+		var id = this['id'];
+		$('td', tr).eq(1).click(function(){
+			window.location = '/user/{{ user.id }}/book/$id/'.template({id:id});
+		});
+		table.append(tr);
+		var d = this;
+	});
+	$(target).empty().append(table);
+//	$("tbody tr:even", target).addClass("alt");
+	$("tbody tr")
+	    .mouseover(function(){
+	        $(this).addClass("over");
+	    })
+	    .mouseout(function(e){
+	        $(this).removeClass("over");
+	    });
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createtable('#documents', data);
+	}
+}
+
+$(document).ready(function (){
+	$.post(ajax_url, {}, handle_list);
+	$('#select').click(function(){
+		$('#documents input[@type="checkbox"]').each(function(){
+			this.checked = true;
+		});
+	});
+	$('#diselect').click(function(){
+		$('#documents input[@type="checkbox"]').each(function(){
+			this.checked = '';
+		});
+	});
+	$('#delete').click(function(){
+		$.post('deletechapters/', $('#documents').getdict(), function(data){
+			var result = data.evalJson();
+			if (result.response == 'ok'){
+				if (result.next)
+					window.location = result.next;
+			}
+		});
+	});
+	$('#addchapter').model({trigger: '#add', title:'New Chapter'});
+	on_success_finish = function(obj, data){
+		$('#modelwindow').slideUp('high').hide();
+		$('#upload_form').each(function(){
+			this.reset();
+		});
+		$.post(ajax_url, {}, handle_list);
+	}
+	var ajax_form = new AjaxForm('#upload_form', 
+		{'on_success_finish':on_success_finish, 
+			'messageid':'#addchapter div.message',
+			'errortag':'p'});
+});
+</script>
+{% catch as header %}
+    <h1>{{ book.title }}</h1>
+    <h3><a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
+{% endcatch %}
+{% catch as content %}
+	<div class="modelform" id="addchapter" style="display:none;">
+		<form id="upload_form" action="addchapter/" method="post">
+			<div class="bd">
+				<p>Create a new book, and fill in information:</p>
+				<p>
+					<lable class="require">{% trans "Chapter Order Num" %}:</lable>
+					<input type="text" name="num" value=""/>
+				</p>
+				<p>
+					<lable class="require">{% trans "Title" %}:</lable>
+					<input type="text" name="title" value=""/>
+				</p>
+				<p>
+					<lable>{% trans "Abstract" %}:</lable>
+					<textarea rows="2" cols="40" name="abstract"></textarea>
+				</p>
+				<p>
+					<lable class="require">{% trans "Content" %}:</lable>
+					<textarea rows="8" cols="40" name="content"></textarea>
+				</p>
+			</div>
+			<div class="ft">
+				<div class="message" class="" style="display:none;">Loading comments...</div>
+				<div class="submit-wrapper">
+					<input type="submit" value="{% trans "Create" %}" />
+				</div>
+			</div>
+		</form>
+	</div>
+    <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
+	<div id="pages"></div>
+{% endcatch %}
+{% catch as sidebar %}
+	<h1>{% trans "Functions" %}</h1>
+	{% if is_manager %}
+		<p><a href="#" class="admin" id="add">{% trans "New Chapter" %}</a></p>
+		<p><a href="#" class="admin" id="delete">{% trans "Delete Selected Chapters" %}</a></p>
+	{% endif %}
+	<h1>{% trans "Authors" %}</h1>
+	<ul>
+	{% for author in book.authors.all %}
+		<li>{{ author.username }}</li>
+	{% endfor %}
+	</ul>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}

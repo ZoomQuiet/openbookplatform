@@ -45,13 +45,13 @@ __data_handle = function(target, data){
                 if (v.constructor == Array)
                     err = ','.join(v)
                 if (k == '_')   //global error message
-                    $('#' + (obj.options['messageid'] || 'message')).setmessage(v);
+                    $((obj.options['messageid'] || 'message')).setmessage(v);
                 else{
-                    $("[@name='$0']".template([k]), e).parent().after('<dd class="error">' + err + '</dd>');
+                    $("[@name='$0']".template([k]), e).parent().after('<' + obj.options['errortag'] + ' class="error">' + err + '</' + obj.options['messageid'] + '>');
                 }
             });
             if (r['message']){
-                $('#' + (obj.options['messageid'] || 'message')).setmessage(r['message']);
+                $((obj.options['messageid'] || 'message')).setmessage(r['message']);
             }
             if(obj.options['on_error_finish'])
                 obj.options['on_error_finish'](obj, r);
@@ -83,6 +83,7 @@ __data_handle = function(target, data){
 AjaxForm = function(form, options){
     this.options = {
         trigger: "input.submit,input[@type='submit']",
+        errortag:'dd'
     };
     $.extend(this.options, options);
     this.form = $(form);
@@ -140,7 +141,11 @@ Object.extend(AjaxForm.prototype, {
     var f = AjaxIFrame('#upload_form', {'on_finish':on_finish});
 */
 AjaxIFrame = function(form, options){
-    this.options = options || {};
+    this.options = {
+        trigger: "input.submit,input[@type='submit']",
+        errortag:'dd'
+    };
+    $.extend(this.options, options);
     this.form = $(form);
     this.hookajax();
 }
@@ -149,15 +154,22 @@ Object.extend(AjaxIFrame.prototype, {
     hookajax: function(){
         var obj = this;
         var f = this.form;
-        var targetname = '_upload_iframe';
-        f.get(0).target = targetname;
-        var iframe = $('#' + targetname);
-        if (!iframe.size()){
-            iframe = $('body').append('<iframe name="' + targetname + '" id="' + targetname + '" width="1" height="1" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"></iframe>');
-        }
-        callback = function(data){
-            __data_handle(obj, data);
-        }
-        ajax_iframe_response = callback;
+        $(obj.options['trigger']).click(function(){
+            var url = obj.options['url'] || '';
+            if (!url)
+                url = obj.form.attr('action');
+            if (!url.endswith('/'))
+                url = url + '/';
+            callback = function(data){
+                __data_handle(obj, data);
+            }
+            $.ajaxUpload({
+                uploadform: f.get(0),
+                url: url,
+                secureuri: false,
+                dataType: 'text',
+                success: callback
+            });
+        });
     }
 });

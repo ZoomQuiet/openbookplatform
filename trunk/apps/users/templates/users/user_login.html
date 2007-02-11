@@ -1,48 +1,36 @@
-{% if user.is_anonymous %}
+{% extends "base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+{% block css %}
+<link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/site_media/js/ajax_form.js"></script>
+<script type="text/javascript" src="/site_media/js/jq-corner.js"></script>
 <script type="text/javascript">
 $(document).ready(function (){
 	var user_login = new AjaxForm('#user_login');
 });
 </script>
-<form action="/login/" method="post" id="user_login">
-<dl>
-	<dt>用户名：</dt>
-	<dd><input name="username" type="text" id="username"/></dd>
-	<dt>口　令：</dt>
-	<dd>
-	  <input name="password" type="password" id="password"/>
-	</dd>
-	<dd><input type="submit" value="登录" /></dd>
-</dl>
-</form>
-{% else %}
-<style type="text/css">
-<!--
-.personal {
-	width: 58px;
-	border: 1px solid #ccc;
-	padding: 4px;
-}
-.personal p {
-	margin: 0px;
-	padding: 4px;
-}
--->
-</style>
-
-<table border="0" width="100%">
-	<tr align="center">
-		<td align="center">
-			<div class="personal">
-				{% if user.userprofile.get_portrait_url %}
-					<img src="/site_media/{{ user.userprofile.get_portrait_url }}/"/>
-				{% else %}
-					<img src="/site_media/img/user.jpg/"/>
-				{% endif %}
-				<p>{{ user.username }}</p>
+{% endblock %}
+{% block content %}
+<h2>{% trans "Login" %}</h2>
+<div class="basic_form">
+	<form action="/login/" method="post" id="user_login">
+	<p class="blockintro">{% trans "Input username and password" %}</p>
+	<div class="block">
+		<dl>
+			<dt>用户名：</dt>
+			<dd><input name="username" type="text" id="username"/></dd>
+			<dt>口　令：</dt>
+			<dd>
+			  <input name="password" type="password" id="password"/>
+			</dd>
+			<div class="action">
+				<input type="submit" value="Login" />
 			</div>
-		</td>
-	</tr>
-</table>
-
-{% endif %}
+		</dl>
+	</div>
+	</form>
+</div>
+{% endblock %}

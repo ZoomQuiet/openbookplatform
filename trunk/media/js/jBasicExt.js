@@ -36,6 +36,14 @@ $.fn.clearmessage = function(){
     return this;
 }
 
+$.fn.center = function (){
+    var w = $(this);
+    w.css({'height':400, 'width':'500px'});
+    w.css('top', $(window).height()/2 - w.height()/2).
+    css('left', $(window).width()/2 - w.width()/2)
+    return this;
+}
+
 /* basic functions  */
 Object.extend = function(obj, prop){
     for(var i in prop) obj[i] = prop[i];

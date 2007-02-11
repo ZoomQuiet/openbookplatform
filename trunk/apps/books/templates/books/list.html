@@ -1,7 +1,8 @@
+{% load i18n %}
 {% extends "base.html" %}
-{% block subject %}书籍列表{% endblock %}
+{% block subject %}{% trans "Book List" %}{% endblock %}
 {% block content %}
-<div id="documents">正在装入请等待...{% include "utils/ajax_loading.html" %}</div>
+<div id="documents">{% trans "Loading..." %}{% include "utils/ajax_loading.html" %}</div>
 <div id="pages"></div>
 {% endblock %}
 {% block css %}
@@ -27,7 +28,7 @@ function createtable(target, data){
 	});
 	$(target).empty().append(table);
 //	$("tbody tr:even", target).addClass("alt");
-	$("tbody tr")
+	$("tbody tr", target)
 	    .mouseover(function(){
 	        $(this).addClass("over");
 	    })

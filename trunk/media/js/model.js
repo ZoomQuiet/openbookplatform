@@ -5,7 +5,8 @@ $.fn.model = function(opts, onload, unload){
     min:'.windowMin',
     max:'.windowMax',
     width:500,
-    height:400
+    height:400,
+    title:'Comments'
     };
     var t = $(this);
     var w;
@@ -21,7 +22,7 @@ $.fn.model = function(opts, onload, unload){
     function build(target){
         var wrap = $('<div id="modelwindow">'
             +'<div class="windowTop">'
-                +'<div class="windowTopContent">Comments</div>'
+                +'<div class="windowTopContent">' + _o.title + '</div>'
                 +'<img src="/site_media/img/window_min.jpg" class="windowMin" />'
                 +'<img src="/site_media/img/window_max.jpg" class="windowMax" />'
                 +'<img src="/site_media/img/window_close.jpg" class="windowClose" />'

@@ -16,7 +16,7 @@ def _get_data(request, obj):
         icon = '<img src="/site_media/%s" alt="%s"/>' % (obj.get_icon_url(), obj.title)
     else:
         icon = '<img src="/site_media/img/book_icon.jpg" alt="%s"/>' % obj.title
-    authors = [x.username for x in obj.author.all()]
+    authors = [x.username for x in obj.authors.all()]
     return ({'id':obj.id, 'icon':icon, 'title':obj.title, 
         'description':obj.description, 'author':','.join(authors)})
 
@@ -38,12 +38,12 @@ def content(request, book_id):
     
 def chapter(request, book_id, chapter_num):
     book = Book.objects.get(pk=int(book_id))
-    chapter = Chapter.objects.get(num=chapter_num)
+    chapter = Chapter.objects.get(num=chapter_num, book=book)
     prev, next = None, None
-    nexts = Chapter.objects.filter(num__gt=chapter_num)
+    nexts = Chapter.objects.filter(num__gt=chapter_num, book=book)
     if nexts:
         next = nexts[0]
-    prevs = Chapter.objects.filter(num__lt=chapter_num)
+    prevs = Chapter.objects.filter(num__lt=chapter_num, book=book)
     if prevs:
         prev = prevs[0]
     return render_to_response('books/chapter.html', 
@@ -51,7 +51,8 @@ def chapter(request, book_id, chapter_num):
             'chapter':chapter, 'next':next, 'prev':prev}))
     
 def chapter_comments_info(request, book_id, chapter_num):
-    chapter = Chapter.objects.get(num=chapter_num)
+    book = Book.objects.get(pk=int(book_id))
+    chapter = Chapter.objects.get(num=chapter_num, book=book)
     objs = chapter.commentinfo_set.all()
     result = {}
     def _get_data(result, obj):
@@ -83,7 +84,8 @@ def _get_comment_data(result, obj):
         'createtime':obj.createtime.strftime("%b %d,%Y %I:%m %p")})
 
 def chapter_comments(request, book_id, chapter_num):
-    chapter = Chapter.objects.get(num=chapter_num)
+    book = Book.objects.get(pk=int(book_id))
+    chapter = Chapter.objects.get(num=chapter_num, book=book)
     objs = chapter.comment_set.all()
     result = []
     for obj in objs:
@@ -92,7 +94,8 @@ def chapter_comments(request, book_id, chapter_num):
     return ajax.ajax_ok(result)
     
 def chapter_num_comments(request, book_id, chapter_num, comment_num):
-    chapter = Chapter.objects.get(num=chapter_num)
+    book = Book.objects.get(pk=int(book_id))
+    chapter = Chapter.objects.get(num=chapter_num, book=book)
     objs = chapter.comment_set.filter(comment_num=comment_num)
     result = []
     for obj in objs:

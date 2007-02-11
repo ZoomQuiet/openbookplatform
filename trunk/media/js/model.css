@@ -8,7 +8,6 @@
 .windowTop
 {
 	height: 30px;
-	overflow: 30px;
 	background-image: url(/site_media/img/window_top_end.png);
 	background-position: right top;
 	background-repeat: no-repeat;

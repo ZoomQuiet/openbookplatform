@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="/site_media/css/grids-min.css" type="text/css">
     <link rel="stylesheet" href="/site_media/css/djangobook.css" type="text/css">
 	{% block css %}{% endblock %}	
-	{% block js %}{% endblock %}	
+	<script type="text/javascript" src="/site_media/js/jQuery.js"></script>
+    <script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
+    {% block js %}{% endblock %}	
 
   </head>
   <body>
@@ -17,7 +19,7 @@
           <tr>
             <td width="50%" align="left">{% block nav1 %}&nbsp;{% endblock %}</td>
             <td width="50%" align="right">{% block nav2 %}{% if not user.is_anonymous %}
-            {{ user.username }} (<a href="/logout/">注销</a>)
+            {{ user.username }} (<a href="/user/{{ user.id }}/">管理</a> | <a href="/logout/">注销</a>)
             {% else %}
             <a href="/login/">登录</a> | <a href="/register/">注册</a>
             {% endif %}

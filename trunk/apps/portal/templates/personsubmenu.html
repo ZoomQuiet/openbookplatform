@@ -1,6 +1,6 @@
 {% load utiltags %}
 {% if not user.is_anonymous %}
-    {% expr [('info', '个人信息', '/user/%d/' % user.id), ('edit', '信息修改', '/user/%d/edit/' % user.id), ('document', '文档管理', '/user/%d/document/' % user.id), ('message', '消息管理', '/user/%d/message/' % user.id)] as submenuitems %}
+    {% expr [('info', 'Information', '/user/%d/' % user.id), ('edit', 'Modify', '/user/%d/edit/' % user.id)] as submenuitems %}
     {% pyif not user.is_anonymous() and person.id == user.id %}
         <div class="submenu">
             <ul id="MainTabs">

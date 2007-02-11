@@ -1,31 +1,13 @@
-{% extends "base.html" %}
+{% extends "setting_base.html" %}
 {% load i18n utiltags %}
 {% block submenu %}{% call "personsubmenu.html" with currentpage="info" %}{% endblock %}
 {% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/site_media/js/ajax_form.js"></script>
+<script type="text/javascript" src="/site_media/js/jq-corner.js"></script>
+{% endblock %}
+
 {% block body %}
-<script type="text/javascript">
-$(document).ready(function(){
-    $('a.sendmessage').toggle(function (){
-        $(this).prev('img').attr('src', '/site_media/img/opentriangle.gif');
-        $('#messages').slideDown('slow');
-        $('#messages input:first').focus();
-    },function (){
-        $(this).prev('img').attr('src', '/site_media/img/triangle.gif');
-        $('#messages').slideUp('slow');
-    });
-    $('#messages').hide();
-    on_success_finish = function(obj, data){
-        setTimeout(function(){
-            $('a.sendmessage').click();
-            $('#message').clearmessage();
-            $('#messages form').each(function(){
-                this.reset();
-            });
-        }, 1000);
-    }
-    var user_login = new AjaxForm('#send_message', {'on_success_finish':on_success_finish});
-});
-</script>
 {% catch as header %}
     <h1>{{ person.username }}</h1>
     <p><img src="/site_media/{{ person.userprofile.get_portrait_url|default:"img/user.jpg" }}" /></p>
@@ -44,7 +26,7 @@ $(document).ready(function(){
     </div>
 {% endcatch %}
 {% catch as sidebar %}
-    <h1>功能</h1>
+    <h2>功能</h2>
     {% pyif not user.is_anonymous() and user.is_superuser and person.username != 'admin' and person.id != user.id %}
         <p><a class="admin" href="/user/{{ person.id }}/delete/">删除当前用户</a></p>
         {% if person.is_superuser %}
@@ -59,12 +41,6 @@ $(document).ready(function(){
         <p><a class="admin" href="/user/{{ person.id }}/edit/">信息修改</a></p>
     {% else %}
         <p><img src="/site_media/img/triangle.gif" align="absmiddle"/>  <a class="admin sendmessage" href="#">留言</a></p>
-        <div id="messages">
-            <div id="message"></div>
-            <form action="/user/{{ person.id }}/message/send/" method="post" id="send_message">
-            {% include "newmessage/inc_message.html" %}
-            </form>
-        </div>
     {% endif %}
 {% endcatch %}
 {% call "utils/contentframe.html" with header content sidebar %}

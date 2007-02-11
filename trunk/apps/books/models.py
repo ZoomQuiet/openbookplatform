@@ -6,7 +6,7 @@ from django.dispatch import dispatcher
 class Book(models.Model):
     title = models.CharField(maxlength=100)
     description = models.TextField()
-    author = models.ManyToManyField(User, related_name = "author")
+    authors = models.ManyToManyField(User)
     createdate = models.DateTimeField(auto_now_add=True)
     modifydate = models.DateTimeField(auto_now=True)
     icon = models.ImageField(upload_to="books_icon", blank=True, null=True)
@@ -21,7 +21,7 @@ class Book(models.Model):
     
 class Chapter(models.Model):
     book = models.ForeignKey(Book)
-    num = models.CharField(maxlength=20, unique=True)
+    num = models.CharField(maxlength=20)
     title = models.CharField(maxlength=100)
     abstract = models.TextField()
     modifydate = models.DateTimeField(auto_now=True)

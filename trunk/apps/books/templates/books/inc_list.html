@@ -1,0 +1,124 @@
+{% load utiltags i18n %}
+<script type="text/javascript">
+{% catch as tmp_url %}/user/{{ user.id }}/book/ajax_list/{% endcatch %}
+var ajax_url = '{{ ajax_url|default:tmp_url }}';
+var hide = {{ hideflag|default:"true" }};
+function createtable(target, data){
+	var table = $('<table width="100%"><tbody></tbody></table>')
+	$.each(data, function(n){
+		var tr = $('<tr><td width="1%">$checkbox</td><td width="1%">$icon</td><td><dl><dt><i>$title</i></dt><dd>Author: $author <br>$description</dd></dl></td></tr>'.template(this));
+		var id = this['id'];
+		$('td', tr).eq(1).click(function(){
+			window.location = '/user/{{ user.id }}/book/$id/'.template({id:id});
+		});
+		table.append(tr);
+		var d = this;
+	});
+	$(target).empty().append(table);
+//	$("tbody tr:even", target).addClass("alt");
+	$("tbody tr")
+	    .mouseover(function(){
+	        $(this).addClass("over");
+	    })
+	    .mouseout(function(e){
+	        $(this).removeClass("over");
+	    });
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createtable('#documents', data[2]);
+		$('#pages').empty().paginate(ajax_url, data[0], data[1]).append('<br style="clear:both;"/>');
+		$('#pages a').click(function(){
+			var href = this.href;
+			$.get(href, handle_list);
+			return false;
+		});
+	}
+}
+
+$(document).ready(function (){
+	if(hide)
+		$('#upload').hide();
+    $('#a_upload').toggle(function (){
+        $('#a_upload').prev('img').attr('src', '/site_media/img/triangle.gif');
+        $('#upload').slideDown('high');
+        $('#upload').find('input:eq(0)').focus();
+    },function (){
+        $('#a_upload').prev('img').attr('src', '/site_media/img/opentriangle.gif');
+        $('#upload').slideUp('high');
+    });
+	$.post(ajax_url, {}, handle_list);
+	$('#select').click(function(){
+		$('#documents input[@type="checkbox"]').each(function(){
+			this.checked = true;
+		});
+	});
+	$('#diselect').click(function(){
+		$('#documents input[@type="checkbox"]').each(function(){
+			this.checked = '';
+		});
+	});
+	$('#delete').click(function(){
+		$.post('delete/', $('#documents').getdict(), function(data){
+			var result = data.evalJson();
+			if (result.response == 'ok'){
+				if (result.next)
+					window.location = result.next;
+			}
+		});
+	});
+	on_success_finish = function(obj, data){
+	    setTimeout(function(){
+	        $('#a_upload').click();
+	        $('#message').clearmessage();
+	        $('#upload_form').each(function(){
+	            this.reset();
+	        });
+	        $.post(ajax_url, {}, handle_list);
+	        $.post('{{ url_prefix }}taglist/', {}, handle_taglist);
+	    }, 1000);
+	}
+	var ajax_iframe = new AjaxIFrame('#upload_form', {'on_success_finish':on_success_finish});
+});
+</script>
+{% catch as header %}
+    <h1>{{ subtitle|default:"Book Manager" }}</h1>
+    <h3><img src="/site_media/img/opentriangle.gif"/><a class="admin" href="#" id="a_upload">{% trans "New Book" %}</a> | <a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
+{% endcatch %}
+{% catch as content %}
+    <form id="upload_form" enctype="multipart/form-data" action="new/" method="post">
+        <div class="basic_form" id="upload">
+			<div id="message"></div>
+            <p class="blockintro">Create a new book, and fill in information:</p>
+            <div class="block">
+                <dl>
+                    <dt class="required"><lable>{% trans "Title" %}:</lable></dt>
+                    <dd><input type="text" name="title" value=""/><dd>
+                </dl>
+                <dl>
+                    <dt class="required"><lable>{% trans "Description" %}:</lable></dt>
+                    <dd><textarea rows="3" cols="40" name="description"></textarea><dd>
+                </dl>
+                <dl>
+                    <dt class="required"><lable>{% trans "Logo" %}:</lable></dt>
+                    <dd><input type="file" name="icon"/><dd>
+                </dl>
+            </div>
+            <div class="action">
+                <input type="submit" value="{% trans "Create" %}" />
+            </div>
+        </div>
+    </form>
+    <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
+	<div id="pages"></div>
+{% endcatch %}
+{% catch as sidebar %}
+	<h1>{% trans "Functions" %}</h1>
+	{% if is_manager %}
+		<p><a href="#" class="admin" id="delete">{% trans "Delete selected book" %}</a></p>
+	{% endif %}
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}
