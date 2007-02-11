@@ -51,7 +51,7 @@ class BookManipulator(EasyManipulator):
         if data.get('icon', None):
             from utils import image, fileutil
         
-            filename = 'book_' + obj.id + '.jpg'
+            filename = 'book_' + str(obj.id) + '.jpg'
             filename = fileutil.resetfilename(filename, 'books_icon')
             obj.save_icon_file(filename, image.thumbnail_string(data['icon']['content'], size=(70,93)))
     

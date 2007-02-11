@@ -1,5 +1,5 @@
 {% load utiltags %}
-{% expr [('homepage', 'Homepage', '/'), ('personal', 'Personal', '/user/%d/' % user.id), ('book', 'Book', '/user/%d/book/' % user.id)] as menuitems %}
+{% expr [('homepage', 'Homepage', '/booklist/'), ('personal', 'Personal', '/user/%d/' % user.id), ('book', 'Book', '/user/%d/book/' % user.id)] as menuitems %}
 {% pyif not user.is_anonymous() and user.is_superuser %}
     {% expr [('admin', 'Admin', '/admin/')] as adminmenuitems %}
 {% endif %}

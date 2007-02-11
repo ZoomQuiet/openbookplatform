@@ -65,8 +65,11 @@ $(document).ready(function (){
 		$.post('delete/', $('#documents').getdict(), function(data){
 			var result = data.evalJson();
 			if (result.response == 'ok'){
-				if (result.next)
+				if (result.next){
 					window.location = result.next;
+					return;
+				}
+				$.post(ajax_url, {}, handle_list);
 			}
 		});
 	});
@@ -78,7 +81,6 @@ $(document).ready(function (){
 	            this.reset();
 	        });
 	        $.post(ajax_url, {}, handle_list);
-	        $.post('{{ url_prefix }}taglist/', {}, handle_taglist);
 	    }, 1000);
 	}
 	var ajax_iframe = new AjaxIFrame('#upload_form', {'on_success_finish':on_success_finish});

@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     (r'^logout/$', 'apps.users.views.auth.user_logout'),
     (r'^register/$', 'apps.users.views.auth.user_register'),
     (r'^license/$', 'apps.portal.views.license'),
+    (r'^help/$', 'apps.portal.views.help'),
     
     (r'^user/(?P<object_id>\d+)/$', 'apps.users.views.views.user_detail'),
     (r'^user/(?P<object_id>\d+)/edit/$', 'apps.users.views.views.user_edit'),

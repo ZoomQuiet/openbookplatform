@@ -39,5 +39,6 @@ $(function(){
     </form>
 {% endcatch %}
 {% catch as sidebar %}
+    <p><a href="/user/{{ user.id }}/book/{{ book.id }}/" class="admin" id="delete">{% trans "Return to table of contents" %}</a></p>
 {% endcatch %}
 {% call "utils/contentframe.html" with header content sidebar %}

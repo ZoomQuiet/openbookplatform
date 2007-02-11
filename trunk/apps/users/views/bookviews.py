@@ -40,14 +40,14 @@ def user_books_delete(request, object_id):
     if ids:
         for book in Book.objects.filter(id__in=ids):
             book.delete()
-    return ajax.ajax_ok(next='/user/%d/book/' % user.id)
+    return ajax.ajax_ok(_('Success!'))
 
 def user_book_edit(request, object_id, book_id=None):
     user = request.user
     m = BookManipulator(request, book_id)
     flag , obj = m.validate_and_save(request)
     if flag:
-        return ajax.ajax_ok(next='/user/%d/book/' % user.id)
+        return ajax.ajax_ok(_('Success!'))
     return ajax.ajax_fail(obj)
 
 def user_book_detail(request, object_id, book_id):
