@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>The Open Book Platform</title>
+    <title>{% trans "The Open Book Platform" %}</title>
     <link rel="stylesheet" href="/site_media/css/reset-min.css" type="text/css">
     <link rel="stylesheet" href="/site_media/css/grids-min.css" type="text/css">
     <link rel="stylesheet" href="/site_media/css/djangobook.css" type="text/css">
@@ -19,15 +19,15 @@
           <tr>
             <td width="50%" align="left">{% block nav1 %}&nbsp;{% endblock %}</td>
             <td width="50%" align="right">{% block nav2 %}{% if not user.is_anonymous %}
-            {{ user.username }} (<a href="/user/{{ user.id }}/">管理</a> | <a href="/logout/">注销</a>)
+            Welcome: <b>{{ user.username }}</b> (<a href="/user/{{ user.id }}/">{% trans "Admin" %}</a> | <a href="/logout/">{% trans "Logout" %}</a>)
             {% else %}
-            <a href="/login/">登录</a> | <a href="/register/">注册</a>
+            <a href="/login/">{% trans "Login" %}</a> | <a href="/register/">{% trans "Register" %}</a>
             {% endif %}
              <a href="/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
 {% endblock %}</td>
           </tr>
         </table>
-        <h1>{% block title %}<a href="/">开放写作平台(The Open Book Platform)</a>{% endblock %}</h1>
+        <h1>{% block title %}<a href="/">{% trans "The Open Book Platform" %}</a>{% endblock %}</h1>
         {% block nav %}{% endblock %}
       </div>
       <div id="bd">
@@ -38,9 +38,7 @@
           </div>
         </div>
       </div>
-	    <div id="ft">
-				
-				Copyright 2007 Limodou.<br>This
+	    <div id="ft">Copyright 2007 Limodou.<br>This
       	work is licensed under the <a href="/license/">GNU Free Document
       	License</a>.
 			</div>

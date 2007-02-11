@@ -84,7 +84,15 @@ def user_chapter(request, object_id, book_id, chapter_id=None):
         return ajax.ajax_ok(result)
     else:
         m = ChapterManipulator(request, book_id, chapter_id)
-        flag, obj = m.validate_and_save(request)
-        if flag:
-            return ajax.ajax_ok(message=_("Success!"))
-        return ajax.ajax_fail(obj, message=_("There are some errors!"))
+        if request.POST:
+            flag, obj = m.validate_and_save(request)
+            if flag:
+                return ajax.ajax_ok(message=_("Success!"))
+            return ajax.ajax_fail(obj, message=_("There are some errors!"))
+        else:
+            user = User.objects.get(pk=int(object_id))
+            book = Book.objects.get(pk=int(book_id))
+            chapter = Chapter.objects.get(pk=int(chapter_id))
+            return render_to_response('users/user_chapter.html', 
+                context_instance=RequestContext(request, {'person':user, 'book':book, 'chapter':chapter}))
+            

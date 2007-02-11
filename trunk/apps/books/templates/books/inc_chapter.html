@@ -1,0 +1,43 @@
+{% load utiltags i18n %}
+<script type="text/javascript">
+$(function(){
+    on_success_finish = function(obj, data){
+    	setTimeout(function(){
+            $('#message').clearmessage();
+        }, 1000);
+    }
+    var ajax_form = new AjaxForm('#upload_form', 
+        {'on_success_finish':on_success_finish});
+});
+</script>
+{% catch as header %}
+    <h1><a href="/book/{{ book.id }}/{{ chapter.num }}/">Edit: {{ chapter.title }}</a></h1>
+{% endcatch %}
+{% catch as content %}
+    <form id="upload_form" action="/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" method="post">
+        <div class="basic_form" id="upload">
+			<div id="message"></div>
+            <p class="blockintro">Create a new book, and fill in information:</p>
+            <div class="block">
+                <dl>                    <dt class="required"><lable>{% trans "Chapter Num" %}:</lable></dt>                    <dd><input type="text" name="num" value="{{ chapter.num }}"/><dd>                </dl>                <dl>
+                    <dt class="required"><lable>{% trans "Title" %}:</lable></dt>
+                    <dd><input type="text" size="50" name="title" value="{{ chapter.title }}"/><dd>
+                </dl>
+                <dl>
+                    <dt><lable>{% trans "Abstract" %}:</lable></dt>
+                    <dd><textarea rows="2" cols="40" name="abstract">{{ chapter.abstract }}</textarea><dd>
+                </dl>
+                <dl>
+                    <dt class="required"><lable>{% trans "Content" %}:</lable></dt>
+                    <dd><textarea rows="8" cols="40" name="content">{{ chapter.content }}</textarea><dd>
+                </dl>
+            </div>
+            <div class="action">
+                <input type="submit" value="{% trans "Save" %}" />
+            </div>
+        </div>
+    </form>
+{% endcatch %}
+{% catch as sidebar %}
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}

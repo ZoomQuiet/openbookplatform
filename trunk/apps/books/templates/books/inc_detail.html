@@ -9,7 +9,7 @@ function createtable(target, data){
 		var tr = $('<tr><td width="1%">$checkbox</td><td><dl><dt><i>$title ($date)</i></dt><dd>$abstract</dd></dl></td></tr>'.template(this));
 		var id = this['id'];
 		$('td', tr).eq(1).click(function(){
-			window.location = '/user/{{ user.id }}/book/$id/'.template({id:id});
+			window.location = '/user/{{ user.id }}/book/{{ book.id }}/chapter/$id/'.template({id:id});
 		});
 		table.append(tr);
 		var d = this;

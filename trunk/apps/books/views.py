@@ -1,3 +1,4 @@
+#coding=utf-8
 from apps.books.models import Book, Chapter
 from utils.lib_page import Page
 from django.shortcuts import render_to_response
@@ -5,7 +6,7 @@ from django.template.context import RequestContext
 from manipulator import AddCommentManipulator
 from utils import ajax
 
-def list(request):
+def booklist(request):
     user = request.user
     return render_to_response('books/list.html', 
         context_instance=RequestContext(request))
@@ -45,7 +46,7 @@ def chapter(request, book_id, chapter_num):
         next = nexts[0]
     prevs = Chapter.objects.filter(num__lt=chapter_num, book=book)
     if prevs:
-        prev = prevs[0]
+        prev = list(prevs)[-1]
     return render_to_response('books/chapter.html', 
         context_instance=RequestContext(request, {'book':book, 
             'chapter':chapter, 'next':next, 'prev':prev}))

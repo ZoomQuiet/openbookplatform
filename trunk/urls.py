@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     (r'^user/(?P<object_id>\d+)/book/delete/$', 'apps.users.views.bookviews.user_books_delete'),
     (r'^user/(?P<object_id>\d+)/book/$', 'apps.users.views.bookviews.user_books'),
     
-    (r'^booklist/$', 'apps.books.views.list'),
+    (r'^booklist/$', 'apps.books.views.booklist'),
     (r'^booklist/ajax_list/$', 'apps.books.views.ajax_list'),
     (r'^book/(?P<book_id>\d+)/$', 'apps.books.views.content'),
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/commentsinfo/$', 'apps.books.views.chapter_comments_info'),
