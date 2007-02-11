@@ -22,7 +22,7 @@
     <div id="hd">
         <div class="nav">
             {% if not user.is_anonymous %}
-            {{ user.username }} (<a class="admin" href="/user/{{ user.id }}/">{% trans "Manage" %}</a> | <a class="admin" href="/logout/">{% trans "Logout" %}</a>)
+            {{ user.username }} (<a class="admin" href="/logout/">{% trans "Logout" %}</a>)
             {% else %}
             <a href="/register/">{% trans "Register" %}</a>
             {% endif %}

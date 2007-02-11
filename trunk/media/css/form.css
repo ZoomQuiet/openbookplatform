@@ -1,0 +1,15 @@
+.modelform { margin: 10px 6px 0px 6px; background-color:#fff; width:98%; height:320px;overflow: auto; text-align: left; font-size:110%;}
+.modelform .ft { height:30px; overflow:hidden; padding: 6px; margin-bottom: 5px;}
+.modelform .bd {margin-bottom:5px;}
+.modelform .bd input { width: 96%; }
+.modelform .bd lable.require { font-weight: bold; display: block; color: #487858; }
+.modelform .bd lable { display: block; color: #487858; }
+.modelform .bd textarea { width: 96%; }
+.modelform .bd p { margin-bottom: 6px; margin-left:6px;}
+
+.modelform .ft .message { font-size: 90%; margin:0; padding:0; float:left; clear:none; width:250px; }
+.modelform .ft .loading { background: url(/site_media/img/loading.gif) no-repeat center left; }
+.modelform .ft .error { background: url(/site_media/img/error.png) no-repeat center left; color: red; font-weight: bold; }
+.modelform .ft .submit-wrapper { float:right; clear:none;white-space:nowrap; width: 150px; text-align: right;}
+.modelform .ft .submit-wrapper input { font-size: 11px; }
+.modelform .error {font-weight:bold; color: red;margin:0 0 0 6px;}

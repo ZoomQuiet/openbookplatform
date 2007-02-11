@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% load i18n utiltags %}
-{% block submenu %}{% call "personsubmenu.html" with currentpage="message" %}{% endblock %}
-{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
-{% block body %}
-    {% expr person.id == user.id as is_manager %}
-    {% include "newmessage/inc_list.html" %}
-{% endblock %}
