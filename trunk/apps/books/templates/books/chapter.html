@@ -41,7 +41,7 @@ function createcomments(data, fresh){
         }
         $(div).appendTo(this).click(function(){
             $('#highlight-floater').remove();
-            $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 123px; top: $0; height: $1;"/>'.template([top+'px', height]));
+            $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 127px; top: $0; height: $1;"/>'.template([top+'px', height]));
             $('#comments').triggerTab(1);
             $('input[@name="comment_num"]', '#comments').val(id);
             comment_num = id;
