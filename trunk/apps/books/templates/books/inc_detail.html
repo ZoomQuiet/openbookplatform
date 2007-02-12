@@ -54,7 +54,7 @@ $(document).ready(function (){
 			}
 		});
 	});
-	$('#addchapter').model({trigger: '#add', title:'New Chapter'});
+	$('#addchapter').model({trigger: '#add', title:'New Chapter', center:true});
 	on_success_finish = function(obj, data){
 		$('#modelwindow').slideUp('high').hide();
 		$('#upload_form').each(function(){
