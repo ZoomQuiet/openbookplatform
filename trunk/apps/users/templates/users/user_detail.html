@@ -14,33 +14,31 @@
 {% endcatch %}
 {% catch as content %}
     <div class="basic_form">
-        <h2>基本信息</h2>
+        <h2>{% trans "Basic Information" %}</h2>
         <div class="block">
-            <p><b>用户名：</b>{{ person.username }}</p>
-            <p><b>邮　箱：</b>{{ person.email }}</p>
+            <p><b>{% trans "Username" %}:</b>{{ person.username }}</p>
+            <p><b>{% trans "Email" %}:</b>{{ person.email }}</p>
         </div>
         {% if person.is_superuser %}
-            <h2>状态</h2>
-            <p>此人为系统管理员</p>
+            <h2>{% trans "Status" %}</h2>
+            <p>{% trans "He is administrator." %}</p>
         {% endif %}
     </div>
 {% endcatch %}
 {% catch as sidebar %}
-    <h2>功能</h2>
+    <h2>{% trans "Functions" %}</h2>
     {% pyif not user.is_anonymous() and user.is_superuser and person.username != 'admin' and person.id != user.id %}
-        <p><a class="admin" href="/user/{{ person.id }}/delete/">删除当前用户</a></p>
+        <p><a class="admin" href="/user/{{ person.id }}/delete/">{% trans "Delete user" %}</a></p>
         {% if person.is_superuser %}
             {% ifnotequal person.username "admin" %}
-                <p><a class="admin" href="/user/{{ person.id }}/removesysmanager/">取消系统管理员身份</a></p>
+                <p><a class="admin" href="/user/{{ person.id }}/removesysmanager/">{% trans "Remove the admin priority" %}</a></p>
             {% endifnotequal %}
         {% else %}
-            <p><a class="admin" href="/user/{{ person.id }}/addsysmanager/">设置为系统管理员</a></p>
+            <p><a class="admin" href="/user/{{ person.id }}/addsysmanager/">{% trans "Set as administrator" %}</a></p>
         {% endif %}
     {% endif %}
     {% pyif person.id == user.id %}
-        <p><a class="admin" href="/user/{{ person.id }}/edit/">信息修改</a></p>
-    {% else %}
-        <p><img src="/site_media/img/triangle.gif" align="absmiddle"/>  <a class="admin sendmessage" href="#">留言</a></p>
+        <p><a class="admin" href="/user/{{ person.id }}/edit/">{% trans "Update personal information" %}</a></p>
     {% endif %}
 {% endcatch %}
 {% call "utils/contentframe.html" with header content sidebar %}

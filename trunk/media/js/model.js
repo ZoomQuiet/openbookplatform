@@ -6,7 +6,8 @@ $.fn.model = function(opts, onload, unload){
     max:'.windowMax',
     width:500,
     height:400,
-    title:'Comments'
+    title:'Comments',
+    center:false,
     };
     var t = $(this);
     var w;
@@ -45,7 +46,8 @@ $.fn.model = function(opts, onload, unload){
         if (onload)
             onload(w);
         else {
-//            w.center();
+            if (_o.center)
+                w.center();
             resize({'height':_o.height, 'width':_o.width});
             w.slideDown('high');
         }
