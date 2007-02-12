@@ -3,9 +3,7 @@
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>{% trans "The Open Book Platform" %}</title>
-    <link rel="stylesheet" href="/site_media/css/reset-min.css" type="text/css">
-    <link rel="stylesheet" href="/site_media/css/grids-min.css" type="text/css">
-    <link rel="stylesheet" href="/site_media/css/djangobook.css" type="text/css">
+    <link rel="stylesheet" href="/site_media/css/openbook.css" type="text/css">
 	{% block css %}{% endblock %}	
 	<script type="text/javascript" src="/site_media/js/jQuery.js"></script>
     <script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
@@ -13,7 +11,15 @@
 
   </head>
   <body>
-    <div id="doc" class="yui-t7">
+    <div id="pageBody">
+    	<div id="outer-container">
+    	<div id="shadow-container">
+    		<div class="shadow1">
+    			<div class="shadow2">
+    				<div class="shadow3">
+    					<div class="container">
+    
+    <div id="container">
       <div id="hd">
         <table width="100%">
           <tr>
@@ -31,18 +37,22 @@
         {% block nav %}{% endblock %}
       </div>
       <div id="bd">
-        <div id="yui-main">
-          <div class="yui-b">
-            <h2 id="chapter-title">{% block subject %}{% endblock %}</h2>
-            {% block content %}{% endblock %}
-          </div>
-        </div>
+        <h2 id="chapter-title">{% block subject %}{% endblock %}</h2>
+        {% block content %}{% endblock %}
       </div>
-	    <div id="ft">Copyright 2007 Limodou.<br>This
+	    <div id="footer">Copyright 2007 Limodou.<br>This
       	work is licensed under the <a href="/license/">GNU Free Document
       	License</a>.
 			</div>
     </div>
+
     {% block other %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
   </body>
 </html>

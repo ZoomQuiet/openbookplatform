@@ -1,6 +1,7 @@
+{% load i18n %}
 {% extends "base.html" %}
 {% block title %}{{ book.title }}{% endblock %}
-{% block subject %}目录{% endblock %}
+{% block subject %}{% trans "Table of Contents" %}{% endblock %}
 {% block content %}
 <ol class="toc">    
 {% for obj in book.chapter_set.all %}
@@ -15,4 +16,4 @@
 {% endfor %}
 </ol>
 {% endblock %}
-{% block nav1 %}<a href="/">The Open Book Platform</a>{% endblock %}
+{% block nav1 %}<a href="/">{% trans "The Open Book Platform" %}</a>{% endblock %}

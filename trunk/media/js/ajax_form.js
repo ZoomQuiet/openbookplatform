@@ -45,13 +45,13 @@ __data_handle = function(target, data){
                 if (v.constructor == Array)
                     err = ','.join(v)
                 if (k == '_')   //global error message
-                    $((obj.options['messageid'] || 'message')).setmessage(v);
+                    $((obj.options['messageid'] || '#message')).setmessage(v);
                 else{
                     $("[@name='$0']".template([k]), e).parent().after('<' + obj.options['errortag'] + ' class="error">' + err + '</' + obj.options['messageid'] + '>');
                 }
             });
             if (r['message']){
-                $((obj.options['messageid'] || 'message')).setmessage(r['message']);
+                $((obj.options['messageid'] || '#message')).setmessage(r['message']);
             }
             if(obj.options['on_error_finish'])
                 obj.options['on_error_finish'](obj, r);

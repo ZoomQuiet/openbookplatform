@@ -17,17 +17,18 @@ $(document).ready(function (){
 <h2>{% trans "Login" %}</h2>
 <div class="basic_form">
 	<form action="/login/" method="post" id="user_login">
+	<div id="message"></div>
 	<p class="blockintro">{% trans "Input username and password" %}</p>
 	<div class="block">
 		<dl>
-			<dt>用户名：</dt>
-			<dd><input name="username" type="text" id="username"/></dd>
-			<dt>口　令：</dt>
+			<dt>{% trans "Username" %}:</dt>
+			<dd><input name="username" type="text"/></dd>
+			<dt>{% trans "Password" %}:</dt>
 			<dd>
-			  <input name="password" type="password" id="password"/>
+			  <input name="password" type="password"/>
 			</dd>
 			<div class="action">
-				<input type="submit" value="Login" />
+				<input type="submit" value="{% trans "Login" %}" />
 			</div>
 		</dl>
 	</div>

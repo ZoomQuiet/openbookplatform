@@ -33,7 +33,7 @@ function createcomments(data, fresh){
         var id = $(this).attr('id');
         var div;
         var height = $(this).css('height');
-        var top = this.offsetTop;
+        var top = this.offsetTop + 20;
         if (data[id]){
             div = '<div class="comment-indicator has-comments" style="height: $0;"><span>$1</span></div>'.template([height, data[id]]);
         }else{
@@ -41,13 +41,22 @@ function createcomments(data, fresh){
         }
         $(div).appendTo(this).click(function(){
             $('#highlight-floater').remove();
-            $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 127px; top: $0; height: $1;"/>'.template([top+'px', height]));
-            if (data[id])
+            $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 135px; top: $0; height: $1;"/>'.template([top+'px', height]));
+            if (data[id]){
                 $('#comments').triggerTab(2);
+                $.post('/book/{{ book.id }}/{{ chapter.num }}/'+id+'/', {}, function(data){
+                    var result = data.evalJson();
+                    if (result.response == 'ok'){
+                    	var data = result.data;
+                    	createcommentslist(data, $('#comment-tabs'));
+                    }
+                });
+            }
             else
                 $('#comments').triggerTab(1);
             $('input[@name="comment_num"]', '#comments').val(id);
             comment_num = id;
+            $('#modelwindow').css({top:top+'px', left:'200px'});
         });
     });
     if (fresh == 'yes'){

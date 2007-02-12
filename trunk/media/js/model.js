@@ -45,7 +45,7 @@ $.fn.model = function(opts, onload, unload){
         if (onload)
             onload(w);
         else {
-            w.center();
+//            w.center();
             resize({'height':_o.height, 'width':_o.width});
             w.slideDown('high');
         }
