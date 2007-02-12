@@ -64,7 +64,7 @@ def chapter_comments_info(request, book_id, chapter_num):
     return ajax.ajax_ok(result)
     
 def add_comment(request, book_id, chapter_num):
-    m = AddCommentManipulator(request, chapter_num)
+    m = AddCommentManipulator(request, book_id, chapter_num)
     f, obj = m.validate_and_save(request)
     if f:
         return ajax.ajax_ok(message='ok')

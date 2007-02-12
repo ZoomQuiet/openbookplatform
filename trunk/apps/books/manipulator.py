@@ -3,9 +3,10 @@ from apps.books.models import Comment, Chapter, Book
 from django.core import validators
 
 class AddCommentManipulator(EasyManipulator):
-    def __init__(self, request, chapter_num):
+    def __init__(self, request, book_id, chapter_num):
         self.request = request
         self.chapter_num = chapter_num
+        self.book_id = book_id
         fields = [
             dict(type='TextField', field_name="username", is_required=True),
             dict(type='EmailField', field_name="email", length=28, maxlength=30, is_required=True),
@@ -15,7 +16,8 @@ class AddCommentManipulator(EasyManipulator):
         self.init(fields)
 
     def save(self, data):
-        chapter = Chapter.objects.get(num=self.chapter_num)
+        book = Book.objects.get(pk=int(self.book_id))
+        chapter = Chapter.objects.get(num=self.chapter_num, book=book)
         
         if data['website']:
             website = data['website']
