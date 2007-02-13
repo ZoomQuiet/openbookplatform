@@ -5,7 +5,7 @@
 
 {% block subject %}{{ chapter.title }}{% endblock %}
 
-{% block nav1 %}<a href="/">The Open Book Platform</a>{% endblock %}
+{% block nav1 %}<a href="/booklist/">The Open Book Platform</a>{% endblock %}
 
 {% block nav %}<div class="nav">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
 

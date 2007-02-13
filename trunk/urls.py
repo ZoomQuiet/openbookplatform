@@ -1,8 +1,11 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from django.views.decorators.cache import cache_page
+import apps.books.views
+import apps.portal.views
 
 urlpatterns = patterns('',
-    (r'^$', 'apps.portal.views.index'),
+    (r'^$', cache_page(apps.portal.views.index, 60*30)),
     (r'^login/$', 'apps.portal.views.login'),
     (r'^logout/$', 'apps.users.views.auth.user_logout'),
     (r'^register/$', 'apps.users.views.auth.user_register'),
@@ -23,14 +26,14 @@ urlpatterns = patterns('',
     (r'^user/(?P<object_id>\d+)/book/delete/$', 'apps.users.views.bookviews.user_books_delete'),
     (r'^user/(?P<object_id>\d+)/book/$', 'apps.users.views.bookviews.user_books'),
     
-    (r'^booklist/$', 'apps.books.views.booklist'),
+    (r'^booklist/$', cache_page(apps.books.views.booklist, 60*15)),
     (r'^booklist/ajax_list/$', 'apps.books.views.ajax_list'),
-    (r'^book/(?P<book_id>\d+)/$', 'apps.books.views.content'),
+    (r'^book/(?P<book_id>\d+)/$', cache_page(apps.books.views.content, 60*15)),
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/commentsinfo/$', 'apps.books.views.chapter_comments_info'),
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/addcomment/$', 'apps.books.views.add_comment'),
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/allcomments/$', 'apps.books.views.chapter_comments'),
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/(?P<comment_num>[^/]+)/$', 'apps.books.views.chapter_num_comments'),
-    (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/$', 'apps.books.views.chapter'),
+    (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/$', cache_page(apps.books.views.chapter, 60*15)),
     
     (r'^site_media/(.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA}),
     (r'^admin/', include('django.contrib.admin.urls')),

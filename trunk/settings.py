@@ -94,4 +94,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
-CACHE_BACKEND = 'locmem:///'
+CACHE_BACKEND = 'file://d:/project/svn/openbook/cache'
+#CACHE_BACKEND = 'dummy:///'
