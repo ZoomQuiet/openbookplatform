@@ -1,44 +1,36 @@
-from apps.easyform import EasyManipulator
 from apps.books.models import Comment, Chapter, Book
-from django.core import validators
+import utils.validator as valid
 
-class AddCommentManipulator(EasyManipulator):
+class AddCommentManipulator(valid.Validator):
+    username = valid.CharField()
+    email = valid.EmailField(max_length=30)
+    website = valid.URLField(required=False, default='')
+    content = valid.CharField()
+    comment_num = valid.CharField()
+    
     def __init__(self, request, book_id, chapter_num):
         self.request = request
         self.chapter_num = chapter_num
         self.book_id = book_id
-        fields = [
-            dict(type='TextField', field_name="username", is_required=True),
-            dict(type='EmailField', field_name="email", length=28, maxlength=30, is_required=True),
-            dict(type='URLField', field_name="website", is_required=False),
-            dict(type='LargeTextField', field_name="content", is_required=True),
-        ]
-        self.init(fields)
 
     def save(self, data):
         book = Book.objects.get(pk=int(self.book_id))
         chapter = Chapter.objects.get(num=self.chapter_num, book=book)
         
-        if data['website']:
-            website = data['website']
-        else:
-            website = ''
         obj = Comment.objects.create(chapter=chapter, comment_num=data['comment_num'],
-            username=data['username'], email=data['email'], website=website,
+            username=data['username'], email=data['email'], website=data['website'],
             content=data['content'])
         
         return obj
     
-class BookManipulator(EasyManipulator):
+class BookManipulator(valid.Validator):
+    title = valid.CharField()
+    description = valid.CharField()
+    icon = valid.CharField(required=False)
+    
     def __init__(self, request, object_id=None):
         self.object_id = object_id
         self.request = request
-        fields = [
-            dict(type='TextField', field_name="title", is_required=True),
-            dict(type='LargeTextField', field_name="description", is_required=True),
-            dict(type='ImageUploadField', field_name="icon", is_required=False),
-        ]
-        self.init(fields)
         
     def save(self, data):
         if not self.object_id:
@@ -50,7 +42,7 @@ class BookManipulator(EasyManipulator):
             obj.description = data['description']
             obj.save()
             
-        if data.get('icon', None):
+        if data['icon']:
             from utils import image, fileutil
         
             filename = 'book_' + str(obj.id) + '.jpg'
@@ -58,36 +50,35 @@ class BookManipulator(EasyManipulator):
             obj.save_icon_file(filename, image.thumbnail_string(data['icon']['content'], size=(70,93)))
     
         return obj
+ 
+
+class ChapterManipulator(valid.Validator):
+    title = valid.CharField()
+    abstract = valid.CharField(required=False, default='')
+    content = valid.CharField()
+    num = valid.CharField()
     
-class ChapterManipulator(EasyManipulator):
     def __init__(self, request, book_id, object_id=None):
         self.object_id = object_id
         self.book_id = book_id
         self.book = Book.objects.get(pk=int(book_id))
         self.request = request
-        fields = [
-            dict(type='TextField', field_name="title", is_required=True),
-            dict(type='LargeTextField', field_name="abstract", is_required=False),
-            dict(type='LargeTextField', field_name="content", is_required=True),
-            dict(type='TextField', field_name="num", is_required=True, 
-                validator_list=[self.isValidNum]),
-        ]
-        self.init(fields)
-        
+        self.fields['num'].add_validator(self.isValidNum)
+    
     def isValidNum(self, field_data, all_data):
         if not field_data:
-            raise validators.ValidationError, "Chapter num cann't be empty."
+            raise valid.ValidationError, _("Chapter num cann't be empty.")
         if not self.object_id:
             try:
                 Chapter.objects.get(num=field_data, book=self.book)
             except Chapter.DoesNotExist:
                 return
             else:
-                raise validators.ValidationError, "This chapter num has been used."
+                raise valid.ValidationError, _("This chapter num has been used.")
     
     def save(self, data):
         if not self.object_id:
-            obj = Chapter.objects.create(title=data['title'], abstract=data.get('abstract', ''),
+            obj = Chapter.objects.create(title=data['title'], abstract=data['abstract'],
                 content=data['content'], num=data['num'], book=self.book)
         else:
             obj = Chapter.objects.get(pk=int(self.object_id))
