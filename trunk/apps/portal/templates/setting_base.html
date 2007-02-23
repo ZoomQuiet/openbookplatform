@@ -22,7 +22,7 @@
     <div id="hd">
         <div class="nav">
             {% if not user.is_anonymous %}
-            {{ user.username }} (<a class="admin" href="/logout/">{% trans "Logout" %}</a>)
+            {{ user.username }} (<a href="/logout/">{% trans "Logout" %}</a>)
             {% else %}
             <a href="/register/">{% trans "Register" %}</a>
             {% endif %}
@@ -36,7 +36,7 @@
         {% block body %}{% endblock %}
     </div>
     <div id="ft">
-        <p>&copy;2006 Author & Designer: <a href="http://www.donews.net/limodou">limodou</a> <b>|</b> <b>SharePlat</b> 0.1</p>
+        <p>&copy;2006 Author & Designer: <a href="http://www.donews.net/limodou">limodou</a> <b>|</b> <b>SharePlat 0.1</b></p>
         <p><a href="http://python.org" title="python powered"><img src="/site_media/img/python.png" alt="python powered" width="80" height="15" /></a>
            <a href="http://djangoproject.com" title="django powered"><img src="/site_media/img/django.gif" %}" alt="django site" width="80" height="15" /></a>
         </p>

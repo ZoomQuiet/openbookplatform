@@ -13,6 +13,8 @@ margin-bottom: 0px;
 margin-left: 0px;
 }
 
+textarea, input {font-size:9pt;}
+
 h1 {
 font-family: "Lucida Grande", arial, sans-serif;
 padding: 0;
@@ -101,15 +103,6 @@ margin-left: 20px;
 font-weight: bold;
 }
 
-#hd a {
-color: #fff;
-}
-
-#hd a:hover {
-color: white;
-background: blue;
-}
-
 #hd .navleft {
 float: left;
 margin: 4px 0 0 10px;
@@ -125,6 +118,7 @@ padding: 8px;
 }
 #ft{text-align:center;color:#487858;font-size:10pt;}
 #ft a, #ft a.link, #ft a.visited{color:#FFC757;text-decoration:none;}
+.nav a, .nav a.link, .nav a.visited{color:#FFC757;text-decoration:none;}
 
 /*-------------------------------------------------
 NEW FOR PROPORTIONAL WIDTH VERSION 
@@ -580,6 +574,8 @@ border-bottom: 4px solid #fff;
 img.link:hover {
 border-bottom: 4px solid #f00;
 }
+
+.error { color:red;font-size:9pt;}
 
 /* pageMod  */
 

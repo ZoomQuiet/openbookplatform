@@ -68,8 +68,6 @@ div.nav { margin: 0; font-size: 9pt; text-align: right; }
 
 ol.toc { margin-bottom: 2em; }
 ol.toc li { padding: .5em; }
-ol.toc li.b { background-color: #F0E9AD; }
-ol.toc li a:hover { text-decoration: underline !important; }
 ol.toc span.release-date { color:gray; float: right; font-size: 85%; padding-right: .5em; }
 ol.toc span.comment-count { font-size: 75%; color: #999; }
 
@@ -94,6 +92,7 @@ table.docutils { border-collapse:collapse; }
 blockquote { background: url(/site_media/img/bg_blockquote.gif) no-repeat scroll 0pt 5px; background-color: #fff; border-bottom: 1px solid; border-top: 1px solid; padding: 5px 5px 5px 35px; margin: 1em; color:#747474; } 
 strong { font-weight: bold; }
 em { font-style: italic; }
+#bd blockquote {font-style:italic;}
 
 /*** lists ***/
 ul { padding-left:30px; }
@@ -124,7 +123,8 @@ dt .literal, table .literal { background:none; }
 #comments .tab .ft { height:30px; overflow:hidden; padding: 6px; }
 #comments div.tab { margin-left: 6px;border: 1px #666 solid; margin-top:0px; background-color:#fff; width:98%; height:320px;overflow: auto; }
 #comments div.tab .bd input { width: 97%; margin-left: 6px;}
-#comments div.tab label { font-weight: bold; display: block; margin-left: 6px; }
+#comments div.tab label { font-weight: bold; display: block; margin-left: 6px; color:gray;}
+#comments div.tab label.required { color:black;}
 #comments div.tab textarea { width: 97%; height: 80px;  margin-left: 6px;}
 #comments div.tab p { margin-bottom: 0; }
 #comments div.tab span.actions { float: right; margin-top: -15px; }
@@ -145,7 +145,7 @@ dt .literal, table .literal { background:none; }
 .comment-tabs a:link, .comment-tabs a:visited { text-decoration:underline; }
 .comment-tabs a:hover { text-decoration:underline; }
 
-/*** comment indicator ***/
+/* comment indicator */
 div.comment-indicator { position: absolute; width: 20px; z-index: 999; text-align: center; color: black; font-size: 11px; left: -44px; top: 0; background-color:#999;   }
 li.cn div.comment-indicator { left: -74px; }
 div.admonition div.comment-indicator { left: -45px; }
@@ -154,16 +154,17 @@ div.comment-indicator span { position: absolute; top: -10px; left: -10px; width:
 div.comment-indicator:hover span { background-image: url(/site_media/img/comment-hover.png); }
 div.has-comments > span, div.has-comments:hover > span { background-image: url(/site_media/img/comment-active.png); }
 
-/*** footer ***/
-#footer {
-color:gray;
-font-size:10px;
-text-decoration:none;
-padding-top:5px;
-}
+#footer {color:gray;font-size:11px;text-decoration:none;padding-top:5px;}
+#license {color:#8F4F4F;font-size:11px;margin-top:5px;}
+
+/* book */
+.booklist p, .booklist ul, .booklist dl {padding:0;margin:0;}
+.booklist .keyword {padding:3px; font-weight:bold;font-size:12px;}
+.booklist .info, .booklist .description {padding:3px; color:gray; font-size:12px;}
+.booklist .description {margin-left: 50px;}
+img.border {border: 1px solid lightgrey; padding:4px;}
 
 /* pageMod  */
-
 .pageMod {
 clear:both;
 border-top: 1px solid #000;

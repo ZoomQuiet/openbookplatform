@@ -3,7 +3,7 @@ from apps.books.models import Book, Chapter
 from utils.lib_page import Page
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-from manipulator import AddCommentManipulator
+from apps.books.validator import AddCommentValidator
 from utils import ajax
 
 def booklist(request):
@@ -14,12 +14,13 @@ def booklist(request):
 
 def _get_data(request, obj):
     if obj.icon:
-        icon = '<img src="/site_media/%s" alt="%s"/>' % (obj.get_icon_url(), obj.title)
+        icon = '<img class="border" src="/site_media/%s" alt="%s"/>' % (obj.get_icon_url(), obj.title)
     else:
-        icon = '<img src="/site_media/img/book_icon.jpg" alt="%s"/>' % obj.title
+        icon = '<img class="border" src="/site_media/img/book_icon.jpg" alt="%s"/>' % obj.title
     authors = [x.username for x in obj.authors.all()]
     return ({'id':obj.id, 'icon':icon, 'title':obj.title, 
-        'description':obj.description, 'author':','.join(authors)})
+        'description':obj.description, 'author':','.join(authors),
+        'modifydate':obj.modifydate.strftime("%b %d,%Y %I:%m %p")})
 
 def ajax_list(request):
     pagenum = 10
@@ -49,7 +50,7 @@ def chapter(request, book_id, chapter_num):
         prev = list(prevs)[-1]
     return render_to_response('books/chapter.html', 
         context_instance=RequestContext(request, {'book':book, 
-            'chapter':chapter, 'next':next, 'prev':prev}))
+            'chapter':chapter, 'next':next, 'prev':prev, 'COOKIES':request.COOKIES}))
     
 def chapter_comments_info(request, book_id, chapter_num):
     book = Book.objects.get(pk=int(book_id))
@@ -63,11 +64,17 @@ def chapter_comments_info(request, book_id, chapter_num):
     
     return ajax.ajax_ok(result)
     
+from utils.easy_cookie import set_cookie
+
 def add_comment(request, book_id, chapter_num):
-    m = AddCommentManipulator(request, book_id, chapter_num)
+    m = AddCommentValidator(request, book_id, chapter_num)
     f, obj = m.validate_and_save(request)
     if f:
-        return ajax.ajax_ok(message='ok')
+        response = ajax.ajax_ok(message='ok')
+        set_cookie(response, 'username', request.REQUEST.get('username', ''))
+        set_cookie(response, 'email', request.REQUEST.get('email', ''))
+        set_cookie(response, 'website', request.REQUEST.get('website', ''))
+        return response
     return ajax.ajax_fail(obj, message='error')
 
 from utils.textconvert import plaintext2html

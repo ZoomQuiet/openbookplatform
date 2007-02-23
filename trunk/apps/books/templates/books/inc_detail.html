@@ -1,8 +1,5 @@
 {% load i18n utiltags %}
 <script type="text/javascript">
-{% catch as tmp_url %}/user/{{ user.id }}/book/{{ book.id }}/chapters/{% endcatch %}
-var ajax_url = '{{ ajax_url|default:tmp_url }}';
-var hide = {{ hideflag|default:"true" }};
 function createtable(target, data){
 	var table = $('<table width="100%"><tbody></tbody></table>')
 	$.each(data, function(n){
@@ -25,6 +22,15 @@ function createtable(target, data){
 	    });
 }
 
+function create_authors(target, data){
+	var ul = $('<ul></ul>')
+	$.each(data, function(n){
+		var li = $('<li>$username</li>'.template(this));
+		ul.append(li);
+	});
+	$(target).empty().append(ul);
+}
+
 function handle_list(data){
 	var result = data.evalJson();
 	if (result.response == 'ok'){
@@ -33,8 +39,17 @@ function handle_list(data){
 	}
 }
 
+function handle_authors(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		create_authors('#authors', data);
+	}
+}
+
 $(document).ready(function (){
-	$.post(ajax_url, {}, handle_list);
+	$.post('chapters/', {}, handle_list);
+	$.post('authors/', {}, handle_authors);
 	$('#select').click(function(){
 		$('#documents input[@type="checkbox"]').each(function(){
 			this.checked = true;
@@ -55,16 +70,27 @@ $(document).ready(function (){
 		});
 	});
 	$('#addchapter').model({trigger: '#add', title:'New Chapter', center:true});
+	$('#modifybook').model({trigger: '#modify', title:'Change Book Information', center:true});
 	on_success_finish = function(obj, data){
-		$('#modelwindow').slideUp('high').hide();
+		$('#addchapter').parent().parent().slideUp('high').hide();
 		$('#upload_form').each(function(){
 			this.reset();
 		});
-		$.post(ajax_url, {}, handle_list);
+		$.post('chapters/', {}, handle_list);
 	}
-	var ajax_form = new AjaxForm('#upload_form', 
+	var upload_form = new AjaxForm('#upload_form', 
 		{'on_success_finish':on_success_finish, 
 			'messageid':'#addchapter div.message',
+			'errortag':'p'});
+	on_modify_success_finish = function(obj, data){
+		$('#modifybook').parent().parent().slideUp('high').hide();
+		$('#book_edit_form').each(function(){
+			this.reset();
+		});
+	}
+	var modify_form = new AjaxIFrame('#book_edit_form', 
+		{'on_success_finish':on_modify_success_finish, 
+			'messageid':'#modifybook div.message',
 			'errortag':'p'});
 });
 </script>
@@ -74,9 +100,9 @@ $(document).ready(function (){
 {% endcatch %}
 {% catch as content %}
 	<div class="modelform" id="addchapter" style="display:none;">
-		<form id="upload_form" action="addchapter/" method="post">
+		<form id="upload_form" enctype="multipart/form-data" action="addchapter/" method="post">
 			<div class="bd">
-				<p>Create a new book, and fill in information:</p>
+				<p>{% trans "Create a new book, and fill in information" %}:</p>
 				<p>
 					<lable class="require">{% trans "Chapter Order Num" %}:</lable>
 					<input type="text" name="num" value=""/>
@@ -102,20 +128,31 @@ $(document).ready(function (){
 			</div>
 		</form>
 	</div>
+	<div class="modelform" id="modifybook" style="display:none">{% include "books/inc_book_form.html" %}</div>
     <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
 	<div id="pages"></div>
 {% endcatch %}
 {% catch as sidebar %}
 	<h1>{% trans "Functions" %}</h1>
 	{% if is_manager %}
+		<p><a href="#" class="admin" id="modify">{% trans "Change Book Information" %}</a></p>
 		<p><a href="#" class="admin" id="add">{% trans "New Chapter" %}</a></p>
 		<p><a href="#" class="admin" id="delete">{% trans "Delete Selected Chapters" %}</a></p>
 	{% endif %}
 	<h1>{% trans "Authors" %}</h1>
-	<ul>
-	{% for author in book.authors.all %}
-		<li>{{ author.username }}</li>
-	{% endfor %}
-	</ul>
+	<script type="text/javascript">
+	$(function(){
+		on_addauthor_success_finish = function(obj, data){
+			$.post('authors/', {}, handle_authors);
+		}
+		var addauthor_form = new AjaxForm('#addauthor', 
+			{'on_success_finish':on_addauthor_success_finish, 
+				'messageid':'#author_message',
+				'errortag':'p'});
+	});
+	</script>
+	<div id="author_message"></div>
+	<p><form id="addauthor" action="addauthor/" method="post"><input type="text" name="username" value=""/><input type="submit" name="addauthor" value="{% trans "Add Author" %}"/></form></p>
+	<div id="authors">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
 {% endcatch %}
 {% call "utils/contentframe.html" with header content sidebar %}

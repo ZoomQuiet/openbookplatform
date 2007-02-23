@@ -1,0 +1,27 @@
+{% load i18n %}
+<form id="book_edit_form" enctype="multipart/form-data" action="edit/" method="post">
+    <div class="bd">
+        <p>
+            <lable class="require">{% trans "Title" %}:</lable>
+            <input type="text" name="title" value="{{ book.title }}"/>
+        </p>
+        <p>
+            <lable class="require">{% trans "Description" %}:</lable></dt>
+            <textarea rows="3" cols="40" name="description">{{ book.description }}</textarea>
+        </p>
+        <p>
+            <lable>{% trans "License" %}:</lable>
+            <textarea rows="2" cols="40" name="license">{{ book.license }}</textarea>
+        </p>
+        <p>
+            <lable>{% trans "Logo" %}:</lable>
+            <input type="file" name="icon"/>
+        </p>
+    </div>
+    <div class="ft">
+        <div class="message" class="" style="display:none;">Loading comments...</div>
+        <div class="submit-wrapper">
+            <input type="submit" value="{% trans "Save" %}" />
+        </div>
+    </div>
+</form>

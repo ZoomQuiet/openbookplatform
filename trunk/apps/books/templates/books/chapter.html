@@ -60,7 +60,8 @@ function createcomments(data, fresh){
                 $('#comments').triggerTab(1);
             $('input[@name="comment_num"]', '#comments').val(id);
             comment_num = id;
-            $('#modelwindow').css({top:top+'px', left:'200px'});
+            $.iUtil.centerEl($('#comments').parent().parent().get(0));
+            $('#comments').parent().parent().show();
         });
     });
     if (fresh == 'yes'){
@@ -132,7 +133,7 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block content %}
-{% pycall utils.rst2html.rst2html(chapter.content) %}
+{{ chapter.html }}
 {% endblock %}
 
 {% block other %}
@@ -143,25 +144,25 @@ $(document).ready(function (){
         <li><a href="#comment-tabs-all" tabindex="3"><strong>All comments</strong></a></li>
     </ul>
 
-    <div class="tab yui-ext-tabitembody" id="comment-tabs-form">
+    <div class="tab" id="comment-tabs-form">
         <div class="bd">
             <form id="commentform" method="post" action="/book/{{ book.id }}/{{ chapter.num }}/addcomment/">
                 <p>
                     <input type="hidden" value="" name="comment_num"/>
-                    <label>Name (required)</label>
-                    <input type="text" tabindex="1" value="" name="username"/>
+                    <label class="required">Name (required)</label>
+                    <input type="text" value="{{ COOKIES.username }}" name="username"/>
                 </p>
                 <p>
-                    <label>E-mail (required; will not be displayed)</label>
-                    <input type="text" tabindex="2" value="" name="email"/>
+                    <label class="required">E-mail (required; will not be displayed)</label>
+                    <input type="text" value="{{ COOKIES.email }}" name="email"/>
                 </p>
                 <p>
                     <label>Website</label>
-                    <input type="text" tabindex="3" value="" name="website"/>
+                    <input type="text" value="{{ COOKIES.website }}" name="website"/>
                 </p>
                 <p>
-                    <label>Comment (required)</label>
-                    <textarea rows="12" cols="30" tabindex="4" name="content"/></textarea>
+                    <label class="required">Comment (required)</label>
+                    <textarea rows="6" cols="30" name="content"/></textarea>
                 </p>
             </form>
         </div>
@@ -179,3 +180,4 @@ $(document).ready(function (){
     
 </div>
 {% endblock %}
+{% block license %}{{ book.license|default:"Writedonw your license here." }}{% endblock %}

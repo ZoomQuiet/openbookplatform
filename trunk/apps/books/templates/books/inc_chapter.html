@@ -1,5 +1,28 @@
 {% load utiltags i18n %}
 <script type="text/javascript">
+function createtable(target, data){
+    var ul = $('<ul></ul>')
+    $.each(data, function(n){
+        var li = $('<li>$html</li>'.template(this));
+        var d = this;
+        ul.append(li);
+        $('.delete', li).click(function(){
+            $.post('deletecomment/', {'comment_id':d['id']}, function(data){
+                li.remove();
+            });
+        });
+    });
+    $(target).empty().append(ul);
+}
+
+function handle_list(data){
+    var result = data.evalJson();
+    if (result.response == 'ok'){
+        var data = result.data;
+        createtable('#comments', data);
+    }
+}
+
 $(function(){
     on_success_finish = function(obj, data){
     	setTimeout(function(){
@@ -8,10 +31,11 @@ $(function(){
     }
     var ajax_form = new AjaxForm('#upload_form', 
         {'on_success_finish':on_success_finish});
+    $.post('comments/', {}, handle_list);
 });
 </script>
 {% catch as header %}
-    <h1><a href="/book/{{ book.id }}/{{ chapter.num }}/">Edit: {{ chapter.title }}</a></h1>
+    <h1><a href="/book/{{ book.id }}/{{ chapter.num }}/">{{ chapter.title }}</a></h1>
 {% endcatch %}
 {% catch as content %}
     <form id="upload_form" action="/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" method="post">
@@ -29,7 +53,7 @@ $(function(){
                 </dl>
                 <dl>
                     <dt class="required"><lable>{% trans "Content" %}:</lable></dt>
-                    <dd><textarea rows="8" cols="40" name="content">{{ chapter.content }}</textarea><dd>
+                    <dd><textarea rows="30" cols="40" name="content">{{ chapter.content }}</textarea><dd>
                 </dl>
             </div>
             <div class="action">
@@ -40,5 +64,7 @@ $(function(){
 {% endcatch %}
 {% catch as sidebar %}
     <p><a href="/user/{{ user.id }}/book/{{ book.id }}/" class="admin" id="delete">{% trans "Return to table of contents" %}</a></p>
+    <h2>{% trans "Comments Manager" %}</h2>
+    <div id="comments">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
 {% endcatch %}
 {% call "utils/contentframe.html" with header content sidebar %}

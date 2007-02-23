@@ -1,10 +1,11 @@
+#coding=utf-8
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-from apps.books.models import Book, Chapter
+from apps.books.models import Book, Chapter, Comment
 from utils.lib_page import Page
 from utils import ajax
-from apps.books.manipulator import BookManipulator, ChapterManipulator
+from apps.books.validator import BookValidator, ChapterValidator
 
 def user_books(request, object_id):
     user = User.objects.get(pk=int(object_id))
@@ -13,9 +14,9 @@ def user_books(request, object_id):
 
 def _get_data(request, obj):
     if obj.icon:
-        icon = '<img src="/site_media/%s" alt="%s"/>' % (obj.get_icon_url(), obj.title)
+        icon = '<img class="border" src="/site_media/%s" alt="%s"/>' % (obj.get_icon_url(), obj.title)
     else:
-        icon = '<img src="/site_media/img/book_icon.jpg" alt="%s"/>' % obj.title
+        icon = '<img class="border" src="/site_media/img/book_icon.jpg" alt="%s"/>' % obj.title
     authors = [x.username for x in obj.authors.all()]
     checkbox = '<input type="checkbox" name="book_id" value="%d"/>' % obj.id
     return ({'id':obj.id, 'icon':icon, 'title':obj.title, 
@@ -44,8 +45,8 @@ def user_books_delete(request, object_id):
 
 def user_book_edit(request, object_id, book_id=None):
     user = request.user
-    m = BookManipulator(request, book_id)
-    flag , obj = m.validate_and_save(request)
+    v = BookValidator(request, book_id)
+    flag , obj = v.validate_and_save(request)
     if flag:
         return ajax.ajax_ok(_('Success!'))
     return ajax.ajax_fail(obj)
@@ -83,9 +84,9 @@ def user_chapter(request, object_id, book_id, chapter_id=None):
             'title':o.title, 'date':o.modifydate.strftime("%b %d,%Y %I:%m %p")}
         return ajax.ajax_ok(result)
     else:
-        m = ChapterManipulator(request, book_id, chapter_id)
+        v = ChapterValidator(request, book_id, chapter_id)
         if request.POST:
-            flag, obj = m.validate_and_save(request)
+            flag, obj = v.validate_and_save(request)
             if flag:
                 return ajax.ajax_ok(message=_("Success!"))
             return ajax.ajax_fail(obj, message=_("There are some errors!"))
@@ -96,3 +97,46 @@ def user_chapter(request, object_id, book_id, chapter_id=None):
             return render_to_response('users/user_chapter.html', 
                 context_instance=RequestContext(request, {'person':user, 'book':book, 'chapter':chapter}))
             
+def user_book_authors(request, object_id, book_id):
+    book = Book.objects.get(pk=int(book_id))
+    result = []
+    for obj in book.authors.all():
+        result.append({'username':obj.username})
+    return ajax.ajax_ok(result)
+
+from apps.books.validator import AddUserValidator
+def user_book_addauthor(request, object_id, book_id):
+    v = AddUserValidator(book_id)
+    flag, obj = v.validate_and_save(request)
+    if flag:
+        return ajax.ajax_ok()
+    return ajax.ajax_fail(obj)
+    
+from utils.textconvert import plaintext2html
+def _get_comment_data(result, obj):
+    if obj.website:
+        username = '<a rel="nofollow" href="%s">%s</a>' % (obj.website, obj.username)
+    else:
+        username = obj.username
+    status = ''
+    if obj.status == 1:
+        status = '<span class="thanks" title="%s">√</span>' % obj.reply
+    html = '<a class="delete" href="#">[X]</a> %s %s:[%s] %s' % (status, username, obj.comment_num, plaintext2html(obj.content))
+#    result.append({'username':username,
+#        'content':plaintext2html(obj.content), 'status':status,
+#        'createtime':obj.createtime.strftime("%b %d,%Y %I:%m %p")})
+    result.append({'html':html, 'id':obj.id})
+
+def user_chapter_comments(request, object_id, book_id, chapter_id):
+    chapter = Chapter.objects.get(pk=int(chapter_id))
+    objs = chapter.comment_set.all().order_by('comment_num', '-createtime')
+    result = []
+    for obj in objs:
+        _get_comment_data(result, obj)
+    
+    return ajax.ajax_ok(result)
+    
+def user_chapter_delcomment(request, object_id, book_id, chapter_id):
+    obj = Comment.objects.get(pk=int(request.POST['comment_id']))
+    obj.delete()
+    return ajax.ajax_ok(message='ok')

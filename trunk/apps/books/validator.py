@@ -1,7 +1,8 @@
 from apps.books.models import Comment, Chapter, Book
 import utils.validator as valid
+from django.contrib.auth.models import User
 
-class AddCommentManipulator(valid.Validator):
+class AddCommentValidator(valid.Validator):
     username = valid.CharField()
     email = valid.EmailField(max_length=30)
     website = valid.URLField(required=False, default='')
@@ -23,9 +24,10 @@ class AddCommentManipulator(valid.Validator):
         
         return obj
     
-class BookManipulator(valid.Validator):
+class BookValidator(valid.Validator):
     title = valid.CharField()
     description = valid.CharField()
+    license = valid.CharField(required=False, default='')
     icon = valid.CharField(required=False)
     
     def __init__(self, request, object_id=None):
@@ -34,12 +36,13 @@ class BookManipulator(valid.Validator):
         
     def save(self, data):
         if not self.object_id:
-            obj = Book.objects.create(title=data['title'], description=data['description'])
+            obj = Book.objects.create(title=data['title'], description=data['description'], license=data['license'])
             obj.authors.add(self.request.user)
         else:
             obj = Book.objects.get(pk=int(self.object_id))
             obj.title = data['title']
             obj.description = data['description']
+            obj.license = data['license']
             obj.save()
             
         if data['icon']:
@@ -52,7 +55,7 @@ class BookManipulator(valid.Validator):
         return obj
  
 
-class ChapterManipulator(valid.Validator):
+class ChapterValidator(valid.Validator):
     title = valid.CharField()
     abstract = valid.CharField(required=False, default='')
     content = valid.CharField()
@@ -66,8 +69,6 @@ class ChapterManipulator(valid.Validator):
         self.fields['num'].add_validator(self.isValidNum)
     
     def isValidNum(self, field_data, all_data):
-        if not field_data:
-            raise valid.ValidationError, _("Chapter num cann't be empty.")
         if not self.object_id:
             try:
                 Chapter.objects.get(num=field_data, book=self.book)
@@ -90,3 +91,27 @@ class ChapterManipulator(valid.Validator):
             
         return obj
     
+class AddUserValidator(valid.Validator):
+    username = valid.CharField()
+    
+    def __init__(self, book_id):
+        self.book_id = book_id
+        self.fields['username'].add_validator(self.IsValidUser)
+    
+    def IsValidUser(self, data, all_data):
+        try:
+            user = User.objects.get(username=data)
+        except User.DoesNotExist:
+            raise valid.ValidationError, _("User %s don't exist." % data)
+        
+    def save(self, data):
+        user = User.objects.get(username=data['username'])
+        book = Book.objects.get(pk=int(self.book_id))
+        for u in book.authors.all():
+            if u.username == data['username']:
+                break
+        else:
+            book.authors.add(user)
+            
+        return user
+        

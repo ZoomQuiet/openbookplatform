@@ -40,8 +40,9 @@
         <h2 id="chapter-title">{% block subject %}{% endblock %}</h2>
         {% block content %}{% endblock %}
       </div>
-	    <div id="footer">Write down your own licence announcement.
-			</div>
+	    <div id="footer">{% trans "This site is designed by Limodou." %}</div>
+        <div id="license">{% block license %}All books license are owned by the authors. 
+        If there is no license announcement, It'll use <a href="/license/">Gnu Free Document License</a>.{% endblock %}</div>
     </div>
 
     {% block other %}{% endblock %}

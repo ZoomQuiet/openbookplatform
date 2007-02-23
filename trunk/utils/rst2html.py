@@ -70,7 +70,7 @@ def rst2html(text):
     text = to_html(text)
     from BeautifulSoup import BeautifulSoup
     soup = BeautifulSoup(text)
-    r_comment = re.compile(r'^\[(.*?)\]')
+    r_comment = re.compile(r'^\s*\[(.*?)\]')
     max_id = 0
     tags = soup.findAll(['h1', 'h2', 'h3', 'h4', 'h5', 'p', 'li', 'blockquote'])
     needs = []
@@ -102,4 +102,5 @@ def rst2html(text):
 if __name__ == '__main__':
     text = file('a.txt').read()
 #    print '<html><head><title>test</title></head><body>%s</body></html>' % to_html(a)
-    print rst2html(text)
+#    print rst2html(text)
+    rst2html(text)

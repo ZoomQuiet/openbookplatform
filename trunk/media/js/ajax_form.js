@@ -82,7 +82,7 @@ __data_handle = function(target, data){
 */
 AjaxForm = function(form, options){
     this.options = {
-        trigger: "input.submit,input[@type='submit']",
+        trigger: $("input.submit,input[@type='submit']", form),
         errortag:'dd'
     };
     $.extend(this.options, options);

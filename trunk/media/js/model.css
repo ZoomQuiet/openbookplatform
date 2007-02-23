@@ -1,4 +1,4 @@
-#modelwindow
+.modelwindow
 {
 	position: absolute;
 	overflow: hidden;
@@ -29,6 +29,7 @@
 	font-weight: bold;
 	font-size: 14px;
 	color: #6caf00;
+	text-align:center;
 }
 .windowMin
 {

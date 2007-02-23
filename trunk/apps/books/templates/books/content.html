@@ -5,9 +5,9 @@
 {% block content %}
 <ol class="toc">    
 {% for obj in book.chapter_set.all %}
-    <li class="{% cycle a,b %}">
+    <li>
       <span class="release-date">
-          {{ book.modifydate|date:"F j,Y" }}
+          {{ obj.modifydate|date:"F j,Y" }}
       </span>
       <a href="/book/{{ book.id }}/{{ obj.num }}/" title="{{ obj.abstract }}">
           {{ obj.title }}
@@ -17,3 +17,4 @@
 </ol>
 {% endblock %}
 {% block nav1 %}<a href="/booklist/">{% trans "The Open Book Platform" %}</a>{% endblock %}
+{% block license %}{{ book.license|default:"Writedonw your license here." }}{% endblock %}

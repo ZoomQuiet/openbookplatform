@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import signals
 from django.dispatch import dispatcher
+import datetime
+from utils.rst2html import rst2html
 
 class Book(models.Model):
     title = models.CharField(maxlength=100)
@@ -10,6 +12,7 @@ class Book(models.Model):
     createdate = models.DateTimeField(auto_now_add=True)
     modifydate = models.DateTimeField(auto_now=True)
     icon = models.ImageField(upload_to="books_icon", blank=True, null=True)
+    license = models.TextField(default='')
     
     class Admin:pass
     
@@ -26,6 +29,7 @@ class Chapter(models.Model):
     abstract = models.TextField()
     modifydate = models.DateTimeField(auto_now=True)
     content = models.TextField()
+    html = models.TextField()
     
     class Admin:pass
     
@@ -34,6 +38,19 @@ class Chapter(models.Model):
         
     def __str__(self):
         return self.title
+    
+    def save(self):
+        self.html = rst2html(self.content)
+        super(Chapter, self).save()
+
+def post_save_chapter(sender, instance, signal, *args, **kwargs):
+    try:
+        book = Book.objects.get(id=instance.book.id)
+    except Book.DoesNotExist:
+        return
+#    book.modifydate = datetime.datetime.now()
+    book.save()
+dispatcher.connect(post_save_chapter , signal=signals.post_save, sender=Chapter)
     
 class CommentInfo(models.Model):
     chapter = models.ForeignKey(Chapter)

@@ -11,17 +11,20 @@ $.fn.model = function(opts, onload, unload){
     };
     var t = $(this);
     var w;
+    var w_id;
     
     function resize(size, position){
-        $('.windowBottom, .windowBottomContent').css('height', size.height-33 + 'px');
-        var windowContentEl = $('.windowContent').css('width', size.width - 25 + 'px');
-        if (!document.getElementById(w.attr('id')).isMinimized) {
+        $('.windowBottom, .windowBottomContent', w).css('height', size.height-33 + 'px');
+        var windowContentEl = $('.windowContent', w).css('width', size.width - 25 + 'px');
+        if (!w.get(0).isMinimized) {
             windowContentEl.css('height', size.height - 48 + 'px');
         }
     }
     
     function build(target){
-        var wrap = $('<div id="modelwindow">'
+        var id = ++$.modal.no;
+        $(target).css('display', 'block');
+        var wrap = $('<div id="modelwindow' + id + '" class="modelwindow">'
             +'<div class="windowTop">'
                 +'<div class="windowTopContent">' + _o.title + '</div>'
                 +'<img src="/site_media/img/window_min.jpg" class="windowMin" />'
@@ -33,7 +36,6 @@ $.fn.model = function(opts, onload, unload){
             +'<img src="/site_media/img/window_resize.gif" class="windowResize" />'
         +'</div>');
         wrap.appendTo('body').find('.windowContent').append(target);
-        $(target).css('display', 'block');
         wrap.css({'z-index':3000, 'position':'absolute', 'display':'none', 
             'height':_o.height + 'px', 'width':_o.width + 'px'});
         return wrap;
@@ -41,13 +43,14 @@ $.fn.model = function(opts, onload, unload){
     
     $.extend(_o, opts);
     w = build(t);
+    w_id = w.attr('id');
     
     $(_o.trigger).click(function(){
         if (onload)
             onload(w);
         else {
             if (_o.center)
-                w.center();
+                $.iUtil.centerEl(w.get(0));
             resize({'height':_o.height, 'width':_o.width});
             w.slideDown('high');
         }
@@ -60,20 +63,20 @@ $.fn.model = function(opts, onload, unload){
             w.slideUp('high').hide();
     });
     w.find(_o.min).click(function(){
-        $('.windowContent').SlideToggleUp(300);
-        $('.windowBottom, .windowBottomContent').animate({height: 10}, 300);
+        $('.windowContent', w).SlideToggleUp(300);
+        $('.windowBottom, .windowBottomContent', w).animate({height: 10}, 300);
         $(w).animate({height:40},300).get(0).isMinimized = true;
         $(this).hide();
-        $('.windowResize').hide();
-        $('.windowMax').show();
+        $('.windowResize', w).hide();
+        $('.windowMax', w).show();
     });
     w.find(_o.max).click(function(){
-        var windowSize = $.iUtil.getSize($('.windowContent').get(0));
-        $('.windowContent').SlideToggleUp(300);
-        $('.windowBottom, .windowBottomContent').animate({height: windowSize.hb + 13}, 300);
+        var windowSize = $.iUtil.getSize($('.windowContent', w).get(0));
+        $('.windowContent', w).SlideToggleUp(300);
+        $('.windowBottom, .windowBottomContent', w).animate({height: windowSize.hb + 13}, 300);
         $(w).animate({height:windowSize.hb+43}, 300).get(0).isMinimized = false;
         $(this).hide();
-        $('.windowMin, .windowResize').show();
+        $('.windowMin, .windowResize', w).show();
     });
     w.Resizable(
 	{
@@ -81,10 +84,13 @@ $.fn.model = function(opts, onload, unload){
 		minHeight: 400,
 		maxWidth: 700,
 		maxHeight: 400,
-		dragHandle: '.windowTop',
+		dragHandle: '#' + w_id + ' .windowTop',
 		handlers: {
-			se: '.windowResize'
+			se: '#' + w_id + ' .windowResize'
 		},
 		onResize : resize
 	});
+}
+$.modal = {
+    no:0
 }
