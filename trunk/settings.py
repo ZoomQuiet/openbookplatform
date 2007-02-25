@@ -62,7 +62,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
 )
 
-ROOT_URLCONF = 'openbook.urls'
+ROOT_URLCONF = 'openbookplatform.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -94,5 +94,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
-CACHE_BACKEND = 'file://d:/project/svn/openbook/cache'
-#CACHE_BACKEND = 'dummy:///'
+#CACHE_BACKEND = 'file://d:/project/svn/openbook/cache'
+CACHE_BACKEND = 'dummy:///'
