@@ -32,7 +32,7 @@ def code(name, arguments, options, content, lineno,
     lang = arguments[0]
     if not lang:
         lang = 'python'
-    style, text = highlight(block_text[content_offset:], lang)
+    style, text = highlight('\n'.join(content), lang)
     text = re_space.sub(r_space, text)
     g_style[lang] = style
     return [highlight_block(text)]
@@ -64,6 +64,7 @@ def highlight(code, lang):
     from pygments.lexers import get_lexer_by_name
     from pygments.formatters import HtmlFormatter
     lexer = get_lexer_by_name(lang)
+    lang = lang.replace('+', '_')
     return HtmlFormatter().get_style_defs('.highlight_'+lang), highlight(code, lexer, HtmlFormatter(cssclass='highlight_'+lang))
 
 def rst2html(text):
@@ -102,5 +103,4 @@ def rst2html(text):
 if __name__ == '__main__':
     text = file('a.txt').read()
 #    print '<html><head><title>test</title></head><body>%s</body></html>' % to_html(a)
-#    print rst2html(text)
-    rst2html(text)
+    print rst2html(text)
