@@ -49,8 +49,11 @@ $.fn.model = function(opts, onload, unload){
         if (onload)
             onload(w);
         else {
-            if (_o.center)
-                $.iUtil.centerEl(w.get(0));
+            if (_o.center){
+                var left = $(window).width()/2 - w.width()/2;
+                var t = window.scrollY + $(window).height()/2 - w.height()/2;
+                w.css({'top':t+'px', 'left':left+'px'});
+            }
             resize({'height':_o.height, 'width':_o.width});
             w.slideDown('high');
         }
