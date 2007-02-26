@@ -60,7 +60,11 @@ function createcomments(data, fresh){
                 $('#comments').triggerTab(1);
             $('input[@name="comment_num"]', '#comments').val(id);
             comment_num = id;
-            $.iUtil.centerEl($('#comments').parent().parent().get(0));
+            var win = $('#comments').parent().parent();
+            var left = $(window).width()/2 - win.width()/2;
+            var t = window.scrollY + $(window).height()/2 - win.height()/2;
+            win.css({'top':t+'px', 'left':left+'px'});
+            //$.iUtil.centerEl($('#comments').parent().parent().get(0));
             $('#comments').parent().parent().show();
         });
     });
