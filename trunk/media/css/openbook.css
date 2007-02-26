@@ -59,7 +59,8 @@ a:link, a:visited { color:#006400; }
 a:hover { color:#006400; background-color:#FFA500;}
 #bd a:link, #bd a:visited { color:#006400; text-decoration: underline;}
 #bd a:hover { background-color:#FFA500; color:#fff; text-decoration:none; }
-
+#bd dt {margin-bottom: 3px;}
+#bd dd {margin-left: 30px;}
 /*** nav ***/
 div.nav { margin: 0; font-size: 9pt; text-align: right; }
 #hd div.nav { margin-top: -30px; }
@@ -149,6 +150,8 @@ dt .literal, table .literal { background:none; }
 div.comment-indicator { position: absolute; width: 20px; z-index: 999; text-align: center; color: black; font-size: 11px; left: -44px; top: 0; background-color:#999;   }
 li.cn div.comment-indicator { left: -74px; }
 div.admonition div.comment-indicator { left: -45px; }
+div.note, div.admonition { border: 2px dotted; margin-bottom:3px;background-color:#E7EFB0; padding-left: 10px; padding-right: 10px;}
+div.note .admonition-title, div.admonition .admonition-title {text-indent: 30px; background:url(/site_media/img/note.png) no-repeat scroll 0pt 0px;}
 div.comment-indicator:hover { background-color: #EF8C8C; }
 div.comment-indicator span { position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; }
 div.comment-indicator:hover span { background-image: url(/site_media/img/comment-hover.png); }

@@ -72,7 +72,7 @@ def rst2html(text):
     soup = BeautifulSoup(text)
     r_comment = re.compile(r'^\s*\[(.*?)\]')
     max_id = 0
-    tags = soup.findAll(['h1', 'h2', 'h3', 'h4', 'h5', 'p', 'li', 'blockquote'])
+    tags = soup.findAll(['h1', 'h2', 'h3', 'h4', 'h5', 'p', 'li', 'blockquote', 'dt', 'dd'])
     needs = []
     for t in tags:
         if t.name.startswith('h'):

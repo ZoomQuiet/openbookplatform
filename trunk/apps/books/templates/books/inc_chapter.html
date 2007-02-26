@@ -49,11 +49,11 @@ $(function(){
                 </dl>
                 <dl>
                     <dt><lable>{% trans "Abstract" %}:</lable></dt>
-                    <dd><textarea rows="2" cols="40" name="abstract">{{ chapter.abstract }}</textarea><dd>
+                    <dd><textarea rows="2" cols="40" name="abstract">{{ chapter.abstract|escape }}</textarea><dd>
                 </dl>
                 <dl>
                     <dt class="required"><lable>{% trans "Content" %}:</lable></dt>
-                    <dd><textarea rows="30" cols="40" name="content">{{ chapter.content }}</textarea><dd>
+                    <dd><textarea rows="30" cols="40" name="content">{{ chapter.content|escape }}</textarea><dd>
                 </dl>
             </div>
             <div class="action">

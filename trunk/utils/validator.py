@@ -26,10 +26,11 @@
 #    
 #This module is new, so many things could be changed.
 #
-#Version: 0.1
+#Version: 0.2
 #Author: limodou<limodou AT gmail.com>
 #Update:
 #    * 2007/02/17 0.1
+#    * 2007/02/26 0.2 Fixed add_validator bug
 
 
 import datetime
@@ -69,7 +70,11 @@ class SortedDictFromList(SortedDict):
         dict.__init__(self, dict(data))
 
     def copy(self):
-        return SortedDictFromList([(k, copy.copy(v)) for k, v in self.items()])
+        l = []
+        for k, v in self.items():
+            l.append((k, copy.copy(v)))
+            v.validator_list = copy.deepcopy(v.validator_list)
+        return SortedDictFromList(l)
 
 class ValidationError(Exception):
     def __init__(self, message):

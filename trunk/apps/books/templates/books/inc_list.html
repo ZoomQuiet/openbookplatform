@@ -2,7 +2,6 @@
 <script type="text/javascript">
 {% catch as tmp_url %}/user/{{ user.id }}/book/ajax_list/{% endcatch %}
 var ajax_url = '{{ ajax_url|default:tmp_url }}';
-var hide = {{ hideflag|default:"true" }};
 function createtable(target, data){
     var table = $('<table width="100%"><tbody></tbody></table>')
     $.each(data, function(n){
@@ -40,8 +39,6 @@ function handle_list(data){
 }
 
 $(document).ready(function (){
-    if(hide)
-        $('#upload').hide();
     $('#a_upload').toggle(function (){
         $('#a_upload').prev('img').attr('src', '/site_media/img/triangle.gif');
         $('#upload').slideDown('high');
@@ -92,7 +89,7 @@ $(document).ready(function (){
 {% endcatch %}
 {% catch as content %}
     <form id="upload_form" enctype="multipart/form-data" action="new/" method="post">
-        <div class="basic_form" id="upload">
+        <div class="basic_form" id="upload" style="display:none">
             <div id="message"></div>
             <p class="blockintro">Create a new book, and fill in information:</p>
             <div class="block">
