@@ -40,7 +40,9 @@
         <h2 id="chapter-title">{% block subject %}{% endblock %}</h2>
         {% block content %}{% endblock %}
       </div>
-	    <div id="footer">{% trans "This site is designed by Limodou." %}</div>
+	    <div id="footer">{% trans "This site is designed by Limodou." %} <a href="http://python.org" title="python powered"><img src="/site_media/img/python.png" alt="python powered" width="80" height="15" /></a>
+   <a href="http://djangoproject.com" title="django powered"><img src="/site_media/img/django.gif" %}" alt="django site" width="80" height="15" /></a>
+</div>
         <div id="license">{% block license %}All books license are owned by the authors. 
         If there is no license announcement, It'll use <a href="/license/">Gnu Free Document License</a>.{% endblock %}</div>
     </div>
