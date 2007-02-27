@@ -2,7 +2,7 @@ from django.conf import settings
 import datetime
 
 def set_cookie(response, key, value, expire=None):
-    if expire is not None:
+    if expire is None:
         max_age = 365*24*60*60  #one year
     else:
         max_age = expire

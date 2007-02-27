@@ -12,6 +12,9 @@
       <a href="/book/{{ book.id }}/{{ obj.num }}/" title="{{ obj.abstract }}">
           {{ obj.title }}
       </a>
+      {% if obj.comment_count %}
+      <span class="comment_num"> ( {{ obj.comment_count }} )</span>
+      {% endif %}
     </li>
 {% endfor %}
 </ol>

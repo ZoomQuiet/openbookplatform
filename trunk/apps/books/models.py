@@ -30,6 +30,7 @@ class Chapter(models.Model):
     modifydate = models.DateTimeField(auto_now=True)
     content = models.TextField()
     html = models.TextField()
+    comment_count = models.IntegerField(default=0)
     
     class Admin:pass
     
@@ -85,6 +86,12 @@ def pre_save_comment(sender, instance, signal, *args, **kwargs):
             info = CommentInfo.objects.create(chapter=instance.chapter, comment_num=instance.comment_num)
         info.count += 1
         info.save()
+        try:
+            chapter = Chapter.objects.get(id=instance.chapter.id)
+            chapter.comment_count += 1
+            chapter.save()
+        except Chapter.DoesNotExists:
+            pass
 
 def post_delete_comment(sender, instance, signal, *args, **kwargs):
     if instance.id == None:
@@ -98,6 +105,13 @@ def post_delete_comment(sender, instance, signal, *args, **kwargs):
         else:
             info.count -= 1
             info.save()
+            
+        try:
+            chapter = Chapter.objects.get(id=instance.chapter.id)
+            chapter.comment_count -= 1
+            chapter.save()
+        except Chapter.DoesNotExists:
+            pass
 
 dispatcher.connect(pre_save_comment , signal=signals.pre_save, sender=Comment)
 dispatcher.connect(post_delete_comment , signal=signals.post_delete, sender=Comment)
