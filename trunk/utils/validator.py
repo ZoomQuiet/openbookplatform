@@ -56,9 +56,9 @@ try:
 except:
     from sets import Set as set
     
-from django.utils.translation import gettext as _
-#def _(v):
-#    return v
+#from django.utils.translation import gettext as _
+def _(v):
+    return v
 
 class SortedDictFromList(SortedDict):
     "A dictionary that keeps its keys in the order in which they're inserted."
@@ -73,7 +73,7 @@ class SortedDictFromList(SortedDict):
         l = []
         for k, v in self.items():
             l.append((k, copy.copy(v)))
-            v.validator_list = copy.deepcopy(v.validator_list)
+            v.validator_list = copy.copy(v.validator_list)
         return SortedDictFromList(l)
 
 class ValidationError(Exception):
@@ -545,6 +545,7 @@ if __name__ == '__main__':
     data = {'username':'limodou', 'email':'abc@gmail.com', 'age':'123', 'password':'limodou'}
     
     def validate_username(data, all_data):
+        print 'validate_username', data
         if data != 'limodou':
             raise ValidationError, 'Username must be "limodou"'
     
@@ -554,13 +555,23 @@ if __name__ == '__main__':
         age = IntegerField()
         password = CharField()
         
+        def __init__(self):
+            self.fields['username'].add_validator(self.AnotherValidator)
+        
         def full_validate(self, data, all_data):
             if not data.has_key('password'):
                 raise ValidationError, _(u'Need password')
             
         def save(self, data):
             print 'ok'
+            
+        def AnotherValidator(self, data, all_data):
+            print 'AnotherValidator', data
+            return
         
     t = TV()
     print t.validate_and_save(data)
+    t = TV()
+    print t.validate_and_save(data)
+    
     

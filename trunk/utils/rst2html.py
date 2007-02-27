@@ -24,7 +24,7 @@ class SimpleHTMLTranslator(HTMLTranslator):
 def r_space(m):
     return len(m.group()) * '&nbsp;'
 
-re_space = re.compile(r'^\s+', re.MULTILINE)
+re_space = re.compile(r'^[ ]+', re.MULTILINE)
 def code(name, arguments, options, content, lineno,
           content_offset, block_text, state, state_machine):
     global g_style
@@ -43,6 +43,7 @@ code.arguments = (0, 1, 1)
 directives.register_directive('code', code)
 
 def to_html(text, level=2):
+    global g_style
     g_style = {}
     source = text
     parts = publish_parts(source, writer=SimpleWrite(), settings_overrides={'initial_header_level':level})
