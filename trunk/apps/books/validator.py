@@ -18,7 +18,7 @@ class AddCommentValidator(valid.Validator):
         book = Book.objects.get(pk=int(self.book_id))
         chapter = Chapter.objects.get(num=self.chapter_num, book=book)
         
-        obj = Comment.objects.create(chapter=chapter, comment_num=data['comment_num'],
+        obj = Comment.objects.create(book=book, chapter=chapter, comment_num=data['comment_num'],
             username=data['username'], email=data['email'], website=data['website'],
             content=data['content'])
         

@@ -1,7 +1,7 @@
 {% load i18n %}
 {% extends "base.html" %}
 {% block title %}{{ book.title }}{% endblock %}
-{% block subject %}{% trans "Table of Contents" %}{% endblock %}
+{% block subject %}{% trans "Table of Contents" %}  <a href="/rss/book/{{ book.id }}/" class="rss"><img src="/site_media/img/feed.png" title="subscribe this book"/></a> <a href="/rss/book/{{ book.id }}/comments/" class="rss"><img src="/site_media/img/feed.png" title="subscribe the comments of this book"/></a>{% endblock %}
 {% block content %}
 <ol class="toc">    
 {% for obj in book.chapter_set.all %}

@@ -1,6 +1,6 @@
 {% load i18n %}
 {% extends "base.html" %}
-{% block subject %}{% trans "Book List" %}{% endblock %}
+{% block subject %}{% trans "Book List" %} <a href="/rss/book/" class="rss"><img src="/site_media/img/feed.png" title="subscribe booklist"/></a>{% endblock %}
 {% block content %}
 <div id="documents" class="booklist">{% trans "Loading..." %}{% include "utils/ajax_loading.html" %}</div>
 <div id="pages"></div>

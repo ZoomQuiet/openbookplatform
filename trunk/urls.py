@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/(?P<comment_num>[^/]+)/$', 'apps.books.views.chapter_num_comments'),
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/$', 'apps.books.views.chapter'),
     
+    (r'^rss/', include('apps.rss.urls')),
     (r'^site_media/(.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA}),
     (r'^admin/', include('django.contrib.admin.urls')),
 )

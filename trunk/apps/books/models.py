@@ -60,6 +60,7 @@ class CommentInfo(models.Model):
 
 C_STATUS = ((0, 'None'), (1, 'Good'), (2, 'Bad'))
 class Comment(models.Model):
+    book = models.ForeignKey(Book)
     chapter = models.ForeignKey(Chapter)
     comment_num = models.CharField(maxlength=20)
     username = models.CharField(maxlength=50)

@@ -4,19 +4,21 @@ import StringIO
 
 def thumbnail(filename, size=(50, 50), output_filename=None):
     image = Image.open(filename)
-    image = image.convert('RGB')
+    if image.mode not in ('L', 'RGB'):
+        image = image.convert('RGB')
     image = image.resize(size, Image.ANTIALIAS)
 
     # get the thumbnail data in memory.
     if not output_filename:
         output_filename = get_default_thumbnail_filename(output_filename)
-    image.save(file(output_filename, 'wb'), image.format) 
+    image.save(output_filename, image.format) 
     return output_filename
 
 def thumbnail_string(buf, size=(50, 50)):
     f = StringIO.StringIO(buf)
     image = Image.open(f)
-    image = image.convert('RGB')
+    if image.mode not in ('L', 'RGB'):
+        image = image.convert('RGB')
     image = image.resize(size, Image.ANTIALIAS)
     o = StringIO.StringIO()
     image.save(o, "JPEG")
