@@ -8,6 +8,7 @@
 {% block nav1 %}<a href="/booklist/">The Open Book Platform</a>{% endblock %}
 
 {% block nav %}<div class="nav">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+{% block nav_footer %}<div class="nav-footer">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
 
 {% block css %}
 <link href="/site_media/js/model.css" rel="stylesheet" type="text/css" />

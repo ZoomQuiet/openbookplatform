@@ -29,19 +29,21 @@ def code(name, arguments, options, content, lineno,
           content_offset, block_text, state, state_machine):
     global g_style
     
-    lang = arguments[0]
-    if not lang:
-        lang = 'python'
+    if len(arguments) > 0:
+        lang = arguments[0]
+    else:
+        lang = ''
     style, text = highlight('\n'.join(content), lang)
     text = re_space.sub(r_space, text)
     g_style[lang] = style
     return [highlight_block(text)]
 
 code.content = 1
-code.arguments = (1, 0, 1)
+code.arguments = (0, 1, 1)
 directives.register_directive('code', code)
 
 def to_html(text, level=2):
+    g_style = {}
     source = text
     parts = publish_parts(source, writer=SimpleWrite(), settings_overrides={'initial_header_level':level})
     if g_style:
@@ -61,9 +63,17 @@ def parts(file):
 
 def highlight(code, lang):
     from pygments import highlight
-    from pygments.lexers import get_lexer_by_name
+    from pygments.lexers import get_lexer_by_name, guess_lexer, PythonLexer
     from pygments.formatters import HtmlFormatter
-    lexer = get_lexer_by_name(lang)
+    try:
+        lexer = get_lexer_by_name(lang)
+    except:
+        try:
+            lexer = guess_lexer(code)
+            lang = lexer.aliases[0]
+        except:
+            lexer = PythonLexer()
+            lang = 'python'
     lang = lang.replace('+', '_')
     return HtmlFormatter().get_style_defs('.highlight_'+lang), highlight(code, lexer, HtmlFormatter(cssclass='highlight_'+lang))
 
