@@ -33,7 +33,7 @@ def user_login(request):
             login(request, user)
             user.last_login = datetime.datetime.now()
             user.save()
-        return ajax.ajax_ok(True, next='/')
+        return ajax.ajax_ok(True, next=request.POST.get('next', '/'))
 
 from django.dispatch import dispatcher
 import apps.users.signals
