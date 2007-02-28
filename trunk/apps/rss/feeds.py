@@ -76,7 +76,7 @@ class BookCommentsFeed(EasyFeed):
         return '/book/%s' % self.book_id
     
     def items(self):
-        return self.book.comment_set.all()[:15]
+        return self.book.comment_set.all().order_by('-createtime')[:15]
     
     def title(self):
         return 'Comments of: ' + self.book.title

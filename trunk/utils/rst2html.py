@@ -2,8 +2,10 @@ from docutils.core import publish_parts
 from docutils import nodes
 from docutils.parsers.rst import directives
 import re
+import threading
 
-g_style = {}
+g_data = threading.local()
+g_data.g_style = {}
 
 class highlight_block(nodes.General, nodes.Text):pass
 
@@ -27,7 +29,7 @@ def r_space(m):
 re_space = re.compile(r'^[ ]+', re.MULTILINE)
 def code(name, arguments, options, content, lineno,
           content_offset, block_text, state, state_machine):
-    global g_style
+    global g_data
     
     if len(arguments) > 0:
         lang = arguments[0]
@@ -35,7 +37,7 @@ def code(name, arguments, options, content, lineno,
         lang = ''
     style, text = highlight('\n'.join(content), lang)
     text = re_space.sub(r_space, text)
-    g_style[lang] = style
+    g_data.g_style[lang] = style
     return [highlight_block(text)]
 
 code.content = 1
@@ -43,12 +45,12 @@ code.arguments = (0, 1, 1)
 directives.register_directive('code', code)
 
 def to_html(text, level=2):
-    global g_style
-    g_style = {}
+    global g_data
+    g_data.g_style = {}
     source = text
     parts = publish_parts(source, writer=SimpleWrite(), settings_overrides={'initial_header_level':level})
-    if g_style:
-        style = '<style>' + '\n'.join(g_style.values()) + '</style>'
+    if g_data.g_style:
+        style = '<style>' + '\n'.join(g_data.g_style.values()) + '</style>'
     else:
         style = ''
     return  style + '\n' + parts['body']
