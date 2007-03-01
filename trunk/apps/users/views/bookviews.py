@@ -129,7 +129,7 @@ def _get_comment_data(result, obj):
 
 def user_chapter_comments(request, object_id, book_id, chapter_id):
     chapter = Chapter.objects.get(pk=int(chapter_id))
-    objs = chapter.comment_set.all().order_by('comment_num', '-createtime')
+    objs = chapter.comment_set.all().order_by('comment_num', 'createtime')
     result = []
     for obj in objs:
         _get_comment_data(result, obj)
