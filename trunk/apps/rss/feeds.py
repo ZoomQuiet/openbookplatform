@@ -85,7 +85,7 @@ class BookCommentsFeed(EasyFeed):
         return self.book.description
     
     def item_link(self, item):
-        return ''
+        return '/book/%s/%s' % (self.book_id, item.chapter.num)
     
     def item_description(self, item):
         return item.content
