@@ -94,7 +94,6 @@ class EasyFeed(object):
                 author_link = self.__get_dynamic_attr('item_author_link', item)
             else:
                 author_email = author_link = None
-            print item, 'name=', author_name
             feed.add_item(
                 title = self.__get_dynamic_attr('item_title', item),
                 link = link,

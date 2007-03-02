@@ -31,7 +31,7 @@ def ajax_list(request):
         result.append(_get_data(request, o))
     pages = (objs.count() + pagenum - 1) / pagenum
     cur = int(request.GET.get('page', 1))
-    return ajax.ajax_ok((cur, pages, result))
+    return ajax.ajax_ok_data((cur, pages, result))
 
 def content(request, book_id):
     book = Book.objects.get(pk=int(book_id))

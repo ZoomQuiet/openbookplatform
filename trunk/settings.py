@@ -60,6 +60,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'utils.middle_profile.ProfileMiddleware',
+    'utils.middle_format.FormatMiddleware',
 )
 
 ROOT_URLCONF = 'openbookplatform.urls'
