@@ -59,8 +59,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-    'utils.middle_profile.ProfileMiddleware',
+#    'utils.middle_profile.ProfileMiddleware',
+    'utils.middle_filter.FilterMiddleware',
     'utils.middle_format.FormatMiddleware',
 )
 
@@ -98,3 +100,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 #CACHE_BACKEND = 'file://d:/project/svn/openbook/cache'
 CACHE_BACKEND = 'dummy:///'
+
+FILTERS = (
+    (r'^user/(?P<user_id>\d+)/', 'apps.users.filter.check_valid_user'),
+)
