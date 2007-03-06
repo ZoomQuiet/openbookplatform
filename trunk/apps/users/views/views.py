@@ -3,15 +3,12 @@ from utils.common import render_template
 from django.contrib.auth.models import User
 
 from utils import ajax
-import apps.users.decorator as ud
 from apps.users.views.authvalidator import ChangeValidator
 
-@ud.check_userprofile
 def user_detail(request, object_id):
     person = User.objects.get(pk=int(object_id))
     return render_template(request, 'users/user_detail.html', {'person':person})
 
-@ud.check_userprofile
 def user_edit(request, object_id):
     if request.POST:
         v = ChangeValidator(request, object_id)
