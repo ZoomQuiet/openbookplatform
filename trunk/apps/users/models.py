@@ -48,7 +48,7 @@ class Group(models.Model):
     
 class UserProfile(models.Model):
     portrait = models.ImageField(_('Photo'), upload_to='photo', blank=True)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User, unique=True)
     
     def __str__(self):
         return self.user.username

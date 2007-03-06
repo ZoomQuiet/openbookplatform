@@ -12,7 +12,6 @@ urlpatterns = patterns('',
     
     (r'^user/(?P<object_id>\d+)/$', 'apps.users.views.views.user_detail'),
     (r'^user/(?P<object_id>\d+)/edit/$', 'apps.users.views.views.user_edit'),
-    (r'^user/(?P<object_id>\d+)/saveportrait/$', 'apps.users.views.views.user_save_portrait'),
     (r'^user/(?P<object_id>\d+)/book/ajax_list/$', 'apps.users.views.bookviews.user_books_list'),
     (r'^user/(?P<object_id>\d+)/book/new/$', 'apps.users.views.bookviews.user_book_edit'),
     (r'^user/(?P<object_id>\d+)/book/(?P<book_id>\d+)/$', 'apps.users.views.bookviews.user_book_detail'),

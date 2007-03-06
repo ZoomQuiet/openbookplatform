@@ -98,6 +98,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
+AUTH_PROFILE_MODULE = 'users.UserProfile'
+
 #CACHE_BACKEND = 'file://d:/project/svn/openbook/cache'
 CACHE_BACKEND = 'dummy:///'
 

@@ -26,11 +26,14 @@
 #    
 #This module is new, so many things could be changed.
 #
-#Version: 0.2
+#Version: 0.4
 #Author: limodou<limodou AT gmail.com>
 #Update:
 #    * 2007/02/17 0.1
 #    * 2007/02/26 0.2 Fixed add_validator bug
+#    * 2007/03/04 0.3 Add COOKIES and GET support, so the validate data will come 
+#                     from GET, POST, COOKIES, FILES
+#    * 2007/03/06 0.4 Add FileField, ImageField support
 
 
 import datetime
@@ -39,6 +42,7 @@ import re
 import copy
 from django.utils.datastructures import MultiValueDict
 from django.utils.datastructures import SortedDict
+from django.core import validators
 
 __all__ = (
     'Field', 'CharField', 'IntegerField',
@@ -46,7 +50,8 @@ __all__ = (
     'DEFAULT_TIME_INPUT_FORMATS', 'TimeField',
     'DEFAULT_DATETIME_INPUT_FORMATS', 'DateTimeField',
     'RegexField', 'EmailField', 'URLField', 'BooleanField',
-    'ComboField', 'SplitDateTimeField',
+    'ComboField', 'SplitDateTimeField', 'FileField',
+    'ImageField',
     'ValidationError', 'Validator',
     'isChoices', 'isMultipleChoices',
 )
@@ -133,13 +138,18 @@ class Field(object):
                 v(data, all_data)
         except ValidationError, e:
             return False, e.message
+        except validators.ValidationError, e:
+            return False, e.messages[0]
         return True, data
                 
     def convert(self, data, all_data=None):
         raise Exception, 'Not implement yet!'
     
     def add_validator(self, validator):
-        self.validator_list.append(validator)
+        if isinstance(validator, (list, tuple)):
+            self.validator_list.extend(validator)
+        else:
+            self.validator_list.append(validator)
     
 class ValidatorMetaclass(type):
     """
@@ -177,9 +187,14 @@ class Validator(object):
     __metaclass__ = ValidatorMetaclass
     
     def validate(self, request_or_data):
+        all_data = MultiValueDict()
+        if hasattr(request_or_data, 'COOKIES'):
+            all_data.update(request_or_data.COOKIES.copy())
+        if hasattr(request_or_data, 'GET'):
+            all_data.update(request_or_data.GET.copy())
         if hasattr(request_or_data, 'POST'):
-            all_data = request_or_data.POST.copy()
-            all_data.update(request_or_data.FILES)
+            all_data.update(request_or_data.POST.copy())
+            all_data.update(request_or_data.FILES.copy())
         else:
             all_data = request_or_data
         if all_data:
@@ -460,7 +475,25 @@ class SplitDateTimeField(ComboField):
             return datetime.datetime.combine(data[self.date_fieldname], data[self.time_fieldname])
         except:
             raise ValidationError, _(u'Time format is not right.')
-
+        
+class FileField(Field):
+    def __init__(self, filesize=None, *args, **kwargs):
+        super(FileField, self).__init__(*args, **kwargs)
+        self.filesize = filesize
+        self.default_validator_list.append(self.validate_filesize)
+        
+    def convert(self, data, all_data=None):
+        return data
+    
+    def validate_filesize(self, data, all_data=None):
+        if self.filesize and len(data['content']) > self.filesize:
+            raise ValidationError, _(u'Filesize is exceeded the limit %d.') % self.filesize
+        
+class ImageField(FileField):
+    def __init__(self, filesize=None, *args, **kwargs):
+        super(ImageField, self).__init__(filesize, *args, **kwargs)
+        self.default_validator_list.append(validators.isValidImage)
+        
 def _get_choices_keys(choices):
     if isinstance(choices, dict):
         keys = set(choices.keys())

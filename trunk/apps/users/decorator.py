@@ -8,7 +8,7 @@ def check_userprofile(func):
     def _func(request, *args, **kwargs):
         user = request.user
         try:
-            profile = user.userprofile
+            profile = user.get_profile()
         except:
             #if there is no profile record existed, then create a new record first
             profile = UserProfile(user=user)

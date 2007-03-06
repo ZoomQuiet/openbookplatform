@@ -14,9 +14,8 @@ def json(func):
     return _f
 
 # render_template
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
-from django.http import HttpResponseRedirect, HttpResponse
+from utils.common import render_template
+from django.http import HttpResponseRedirect
 
 def template(templatename):
     """
@@ -25,12 +24,12 @@ def template(templatename):
     
     def _render(func=None):
         @exceptionhandle
-        def _f(*args, **kwargs):
+        def _f(request, *args, **kwargs):
             if func:
-                result = func(*args, **kwargs)
+                result = func(request, *args, **kwargs)
             else:
                 result = {}
-            return render_to_response(templatename, context_instance=RequestContext(args[0], result))
+            return render_template(request, templatename, result)
         return _f
     return _render
 
@@ -40,9 +39,9 @@ def exceptionhandle(func):
     """
     Catch Special Exception and deal with them
     """
-    def _f(*args, **kwargs):
+    def _f(request, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            return func(request, *args, **kwargs)
         except HttpRedirectException, e:
             return HttpResponseRedirect(str(e))
     return _f
@@ -51,14 +50,13 @@ def errorhandle(func):
     """
     Catch Exception and show it in a error page, or redirect to new url
     """
-    def _f(*args, **kwargs):
+    def _f(request, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            return func(request, *args, **kwargs)
         except Exception, e:
             if settings.DEBUG:
                 import traceback
                 traceback.print_exc()
-            request = args[0]
             request.session['_errormsg'] = str(e)
             return HttpResponseRedirect('/error/')
     return _f
@@ -68,8 +66,8 @@ def redirect(url):
     Redirect to another url after calling a function
     """
     def _redirect(func):
-        def _f(*args, **kwargs):
-            result = func(*args, **kwargs)
+        def _f(request, *args, **kwargs):
+            result = func(request, *args, **kwargs)
             return HttpResponseRedirect(url)
         return _f
     return _redirect
@@ -78,22 +76,39 @@ def debug(func):
     """
     Catch Exception and show it in a error page
     """
-    def _f(*args, **kwargs):
+    def _f(request, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            return func(request, *args, **kwargs)
         except Exception, e:
             import traceback
             traceback.print_exc()
             raise
     return _f
-  
-def ajax_iframe_response(func):
-    """
-    """
-    def _f(*args, **kwargs):
-        a = '''<script type="text/javascript">
-  window.parent.ajax_iframe_response(%r);
-</script>'''
-        return HttpResponse(a % ajax.json(func(*args, **kwargs)))
-    return _f
 
+#from utils.deco import decorator as deco
+#def validate(validateClass, return_error=True, error_message=_('There are some errors!')):
+#    def _f(func, request, *args, **kwargs):
+#        if request.method == 'POST':
+#            v = validateClass
+#            if hasattr(v, '__bases__'):  #class type
+#                from utils.common import get_func_args
+#                f = getattr(v, '__init__', None)
+#                if f:
+#                    args, kwargs = get_func_args(f, args, kwargs, skip=1)
+#                    v_obj = v(*args, **kwargs)
+#                else:
+#                    v_obj = v()
+#            else:
+#                v_obj = v
+#            flag, result = v_obj.validate(request)
+#            request.validator_obj = v_obj
+#            if flag:
+#                request.DATA = result
+#                request.ERROR = None
+#            else:
+#                request.ERROR = result
+#                request.DATA = None
+#            if return_error and request.ERROR:
+#                return ajax.ajax_fail_data(result, message=error_message)
+#        return deco(func(request, *args, **kwargs))
+#    return _f

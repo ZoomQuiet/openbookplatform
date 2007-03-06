@@ -1,18 +1,22 @@
 import datetime
 
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.db import transaction
-from apps.users.manipulator import UserRegisterManipulator
-from django.template.context import RequestContext
 
 from utils import ajax
 from utils import decorator
+from apps.users.views.authvalidator import LoginValidator, RegisterValidator
+from utils.common import render_template
 
 def user_login(request):
-    username = request.POST['username']
-    password = request.POST['password']
+    v = LoginValidator()
+    f, result = v.validate(request)
+    if not f:
+        return ajax.ajax_fail(result)
+    
+    username = result['username']
+    password = result['password']
     user = authenticate(username=username, password=password)
     if user is None:
         message = {'_':_('Authentication is failed!')}
@@ -25,7 +29,6 @@ def user_login(request):
             else:
                 message['username'] = _("Your e-mail address is not your username. Try '%s' instead.") % user.username
         return ajax.ajax_fail(message)
-
     
     # The user data is correct; log in the user in and continue.
     else:
@@ -45,9 +48,9 @@ def user_logout(request):
 
 @transaction.autocommit
 def user_register(request):
-    m = UserRegisterManipulator(request)
+    v = RegisterValidator(request)
     if request.POST:
-        f, obj = m.validate_and_save(request)
+        f, obj = v.validate_and_save(request)
         if f:
             user = authenticate(username=obj.username, password=obj.password)
             if user and user.is_staff:
@@ -57,4 +60,4 @@ def user_register(request):
             return ajax.ajax_ok(True, next='/')
         return ajax.ajax_fail(obj)
     else:
-        return render_to_response('users/register.html', context_instance=RequestContext(request, {'form':m.form()}))
+        return render_template(request, 'users/register.html')

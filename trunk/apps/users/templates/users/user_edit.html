@@ -5,73 +5,52 @@
 {% block body %}
 <script type="text/javascript">
 $(document).ready(function (){
-	var user_login = new AjaxForm('#user_edit');
+	var user_login = new AjaxIFrame('#user_edit');
 });
 </script>
 {% catch as header %}
-    <h1>{% trans "Personal Information" %}</h1>
+    <h1>{{ person.username }} - {% trans "Personal Information" %}</h1>
 {% endcatch %}
 {% catch as content %}
-<form action="/user/{{ person.id }}/edit/" method="post" id="user_edit">
+<form enctype="multipart/form-data" action="/user/{{ person.id }}/edit/" method="post" id="user_edit">
     <div class="basic_form">
         <div id="message"></div>
         <h2>{% trans "Basic Information" %}</h2>
-        <div class="block">
-            <dl>
-                <dt>{% trans "Username" %}:</dt>
-                <dd>{{ person.username }}<dd>
-            </dl>
-        </div>
         <p class="blockintro">{% trans "Input email address" %}</p>
 	   <div class="block">
 	       <dl>
-	           <dt class="required"><lable for="{{ field_id }}">{% trans "Email" %}:</lable></dt>
-	           <dd>{{ baseform.email }}<dd>
+	           <dt class="required"><lable>{% trans "Email" %}:</lable></dt>
+	           <dd><input type="text" name="email" value="{{ person.email }}"/><dd>
 	       </dl>
 	   </div>
        <p class="blockintro">{% trans "Setup a new password. If you don't want to set, you can leave it blank." %}</p>
         <div class="block">
             <dl>
-                <dt><lable for="">{% trans "Password" %}:</lable></dt>
-                <dd>{{ baseform.password }}<dd>
+                <dt><lable>{% trans "Password" %}:</lable></dt>
+                <dd><input type="password" name="password"/><dd>
             </dl>
             <dl>
                 <dt><lable for="">{% trans "Enter Again" %}:</lable></dt>
-                <dd>{{ baseform.password1 }}<dd>
+                <dd><input type="password" name="password1"/><dd>
             </dl>
         </div>
+		<p class="blockintro">{% trans "Select a picture for your portrait" %}</p>
+		<div class="block">
+		    <dl>
+		        <dt class="required"><lable>{% trans "File" %}:</lable></dt>
+		        <dd><input type="file" name="portrait"/><dd>
+		    </dl>
+		</div>
         <div class="action">
             <input type="submit" value="{% trans "Save" %}" />
-        </div>
-    </div>
-</form>
-<form enctype="multipart/form-data" action="/user/{{ person.id }}/saveportrait/" method="post">
-    <div class="basic_form">
-        <h2>{% trans "User Portrait" %}</h2>
-        {% if photoform.errors %}<p class="errornote">{% trans "Please correct blow errors." %}</p>
-        <ul class="errorlist">
-        {% for e in photoform.errors %}
-            <li><a href="javascript:document.getElementById('id_{{ e.0 }}').focus()"><b>{{ e.1 }}:</b> {{ e.2 }}</a></li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-        <p class="blockintro">{% trans "Select a picture for your portrait" %}</p>
-        <div class="block">
-            <dl>
-                <dt class="required"><lable>{% trans "File" %}:</lable></dt>
-                <dd>{{ photoform.portrait }}<dd>
-            </dl>
-        </div>
-        <div class="action">
-            <input type="submit" value="{% trans "Upload" %}" />
         </div>
     </div>
 </form>
 {% endcatch %}
 {% catch as sidebar %}
     <h1>{{ person.username }}</h1>
-    {% if user.userprofile.portrait %}
-        <img src="/site_media/{{ person.userprofile.get_portrait_url }}" />
+    {% if user.get_profile.portrait %}
+        <img src="/site_media/{{ person.get_profile.get_portrait_url }}" />
     {% endif %}
     <p>{% trans "Email" %}: {{ person.email }}</p>
 {% endcatch %}

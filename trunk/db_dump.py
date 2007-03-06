@@ -361,6 +361,8 @@ def write_result(result, format, options):
         f = sys.stdout
     print >>f, 'table = %r' % table
     print >>f, 'fields = %r' % fields
+    print >>f, '#default item format: "fieldname":("type", "value")'
+    print >>f, 'default = {}'
     print >>f, 'records = ['
     i = 0
     for t in result:

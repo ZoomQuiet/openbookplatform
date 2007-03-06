@@ -10,7 +10,7 @@
 {% block body %}
 {% catch as header %}
     <h1>{{ person.username }}</h1>
-    <p><img src="/site_media/{{ person.userprofile.get_portrait_url|default:"img/user.jpg" }}" /></p>
+    <p><img src="/site_media/{{ person.get_profile.get_portrait_url|default:"img/user.jpg" }}" /></p>
 {% endcatch %}
 {% catch as content %}
     <div class="basic_form">
