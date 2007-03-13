@@ -4,8 +4,7 @@ from apps.books.models import Book, Chapter, Comment
 from utils.lib_page import Page
 from utils import ajax
 from apps.books.validator import BookValidator, ChapterValidator
-from utils.common import render_template
-from django.conf import settings
+from utils.common import render_template, setting
 
 def user_books(request, object_id):
     user = User.objects.get(pk=int(object_id))
@@ -74,7 +73,7 @@ def user_chapters_delete(request, object_id, book_id):
     if ids:
         for chapter in Chapter.objects.filter(id__in=ids):
             chapter.delete()
-    return ajax.ajax_ok(next=settings.get('URLROOT', '') + '/user/%s/book/%s/' % (object_id, book_id))
+    return ajax.ajax_ok(next=setting('URLROOT') + '/user/%s/book/%s/' % (object_id, book_id))
 
 def user_chapter(request, object_id, book_id, chapter_id=None):
     if request.GET:

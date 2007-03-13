@@ -35,6 +35,10 @@ def get_func_args(func, args, kwargs, skip=None):
     ars = args[:len(k1)]
     return ars, ks
 
+def setting(name, defaultvalue=''):
+    from django.conf import settings
+    return getattr(settings, name, defaultvalue)
+
 #if __name__ == '__main__':
 #    def p(a,b,c=1,d=2):pass
 #    args, kwargs = get_func_args(p, (4,5,6), {'b':'a'})
