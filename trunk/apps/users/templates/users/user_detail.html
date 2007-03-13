@@ -28,17 +28,17 @@
 {% catch as sidebar %}
     <h2>{% trans "Functions" %}</h2>
     {% pyif not user.is_anonymous() and user.is_superuser and person.username != 'admin' and person.id != user.id %}
-        <p><a class="admin" href="/user/{{ person.id }}/delete/">{% trans "Delete user" %}</a></p>
+        <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/delete/">{% trans "Delete user" %}</a></p>
         {% if person.is_superuser %}
             {% ifnotequal person.username "admin" %}
-                <p><a class="admin" href="/user/{{ person.id }}/removesysmanager/">{% trans "Remove the admin priority" %}</a></p>
+                <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/removesysmanager/">{% trans "Remove the admin priority" %}</a></p>
             {% endifnotequal %}
         {% else %}
-            <p><a class="admin" href="/user/{{ person.id }}/addsysmanager/">{% trans "Set as administrator" %}</a></p>
+            <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/addsysmanager/">{% trans "Set as administrator" %}</a></p>
         {% endif %}
     {% endif %}
     {% pyif person.id == user.id %}
-        <p><a class="admin" href="/user/{{ person.id }}/edit/">{% trans "Update personal information" %}</a></p>
+        <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/edit/">{% trans "Update personal information" %}</a></p>
     {% endif %}
 {% endcatch %}
 {% call "utils/contentframe.html" with header content sidebar %}

@@ -5,7 +5,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $('#deleteuser').click(function(){
-            $.post('/user/delete/', $('#users').getdict(), function(data){
+            $.post('{{ setting.URLROOT }}/user/delete/', $('#users').getdict(), function(data){
                 var result = data.evalJson();
                 if (result['response'] == 'ok'){
                     if (result['next'])
@@ -14,7 +14,7 @@
             });
         });
         $('#addsysuser').click(function(){
-            $.post('/user/addsysmanager/', $('#users').getdict(), function(data){
+            $.post('{{ setting.URLROOT }}/user/addsysmanager/', $('#users').getdict(), function(data){
                 var result = data.evalJson();
                 if (result['response'] == 'ok'){
                     if (result['next'])
@@ -32,7 +32,7 @@
         <tr>
         {% for item in users %}
             {% pyif not forloop['counter0'] % 5 %}</tr><tr>{% endif %}
-            <td width="20%"><a class="admin" href="/user/{{ item.id }}/"><img class="link" src="/site_media/{{ item.userprofile.get_portrait_url|default:"img/user.jpg" }}"/></a><p><input type="checkbox" name="userid" value="{{ item.id }}"/>{{ item.username }}</p></td>
+            <td width="20%"><a class="admin" href="{{ setting.URLROOT }}/user/{{ item.id }}/"><img class="link" src="/site_media/{{ item.userprofile.get_portrait_url|default:"img/user.jpg" }}"/></a><p><input type="checkbox" name="userid" value="{{ item.id }}"/>{{ item.username }}</p></td>
         {% endfor %}
         {% expr range(users.count() % 5) as number %}
         {% for i in number %}

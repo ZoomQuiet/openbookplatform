@@ -1,14 +1,14 @@
-{% load utiltags %}
+{% load utiltags i18n %}
 {% extends "base.html" %}
 
-{% block title %}{{ book.title }}{% endblock %}
+{% block title %}{{ book.title }}{% pyif book.isAuthor(user) %}<a href="{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" title="{% trans "Edit this chapter" %}"><img src="/site_media/img/pencil.gif"/></a>{% endif %}{% endblock %}
 
 {% block subject %}{{ chapter.title }}{% endblock %}
 
-{% block nav1 %}<a href="/booklist/">The Open Book Platform</a>{% endblock %}
+{% block nav1 %}<a href="{{ setting.URLROOT }}/booklist/">The Open Book Platform</a>{% endblock %}
 
-{% block nav %}<div class="nav">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
-{% block nav_footer %}<div class="nav-footer">{% if prev %}<a href="/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+{% block nav %}<div class="nav">{% if prev %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="{{ setting.URLROOT }}/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+{% block nav_footer %}<div class="nav-footer">{% if prev %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="{{ setting.URLROOT }}/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
 
 {% block css %}
 <link href="/site_media/js/model.css" rel="stylesheet" type="text/css" />
@@ -151,7 +151,7 @@ $(document).ready(function (){
 
     <div class="tab" id="comment-tabs-form">
         <div class="bd">
-            <form id="commentform" method="post" action="/book/{{ book.id }}/{{ chapter.num }}/addcomment/">
+            <form id="commentform" method="post" action="{{ setting.URLROOT }}/book/{{ book.id }}/{{ chapter.num }}/addcomment/">
                 <p>
                     <input type="hidden" value="" name="comment_num"/>
                     <label class="required">Name (required)</label>

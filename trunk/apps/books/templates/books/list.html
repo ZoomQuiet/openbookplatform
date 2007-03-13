@@ -1,6 +1,6 @@
 {% load i18n %}
 {% extends "base.html" %}
-{% block subject %}{% trans "Book List" %} <a href="/rss/book/" class="rss"><img src="/site_media/img/feed.png" title="subscribe booklist"/></a>{% endblock %}
+{% block subject %}{% trans "Book List" %} <a href="{{ setting.URLROOT }}/rss/book/" class="rss"><img src="/site_media/img/feed.png" title="subscribe booklist"/></a>{% endblock %}
 {% block content %}
 <div id="documents" class="booklist">{% trans "Loading..." %}{% include "utils/ajax_loading.html" %}</div>
 <div id="pages"></div>
@@ -10,7 +10,7 @@
 <script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
 <script type="text/javascript" src="/site_media/js/paginate.js"></script>
 <script type="text/javascript">
-var ajax_url = '/booklist/ajax_list/';
+var ajax_url = '{{ setting.URLROOT }}/booklist/ajax_list/';
 function createtable(target, data){
 	var table = $('<table width="100%"><tbody></tbody></table>')
 	$.each(data, function(n){
@@ -18,7 +18,7 @@ function createtable(target, data){
 		table.append(tr);
 		var d = this;
 		tr.click(function(){
-			window.location = '/book/$id/'.template(d);
+			window.location = '{{ setting.URLROOT }}/book/$id/'.template(d);
 		});
 	});
 	$(target).empty().append(table);

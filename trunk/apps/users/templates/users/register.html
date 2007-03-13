@@ -17,7 +17,7 @@ $(document).ready(function (){
 {% block content %}
 <h2>{% trans "Register" %}</h2>
 <div class="basic_form">
-	<form action="/register/" method="post" id="register">
+	<form action="{{ setting.URLROOT }}/register/" method="post" id="register">
 	<div id="message"></div>
 	<p class="blockintro">Basic Information</p>
 	<div class="block">

@@ -1,5 +1,6 @@
 def get_full_path(request):
-    return 'http://' + request.META['HTTP_HOST'] + request.path
+    full_path = ('http', ('', 's')[request.is_secure()], '://', request.META['HTTP_HOST'], request.path)
+    return ''.join(full_path)
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response

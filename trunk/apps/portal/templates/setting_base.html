@@ -22,11 +22,11 @@
     <div id="hd">
         <div class="nav">
             {% if not user.is_anonymous %}
-            {{ user.username }} (<a href="/logout/">{% trans "Logout" %}</a>)
+            {{ user.username }} (<a href="{{ setting.URLROOT }}/logout/">{% trans "Logout" %}</a>)
             {% else %}
-            <a href="/register/">{% trans "Register" %}</a>
+            <a href="{{ setting.URLROOT }}/register/">{% trans "Register" %}</a>
             {% endif %}
-             <a href="/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
+             <a href="{{ setting.URLROOT }}/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
         </div>
         <h1>{% block title %}{% trans "Open Book Platform Admin" %}{% endblock %}</h1>
         {% block menu %}{% call "menu.html" with currentpage="homepage" %}{% endblock %}

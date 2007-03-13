@@ -1,15 +1,13 @@
 #coding=utf-8
 from apps.books.models import Book, Chapter
 from utils.lib_page import Page
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
 from apps.books.validator import AddCommentValidator
 from utils import ajax
+from utils.common import render_template
 
 def booklist(request):
     user = request.user
-    return render_to_response('books/list.html', 
-        context_instance=RequestContext(request))
+    return render_template(request, 'books/list.html')
 
 
 def _get_data(request, obj):
@@ -35,8 +33,7 @@ def ajax_list(request):
 
 def content(request, book_id):
     book = Book.objects.get(pk=int(book_id))
-    return render_to_response('books/content.html', 
-        context_instance=RequestContext(request, {'book':book}))
+    return render_template(request, 'books/content.html', {'book':book})
     
 def chapter(request, book_id, chapter_num):
     book = Book.objects.get(pk=int(book_id))
@@ -48,9 +45,8 @@ def chapter(request, book_id, chapter_num):
     prevs = Chapter.objects.filter(num__lt=chapter_num, book=book)
     if prevs:
         prev = list(prevs)[-1]
-    return render_to_response('books/chapter.html', 
-        context_instance=RequestContext(request, {'book':book, 
-            'chapter':chapter, 'next':next, 'prev':prev, 'COOKIES':request.COOKIES}))
+    return render_template(request, 'books/chapter.html', {'book':book, 
+            'chapter':chapter, 'next':next, 'prev':prev, 'COOKIES':request.COOKIES})
     
 def chapter_comments_info(request, book_id, chapter_num):
     book = Book.objects.get(pk=int(book_id))
@@ -86,9 +82,13 @@ def _get_comment_data(result, obj):
     status = ''
     if obj.status == 1:
         status = '<span class="thanks" title="%s">√</span>' % obj.reply
+    if obj.html:
+        content = obj.html
+    else:
+        content = plaintext2html(obj.content)
 
     result.append({'username':username,
-        'content':plaintext2html(obj.content), 'status':status,
+        'content':content, 'status':status,
         'createtime':obj.createtime.strftime("%b %d,%Y %I:%m %p")})
 
 def chapter_comments(request, book_id, chapter_num):

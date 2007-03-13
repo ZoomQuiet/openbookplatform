@@ -1,6 +1,6 @@
 {% load utiltags i18n %}
 <script type="text/javascript">
-{% catch as tmp_url %}/user/{{ user.id }}/book/ajax_list/{% endcatch %}
+{% catch as tmp_url %}{{ setting.URLROOT }}/user/{{ user.id }}/book/ajax_list/{% endcatch %}
 var ajax_url = '{{ ajax_url|default:tmp_url }}';
 function createtable(target, data){
     var table = $('<table width="100%"><tbody></tbody></table>')
@@ -8,7 +8,7 @@ function createtable(target, data){
         var tr = $('<tr><td width="1%">$checkbox</td><td width="1%">$icon</td><td><dl><dt><i>$title</i></dt><dd>Author: $author <br>$description</dd></dl></td></tr>'.template(this));
         var id = this['id'];
         $('td', tr).eq(1).click(function(){
-            window.location = '/user/{{ user.id }}/book/$id/'.template({id:id});
+            window.location = '{{ setting.URLROOT }}/user/{{ user.id }}/book/$id/'.template({id:id});
         });
         table.append(tr);
         var d = this;

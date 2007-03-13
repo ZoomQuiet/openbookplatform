@@ -1,16 +1,15 @@
 #coding=utf-8
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
 from apps.books.models import Book, Chapter, Comment
 from utils.lib_page import Page
 from utils import ajax
 from apps.books.validator import BookValidator, ChapterValidator
+from utils.common import render_template
+from django.conf import settings
 
 def user_books(request, object_id):
     user = User.objects.get(pk=int(object_id))
-    return render_to_response('users/user_book.html', 
-        context_instance=RequestContext(request, {'person':user}))
+    return render_template(request, 'users/user_book.html', {'person':user})
 
 def _get_data(request, obj):
     if obj.icon:
@@ -54,8 +53,8 @@ def user_book_edit(request, object_id, book_id=None):
 def user_book_detail(request, object_id, book_id):
     user = User.objects.get(pk=int(object_id))
     book = Book.objects.get(pk=int(book_id))
-    return render_to_response('users/user_book_detail.html', 
-        context_instance=RequestContext(request, {'person':user, 'book':book}))
+    return render_template(request, 'users/user_book_detail.html', 
+        {'person':user, 'book':book})
     
 def user_book_chapters(request, object_id, book_id):
     user = User.objects.get(pk=int(object_id))
@@ -75,7 +74,7 @@ def user_chapters_delete(request, object_id, book_id):
     if ids:
         for chapter in Chapter.objects.filter(id__in=ids):
             chapter.delete()
-    return ajax.ajax_ok(next='/user/%s/book/%s/' % (object_id, book_id))
+    return ajax.ajax_ok(next=settings.get('URLROOT', '') + '/user/%s/book/%s/' % (object_id, book_id))
 
 def user_chapter(request, object_id, book_id, chapter_id=None):
     if request.GET:
@@ -94,8 +93,8 @@ def user_chapter(request, object_id, book_id, chapter_id=None):
             user = User.objects.get(pk=int(object_id))
             book = Book.objects.get(pk=int(book_id))
             chapter = Chapter.objects.get(pk=int(chapter_id))
-            return render_to_response('users/user_chapter.html', 
-                context_instance=RequestContext(request, {'person':user, 'book':book, 'chapter':chapter}))
+            return render_template(request, 'users/user_chapter.html', 
+                {'person':user, 'book':book, 'chapter':chapter})
             
 def user_book_authors(request, object_id, book_id):
     book = Book.objects.get(pk=int(book_id))
@@ -121,7 +120,11 @@ def _get_comment_data(result, obj):
     status = ''
     if obj.status == 1:
         status = '<span class="thanks" title="%s">√</span>' % obj.reply
-    html = '<a class="delete" href="#">[X]</a> %s %s:[%s] %s' % (status, username, obj.comment_num, plaintext2html(obj.content))
+    if obj.html:
+        content = obj.html
+    else:
+        content = plaintext2html(obj.content)
+    html = '<a class="delete" href="#">[X]</a> %s %s:[%s] %s' % (status, username, obj.comment_num, content)
 #    result.append({'username':username,
 #        'content':plaintext2html(obj.content), 'status':status,
 #        'createtime':obj.createtime.strftime("%b %d,%Y %I:%m %p")})

@@ -2,17 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import signals
 from django.dispatch import dispatcher
-import datetime
 from utils.rst2html import rst2html
 
+C_TEXTFORMAT = [('rst', 'reStructuredText')]
 class Book(models.Model):
     title = models.CharField(maxlength=100)
+    slug = models.CharField(maxlength=100, default='')
     description = models.TextField()
     authors = models.ManyToManyField(User)
     createdate = models.DateTimeField(auto_now_add=True)
     modifydate = models.DateTimeField(auto_now=True)
     icon = models.ImageField(upload_to="books_icon", blank=True, null=True)
     license = models.TextField(default='')
+    textformat = models.CharField(maxlength=20, choices=C_TEXTFORMAT, default='rst')
     
     class Admin:pass
     
@@ -21,6 +23,14 @@ class Book(models.Model):
         
     def __str__(self):
         return self.title
+    
+    def isAuthor(self, user):
+        if user.is_anonymous():
+            return False
+        for o in self.authors.all():
+            if o.id == user.id:
+                return True
+        return False
     
 class Chapter(models.Model):
     book = models.ForeignKey(Book)
@@ -67,6 +77,7 @@ class Comment(models.Model):
     email = models.EmailField()
     website = models.URLField(default='')
     content = models.TextField()
+    html = models.TextField(default='')
     status = models.IntegerField(choices=C_STATUS, default=0)
     replay = models.TextField(default='')
     createtime = models.DateTimeField(auto_now_add=True)

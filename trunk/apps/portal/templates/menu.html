@@ -1,7 +1,8 @@
 {% load utiltags %}
-{% expr [('homepage', 'Homepage', '/booklist/'), ('personal', 'Personal', '/user/%d/' % user.id), ('book', 'Book', '/user/%d/book/' % user.id)] as menuitems %}
+{% catch as ROOT %}{{ setting.URLROOT }}{% endcatch %}
+{% expr [('homepage', 'Homepage', ROOT + '/booklist/'), ('personal', 'Personal', ROOT + '/user/%d/' % user.id), ('book', 'Book', ROOT + '/user/%d/book/' % user.id)] as menuitems %}
 {% pyif not user.is_anonymous() and user.is_superuser %}
-    {% expr [('admin', 'Admin', '/admin/')] as adminmenuitems %}
+    {% expr [('admin', 'Admin', ROOT + '/admin/')] as adminmenuitems %}
 {% endif %}
 <div id="Tabs">
     <ul id="MainTabs">

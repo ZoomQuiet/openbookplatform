@@ -74,7 +74,7 @@ ol.toc span.release-date { color:gray; float: right; font-size: 85%; padding-rig
 ol.toc span.comment-count { font-size: 75%; color: #999; }
 
 /*** content ***/
-h1 { margin-bottom:.4em; border-bottom: 1px solid; }
+h1 { margin-bottom:.4em; border-bottom: 1px solid; padding-bottom:20px;}
 h2 { margin-top: 0.4em; margin-bottom: 0.8em; }
 h3 { margin-bottom:.6em; }
 h4 { margin-bottom:.2em;}

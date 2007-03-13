@@ -35,10 +35,10 @@ $(function(){
 });
 </script>
 {% catch as header %}
-    <h1><a href="/book/{{ book.id }}/{{ chapter.num }}/">{{ chapter.title }}</a></h1>
+    <h1><a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ chapter.num }}/">{{ chapter.title }}</a></h1>
 {% endcatch %}
 {% catch as content %}
-    <form id="upload_form" action="/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" method="post">
+    <form id="upload_form" action="{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" method="post">
         <div class="basic_form" id="upload">
 			<div id="message"></div>
             <p class="blockintro">Create a new book, and fill in information:</p>
@@ -63,7 +63,7 @@ $(function(){
     </form>
 {% endcatch %}
 {% catch as sidebar %}
-    <p><a href="/user/{{ user.id }}/book/{{ book.id }}/" class="admin" id="delete">{% trans "Return to table of contents" %}</a></p>
+    <p><a href="{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/" class="admin" id="delete">{% trans "Return to table of contents" %}</a></p>
     <h2>{% trans "Comments Manager" %}</h2>
     <div id="comments">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
 {% endcatch %}

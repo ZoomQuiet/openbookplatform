@@ -16,7 +16,7 @@ $(document).ready(function (){
 {% block content %}
 <h2>{% trans "Login" %}</h2>
 <div class="basic_form">
-	<form action="/login/" method="post" id="user_login">
+	<form action="{{ setting.URLROOT }}/login/" method="post" id="user_login">
 	{% if next %}<input type="hidden" name="next" value="{{ next }}"/>{% endif %}
 	<div id="message"></div>
 	<p class="blockintro">{% trans "Input username and password" %}</p>

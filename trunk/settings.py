@@ -83,7 +83,6 @@ INSTALLED_APPS = (
 
     'apps.users',
     'apps.books',
-    'apps.easyform',
     'apps.common',
     'apps.portal',
 )
@@ -96,6 +95,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.request',
+    'utils.setting_process.settings',
 )
 
 AUTH_PROFILE_MODULE = 'users.UserProfile'
@@ -106,3 +106,5 @@ CACHE_BACKEND = 'dummy:///'
 FILTERS = (
     (r'^user/(?P<user_id>\d+)/', 'apps.users.filter.check_valid_user'),
 )
+
+URLROOT = ''

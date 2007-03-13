@@ -82,7 +82,7 @@ def highlight(code, lang):
 
 def rst2html(text):
     text = to_html(text)
-    from BeautifulSoup import BeautifulSoup
+    from BeautifulSoup import BeautifulSoup, Tag
     soup = BeautifulSoup(text)
     r_comment = re.compile(r'^\s*\[(.*?)\]')
     max_id = 0
@@ -101,13 +101,20 @@ def rst2html(text):
                 needs.append(t)
             else:
                 max_id = max(int(_id), max_id)
-                t['id'] = 'cn%d' % int(_id)
+                s_id = 'cn%d' % int(_id)
+                t['id'] = s_id
                 t['class'] = 'cn'
+                a = Tag(soup, 'a', [('name', s_id)])
+                t.insert(0, a)
     if needs:
         for t in needs:
             max_id += 1
             t['id'] = 'cn%d' % max_id
             t['class'] = 'cn'
+            s_id = 'cn%d' % int(_id)
+            a = Tag(soup, 'a', [('name', s_id)])
+            t.insert(0, a)
+            
 #            t.contents[0].replaceWith(('[cn%d]' % max_id) + t.contents[0])
 #            print t
     return str(soup)

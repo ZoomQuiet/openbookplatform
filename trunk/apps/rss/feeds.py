@@ -1,13 +1,13 @@
 from utils.easyfeed import EasyFeed
-from django.utils.translation import gettext_lazy as _
 from apps.books.models import Book
+from django.conf import settings
 
 class BooksFeed(EasyFeed):
     def __init__(self, feed_url):
         super(BooksFeed, self).__init__(feed_url)
 
     def link(self):
-        return '/booklist/'
+        return settings.get('URLROOF', '') + '/booklist/'
     
     def items(self):
         return Book.objects.all()[:15]
@@ -19,7 +19,7 @@ class BooksFeed(EasyFeed):
         return u'Open Book Platform'
     
     def item_link(self, item):
-        return '/book/%d/' % item.id
+        return settings.get('URLROOF', '') + '/book/%d/' % item.id
     
     def item_description(self, item):
         return item.description
@@ -40,7 +40,7 @@ class BookFeed(EasyFeed):
         self.book = Book.objects.get(id=int(book_id))
 
     def link(self):
-        return '/book/%s' % self.book_id
+        return settings.get('URLROOF', '') + '/book/%s/' % self.book_id
     
     def items(self):
         return self.book.chapter_set.all()[:15]
@@ -52,7 +52,7 @@ class BookFeed(EasyFeed):
         return self.book.description
     
     def item_link(self, item):
-        return '/book/%d/%s/' % (item.book.id, item.num)
+        return settings.get('URLROOF', '') + '/book/%d/%s/' % (item.book.id, item.num)
     
     def item_description(self, item):
         return item.html
@@ -73,7 +73,7 @@ class BookCommentsFeed(EasyFeed):
         self.book = Book.objects.get(id=int(book_id))
 
     def link(self):
-        return '/book/%s' % self.book_id
+        return settings.get('URLROOF', '') + '/book/%s/' % self.book_id
     
     def items(self):
         return self.book.comment_set.all().order_by('-createtime')[:15]
@@ -85,7 +85,7 @@ class BookCommentsFeed(EasyFeed):
         return self.book.description
     
     def item_link(self, item):
-        return '/book/%s/%s' % (self.book_id, item.chapter.num)
+        return settings.get('URLROOF', '') + '/book/%s/%s/#%s' % (self.book_id, item.chapter.num, item.comment_num)
     
     def item_description(self, item):
         return item.content

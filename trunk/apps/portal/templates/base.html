@@ -25,15 +25,15 @@
           <tr>
             <td width="50%" align="left">{% block nav1 %}&nbsp;{% endblock %}</td>
             <td width="50%" align="right">{% block nav2 %}{% if not user.is_anonymous %}
-            Welcome: <b>{{ user.username }}</b> (<a href="/user/{{ user.id }}/">{% trans "Admin" %}</a> | <a href="/logout/">{% trans "Logout" %}</a>)
+            Welcome: <b>{{ user.username }}</b> (<a href="{{ setting.URLROOT }}/user/{{ user.id }}/">{% trans "Admin" %}</a> | <a href="{{ setting.URLROOT }}/logout/">{% trans "Logout" %}</a>)
             {% else %}
-            <a href="/login/">{% trans "Login" %}</a> | <a href="/register/">{% trans "Register" %}</a>
+            <a href="{{ setting.URLROOT }}/login/">{% trans "Login" %}</a> | <a href="{{ setting.URLROOT }}/register/">{% trans "Register" %}</a>
             {% endif %}
-             <a href="/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
+             <a href="{{ setting.URLROOT }}/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
 {% endblock %}</td>
           </tr>
         </table>
-        <h1>{% block title %}<a href="/booklist/">{% trans "The Open Book Platform" %}</a>{% endblock %}</h1>
+        <h1>{% block title %}<a href="{{ setting.URLROOT }}/booklist/">{% trans "The Open Book Platform" %}</a>{% endblock %}</h1>
         {% block nav %}{% endblock %}
       </div>
       <div id="bd">
@@ -45,7 +45,7 @@
    <a href="http://djangoproject.com" title="django powered"><img src="/site_media/img/django.gif" %}" alt="django site" width="80" height="15" /></a>
 </div>
         <div id="license">{% block license %}All books license are owned by the authors. 
-        If there is no license announcement, It'll use <a href="/license/">Gnu Free Document License</a>.{% endblock %}</div>
+        If there is no license announcement, It'll use <a href="{{ setting.URLROOT }}/license/">Gnu Free Document License</a>.{% endblock %}</div>
     </div>
 
     {% block other %}{% endblock %}

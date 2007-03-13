@@ -17,10 +17,11 @@ class AddCommentValidator(valid.Validator):
     def save(self, data):
         book = Book.objects.get(pk=int(self.book_id))
         chapter = Chapter.objects.get(num=self.chapter_num, book=book)
+        from utils.textconvert import plaintext2html
         
         obj = Comment.objects.create(book=book, chapter=chapter, comment_num=data['comment_num'],
             username=data['username'], email=data['email'], website=data['website'],
-            content=data['content'])
+            content=data['content'], html=plaintext2html(data['content']))
         
         return obj
     
