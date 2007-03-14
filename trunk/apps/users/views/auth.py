@@ -1,5 +1,5 @@
 import datetime
-
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db import transaction
@@ -7,7 +7,7 @@ from django.db import transaction
 from utils import ajax
 from utils import decorator
 from apps.users.views.authvalidator import LoginValidator, RegisterValidator
-from utils.common import render_template
+from utils.common import render_template, setting
 
 def user_login(request):
     v = LoginValidator()
@@ -36,12 +36,12 @@ def user_login(request):
             login(request, user)
             user.last_login = datetime.datetime.now()
             user.save()
-        return ajax.ajax_ok(True, next=request.POST.get('next', '/'))
+        return ajax.ajax_ok(True, next=request.POST.get('next', setting('URLROOT') + '/'))
 
 from django.dispatch import dispatcher
 import apps.users.signals
 
-@decorator.redirect('/')                
+@decorator.redirect(setting('URLROOT') + '/')                
 def user_logout(request):
     dispatcher.send(signal=apps.users.signals.user_logout, request=request)
     logout(request)
@@ -57,7 +57,7 @@ def user_register(request):
                 login(request, user)
                 user.last_login = datetime.datetime.now()
                 user.save()
-            return ajax.ajax_ok(True, next='/')
+            return ajax.ajax_ok(True, next=setting('URLROOT') + '/')
         return ajax.ajax_fail(obj)
     else:
         return render_template(request, 'users/register.html')

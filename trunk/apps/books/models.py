@@ -2,9 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import signals
 from django.dispatch import dispatcher
-from utils.rst2html import rst2html
 
-C_TEXTFORMAT = [('rst', 'reStructuredText')]
+C_TEXTFORMAT = [('rst', 'reStructuredText'), ('markdown', 'MarkDown')]
 class Book(models.Model):
     title = models.CharField(maxlength=100)
     slug = models.CharField(maxlength=100, default='')
@@ -51,7 +50,12 @@ class Chapter(models.Model):
         return self.title
     
     def save(self):
-        self.html = rst2html(self.content)
+        if self.book.textformat == 'rst':
+            from utils.rst2html import rst2html
+            self.html = rst2html(self.content)
+        elif self.book.textformat == 'markdown':
+            import markdown
+            self.html = markdown.markdown(self.content)
         super(Chapter, self).save()
 
 def post_save_chapter(sender, instance, signal, *args, **kwargs):

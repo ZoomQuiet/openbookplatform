@@ -8,13 +8,12 @@ class LoginValidator(valid.Validator):
     
 class RegisterValidator(valid.Validator):
     username = valid.CharField(max_length=30, min_length=4)
-    password = valid.CharField(max_length=30, min_length=4, validator_list=[validators.AlwaysMatchesOtherField('password1', _("Please enter the password"))])
+    password = valid.CharField(max_length=30, min_length=4, validator_list=[validators.AlwaysMatchesOtherField('password1', _("Password is not matched!"))])
     password1 = valid.CharField(max_length=30)
     email = valid.EmailField(max_length=30)
     
     def __init__(self, request):
         self.fields['username'].add_validator(self.isValidUser)
-        self.fields['password'].add_validator(self.isValidPassword)
         self.fields['email'].add_validator(self.isValidEmail)
 
     def isValidUser(self, field_data, all_data):
@@ -29,16 +28,7 @@ class RegisterValidator(valid.Validator):
         else:
             raise valid.ValidationError, _("The username has been registered, please try another one.")
     
-    def isValidPassword(self, field_data, all_data):
-        if len(field_data) < 4:
-            raise valid.ValidationError, _("For your account security, please don't use the password which length is less than 4.")
-
     def isValidEmail(self, field_data, all_data):
-        try:
-            validators.isValidEmail(field_data, None)
-        except validators.ValidationError:
-            raise valid.ValidationError,  "This email has been used."
-
         try:
             User.objects.get(email=field_data)
         except User.DoesNotExist:
@@ -56,15 +46,14 @@ class RegisterValidator(valid.Validator):
 
 class ChangeValidator(RegisterValidator):
     portrait = valid.ImageField(required=False)
+    __removed_fields__ = ['username']
     
-    def __init__(self, request, user_id):
-        self.user_id = user_id
-        del self.fields['username']
+    def __init__(self, request):
         self.fields['password'].required = False
         self.fields['password1'].required = False
    
-    def save(self, data):
-        u = User.objects.get(pk=int(self.user_id))
+    def save(self, data, user_id):
+        u = User.objects.get(pk=int(user_id))
         u.email = data['email']
         if data.get('password', ''):
             u.set_password(data['password'])

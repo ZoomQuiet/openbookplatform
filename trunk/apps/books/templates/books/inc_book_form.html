@@ -6,12 +6,24 @@
             <input type="text" name="title" value="{{ book.title }}"/>
         </p>
         <p>
+            <lable class="require">{% trans "Slug" %}:</lable>
+            <input type="text" name="slug" value="{{ book.slug }}"/>
+        </p>
+        <p>
             <lable class="require">{% trans "Description" %}:</lable></dt>
             <textarea rows="3" cols="40" name="description">{{ book.description }}</textarea>
         </p>
         <p>
             <lable>{% trans "License" %}:</lable>
             <textarea rows="2" cols="40" name="license">{{ book.license }}</textarea>
+        </p>
+        <p>
+            <lable class="require">{% trans "Text Format" %}:</lable>
+            <select name="textformat">
+                <option value="">---------</option>
+                <option value="rst" {% ifequal book.textformat "rst" %}selected{% endifequal %}>reStructureText</option>
+                <option value="markdown" {% ifequal book.textformat "markdown" %}selected{% endifequal %}>MarkDown</option>
+            </select>
         </p>
         <p>
             <lable>{% trans "Logo" %}:</lable>

@@ -26,7 +26,7 @@
 #    
 #This module is new, so many things could be changed.
 #
-#Version: 0.4
+#Version: 0.5
 #Author: limodou<limodou AT gmail.com>
 #Update:
 #    * 2007/02/17 0.1
@@ -34,6 +34,7 @@
 #    * 2007/03/04 0.3 Add COOKIES and GET support, so the validate data will come 
 #                     from GET, POST, COOKIES, FILES
 #    * 2007/03/06 0.4 Add FileField, ImageField support
+#    * 2007/03/14 0.5 Add model support
 
 
 import datetime
@@ -61,9 +62,9 @@ try:
 except:
     from sets import Set as set
     
-#from django.utils.translation import gettext as _
-def _(v):
-    return v
+from django.utils.translation import gettext as _
+#def _(v):
+#    return v
 
 class SortedDictFromList(SortedDict):
     "A dictionary that keeps its keys in the order in which they're inserted."
@@ -105,6 +106,9 @@ class Field(object):
             
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
+        
+    def __str__(self):
+        return '<%s:field_name=%r,required=%r,default=%s\nvalidator_list=%r>' % (self.__class__.__name__, self.field_name, self.required, self.default, self.validator_list)
             
     def get_data_from_datadict(self, all_data):
         if not self.multi_value or not isinstance(all_data, MultiValueDict):
@@ -157,16 +161,27 @@ class ValidatorMetaclass(type):
     """
     def __new__(cls, name, bases, attrs):
         fields = []
+        removed_fields = attrs.get('__removed_fields__', [])
+        has_fields = attrs.get('__has_fields__', [])
+        model = attrs.get('__model__', None)
+        if model:
+            opts = model._meta
+            for f in opts.fields:
+                if f.name not in removed_fields and ((has_fields and f.name in has_fields) or not has_fields):
+                    p = convert_model_field(f)
+                    if p:
+                        #print '-------------', p, p.field_name
+                        fields.append((p.field_name, p))
+        else:
+            attrs['__model__'] = None
+                    
         for field_name, obj in attrs.items():
-            if isinstance(obj, Field):
+            if isinstance(obj, Field) and field_name not in removed_fields:
                 obj = attrs.pop(field_name)
                 obj.field_name = field_name
                 fields.append((field_name, obj))
         fields.sort(lambda x, y: cmp(x[1].creation_counter, y[1].creation_counter))
 
-        # If this class is subclassing another Form, add that Form's fields.
-        # Note that we loop over the bases in *reverse*. This is necessary in
-        # order to preserve the correct order of fields.
         for base in bases[::-1]:
             if hasattr(base, 'base_fields'):
                 fields = base.base_fields.items() + fields
@@ -176,6 +191,7 @@ class ValidatorMetaclass(type):
         old_init = attrs.get('__init__', None)
         def _f(self, *args, **kwargs):
             self.fields = self.base_fields.copy()
+            self._clean_data = None
             if old_init:
                 old_init(self, *args, **kwargs)
         attrs['__init__'] = _f
@@ -228,17 +244,21 @@ class Validator(object):
             if errors or not flag:
                 return False, errors
             
+            self._clean_data = result
             return True, result
             
         else:
             return False, {'_':_(u'There is not data posted.')}
         
-    def validate_and_save(self, request):
+    def validate_and_save(self, request, object_id=None):
         flag, result = self.validate(request)
         if flag:
             #then try do the save
             try:
-                obj = self.save(result)
+                if object_id is None:
+                    obj = self.save(result)
+                else:
+                    obj = self.default_update(result, object_id)
             except:
                 import traceback
                 traceback.print_exc()
@@ -247,9 +267,40 @@ class Validator(object):
             return True, obj
         else:
             return flag, result
+        
+    def _get_clean_data(self):
+        if self._clean_data is None:
+            raise Exception, _('Validate method has not been executed!')
+        return self._clean_data
 
     def save(self, data):
-        pass
+        return self.default_save(data)
+        
+    def default_save(self, data):
+        if self.__model__:
+            params = {}
+            for f in self.__model__._meta.fields:
+                v = data.get(f.name, None)
+                if v is not None:
+                    params[f.name] = v
+            
+            return self.__model__._default_manager.create(**params)
+        raise ValidationError, _('Cannot find the __model__ attribute.')
+        
+    def default_update(self, data, object_id_or_instance):
+        if self.__model__:
+            if not isinstance(object_id_or_instance, self.__model__):
+                _id = int(object_id_or_instance)
+                obj = self.__model__._default_manager.get(id=_id)
+            else:
+                obj = object_id_or_instance
+            for f in self.__model__._meta.fields:
+                v = data.get(f.name, None)
+                if v is not None:
+                    setattr(obj, f.name, v)
+            obj.save()
+            return obj
+        raise ValidationError, _('Cannot find the __model__ attribute.')
     
     def full_validate(self, new_data, all_data):
         pass
@@ -409,8 +460,8 @@ class URLField(RegexField):
         return data
     
 class BooleanField(Field):
-    def __init__(self):
-        super(BooleanField, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(BooleanField, self).__init__(*args, **kwargs)
         
     def convert(self, data, all_data=None):
         if isinstance(data, basestring):
@@ -427,8 +478,8 @@ class BooleanField(Field):
                 raise ValidationError, _(u'Need a boolean value.')
             
 class ComboField(Field):
-    def __init__(self, fields=()):
-        super(ComboField, self).__init__()
+    def __init__(self, fields=(), *args, **kwargs):
+        super(ComboField, self).__init__(*args, **kwargs)
         self.fields = fields
 
     def get_data_from_datadict(self, all_data):
@@ -464,11 +515,14 @@ class ComboField(Field):
         raise Exception, 'Not implement yet!'
     
 class SplitDateTimeField(ComboField):
-    def __init__(self, date_fieldname, time_fieldname):
-        self.date_fieldname = date_fieldname
-        self.time_fieldname = time_fieldname
-        fields = [DateField(field_name=date_fieldname), TimeField(field_name=time_fieldname)]
-        super(SplitDateTimeField, self).__init__(fields)
+    def __init__(self, date_field, time_field, field_name=None, *args, **kwargs):
+        '''
+        field_name should be (date_fieldname, time_fieldname)
+        '''
+        self.date_fieldname = date_field
+        self.time_fieldname = time_field
+        fields = [DateField(field_name=self.date_fieldname, *args, **kwargs), TimeField(field_name=self.time_fieldname, *args, **kwargs)]
+        super(SplitDateTimeField, self).__init__(fields, field_name=field_name, *args, **kwargs)
         
     def convert(self, data, all_data=None):
         try:
@@ -527,6 +581,57 @@ def isMultipleChoices(choices):
             raise ValidationError, _(u'Select a valid choice. That choice is not one of the available choices.')
     return _f
             
+from django.db import models
+
+fields_mapping = [
+    (BooleanField, models.BooleanField),
+    (CharField, (models.CharField, models.FilePathField, models.IPAddressField, models.PhoneNumberField, models.SlugField, models.TextField, models.USStateField, models.XMLField)),
+    (DateField, models.DateField),
+    (EmailField, models.EmailField),
+    (FileField, models.FileField),
+    (ImageField, models.ImageField),
+    (IntegerField, (models.IntegerField, models.OrderingField, models.PositiveIntegerField, models.SmallIntegerField, models.PositiveSmallIntegerField)),
+    (SplitDateTimeField, models.DateTimeField),
+    (TimeField, models.TimeField),
+    (URLField, models.URLField),
+]
+def convert_model_field(field):
+    flag = False
+    fk = None
+    if field.__class__.__name__ == 'AutoField':
+        return
+    
+    kwargs = {'field_name':field.name}
+    fieldclass = field.__class__.__name__
+    for f, fields in fields_mapping:
+        if isinstance(fields, (list, tuple)):
+            for i in fields:
+                if i.__name__ == fieldclass:
+                    flag = True
+                    break
+        else:
+            if fields.__name__ == fieldclass:
+                flag = True
+        if flag:
+            fk = f
+            #for now editable only used for date* field
+            if not field.editable:
+                return
+            if field.blank:
+                kwargs['required'] = False
+            if field.default is not models.NOT_PROVIDED:
+                kwargs['default'] = field.default
+            break
+    if fk in [BooleanField, DateField, EmailField, FileField, ImageField, IntegerField, TimeField, URLField]:
+        return fk(**kwargs)
+    elif fk in [CharField]:
+        kwargs['max_length'] = field.maxlength
+        return fk(**kwargs)
+    elif fk in [SplitDateTimeField]:
+        return fk(field.name + '_date', field.name + '_time', **kwargs)
+    else:
+        print 'Cannot find a match field', field
+                    
 if __name__ == '__main__':
     c = CharField()
     print c.validate_and_get('abc')
@@ -587,6 +692,7 @@ if __name__ == '__main__':
         email = EmailField()
         age = IntegerField()
         password = CharField()
+        __removed_fields__ = ['age']
         
         def __init__(self):
             self.fields['username'].add_validator(self.AnotherValidator)
@@ -603,8 +709,18 @@ if __name__ == '__main__':
             return
         
     t = TV()
+    print t.fields
     print t.validate_and_save(data)
     t = TV()
     print t.validate_and_save(data)
+    
+    from django.contrib.auth.models import User
+    class TV1(Validator):
+        __model__ = User
+        
+    t = TV1()
+    for f, o in t.fields.items():
+        print f, o
+    
     
     

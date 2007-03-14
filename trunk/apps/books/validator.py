@@ -30,6 +30,8 @@ class BookValidator(valid.Validator):
     description = valid.CharField()
     license = valid.CharField(required=False, default='')
     icon = valid.CharField(required=False)
+    textformat = valid.CharField()
+    slug = valid.CharField()
     
     def __init__(self, request, object_id=None):
         self.object_id = object_id
@@ -37,13 +39,16 @@ class BookValidator(valid.Validator):
         
     def save(self, data):
         if not self.object_id:
-            obj = Book.objects.create(title=data['title'], description=data['description'], license=data['license'])
+            obj = Book.objects.create(title=data['title'], description=data['description'], 
+                license=data['license'], textformat=data['textformat'], slug=data['slug'])
             obj.authors.add(self.request.user)
         else:
             obj = Book.objects.get(pk=int(self.object_id))
             obj.title = data['title']
             obj.description = data['description']
             obj.license = data['license']
+            obj.textformat = data['textformat']
+            obj.slug = data['slug']
             obj.save()
             
         if data['icon']:

@@ -98,12 +98,26 @@ $(document).ready(function (){
                     <dd><input type="text" name="title" value=""/><dd>
                 </dl>
                 <dl>
+                    <dt class="required"><lable>{% trans "Slug" %}:</lable></dt>
+                    <dd><input type="text" name="slug" value=""/><dd>
+                </dl>
+                <dl>
                     <dt class="required"><lable>{% trans "Description" %}:</lable></dt>
                     <dd><textarea rows="3" cols="40" name="description"></textarea><dd>
                 </dl>
                 <dl>
                     <dt class="required"><lable>{% trans "License" %}:</lable></dt>
                     <dd><textarea rows="2" cols="40" name="license">{% trans "Writedown your license here." %}</textarea><dd>
+                </dl>
+                <dl>
+                    <dt class="required">{% trans "Text Format" %}:</dt>
+                    <dd>
+                        <select name="textformat">
+                            <option value="">---------</option>
+                            <option value="rst">reStructureText</option>
+                            <option value="markdown">MarkDown</option>
+                        </select>
+                    </dd>
                 </dl>
                 <dl>
                     <dt class="required"><lable>{% trans "Logo" %}:</lable></dt>
