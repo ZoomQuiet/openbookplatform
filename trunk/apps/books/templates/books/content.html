@@ -9,7 +9,7 @@
       <span class="release-date">
           {{ obj.modifydate|date:"F j,Y" }}
       </span>
-      <a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ obj.num }}/" title="{{ obj.abstract }}">
+      <a href="{{ obj.num }}/" title="{{ obj.abstract }}">
           {{ obj.title }}
       </a>
       {% if obj.comment_count %}

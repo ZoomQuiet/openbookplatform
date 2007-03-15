@@ -3,7 +3,7 @@ $.fn.paginate = function(prefix, cur, count){
         return this;
     var d = $('<div class="pageMod"></div>');
     if (prefix.endswith('/'))
-        prefix = prefix.substring(0, prefix.length-1)
+        prefix = prefix.substring(0, prefix.length-1);
     d.append('<p class="count">Total <strong>$1</strong> Pages</p>'.template([cur, count]));
     if (cur > 0){
         var ul = $('<ul class="pages"></ul>');
@@ -29,4 +29,4 @@ $.fn.paginate = function(prefix, cur, count){
     }
     $(this).append(d);
     return this;
-}
+};

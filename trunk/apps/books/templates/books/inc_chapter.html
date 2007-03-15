@@ -24,13 +24,7 @@ function handle_list(data){
 }
 
 $(function(){
-    on_success_finish = function(obj, data){
-    	setTimeout(function(){
-            $('#message').clearmessage();
-        }, 1000);
-    }
-    var ajax_form = new AjaxForm('#upload_form', 
-        {'on_success_finish':on_success_finish});
+    $('#upload_form').jform();
     $.post('comments/', {}, handle_list);
 });
 </script>

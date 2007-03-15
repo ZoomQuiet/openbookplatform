@@ -6,11 +6,9 @@
 <div id="pages"></div>
 {% endblock %}
 {% block js %}
-<script type="text/javascript" src="/site_media/js/jQuery.js"></script>
-<script type="text/javascript" src="/site_media/js/jBasicExt.js"></script>
-<script type="text/javascript" src="/site_media/js/paginate.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.paginate.pack.js"></script>
 <script type="text/javascript">
-var ajax_url = '{{ setting.URLROOT }}/booklist/ajax_list/';
+var ajax_url = 'ajax_list/';
 function createtable(target, data){
 	var table = $('<table width="100%"><tbody></tbody></table>')
 	$.each(data, function(n){

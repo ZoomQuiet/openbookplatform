@@ -22,10 +22,17 @@ def _get_data(request, obj):
         'checkbox':checkbox})
 
 def user_books_list(request, object_id):
-    user = User.objects.get(pk=int(object_id))
+    #because filtermiddleware guarantee the url match with request.user
+    #so here don't need to get the user object, but just using request.user
+#    user = User.objects.get(pk=int(object_id))
+    user = request.user
     pagenum = 10
     result = []
-    objs = user.book_set.all()
+    #if the user is superuser, then all book will be shown
+    if user.is_superuser:
+        objs = Book.objects.all()
+    else:
+        objs = user.book_set.all()
     page = Page(objs, request, paginate_by=pagenum)
     for o in page.object_list:
         result.append(_get_data(request, o))

@@ -23,10 +23,10 @@
 <script type="text/javascript" src="/site_media/js/ifxslide.js"></script>
 <script type="text/javascript" src="/site_media/js/ifx.js"></script>
 <script type="text/javascript" src="/site_media/js/jquery.tabs.pack.js"></script>
-<script type="text/javascript" src="/site_media/js/ajax_form.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
 <script type="text/javascript" src="/site_media/js/jq-corner.js"></script>
 <script type="text/javascript">
-var ajax_url = '/book/{{ book.id }}/{{ chapter.num }}/commentsinfo/';
+var ajax_url = 'commentsinfo/';
 var comment_num;
 function createcomments(data, fresh){
     var fresh = fresh || 'yes';
@@ -49,7 +49,7 @@ function createcomments(data, fresh){
             $('#modelwindow').show();
             if (data[id]){
                 $('#comments').triggerTab(2);
-                $.post('/book/{{ book.id }}/{{ chapter.num }}/'+id+'/', {}, function(data){
+                $.post(id+'/', {}, function(data){
                     var result = data.evalJson();
                     if (result.response == 'ok'){
                     	var data = result.data;
@@ -65,7 +65,6 @@ function createcomments(data, fresh){
             var left = $(window).width()/2 - win.width()/2;
             var t = window.scrollY + $(window).height()/2 - win.height()/2;
             win.css({'top':t+'px', 'left':left+'px'});
-            //$.iUtil.centerEl($('#comments').parent().parent().get(0));
             $('#comments').parent().parent().show();
         });
     });
@@ -84,7 +83,7 @@ createcommentslist = function(data, o){
 
 onClick = function(t, o){
     if($(t).attr('tabindex') == 2){
-        $.post('/book/{{ book.id }}/{{ chapter.num }}/'+comment_num+'/', {}, function(data){
+        $.post(comment_num+'/', {}, function(data){
             var result = data.evalJson();
             if (result.response == 'ok'){
             	var data = result.data;
@@ -93,7 +92,7 @@ onClick = function(t, o){
         });
     }
     if($(t).attr('tabindex') == 3){
-        $.post('/book/{{ book.id }}/{{ chapter.num }}/allcomments/', {}, function(data){
+        $.post('allcomments/', {}, function(data){
             var result = data.evalJson();
             if (result.response == 'ok'){
                 var data = result.data;
@@ -129,9 +128,8 @@ $(document).ready(function (){
     on_success_finish = function(obj, r){
         $.post(ajax_url, {}, handle_post);
     }
-    var commentform = new AjaxForm('#commentform', 
-        {'trigger':'#comment-submit', 
-        'messageid':'#comments-message',
+    $('#commentform').jform({'trigger':'#comment-submit', 
+        'messageid':'#comments-message','delaytime':2000,
         'on_success_finish':on_success_finish});
 });
 </script>

@@ -74,8 +74,11 @@ jQuery.extend({
                         // Fire the global callback
                         if( s.global )
                             jQuery.event.trigger( "ajaxSuccess", [xml, s] );
-                    } else
+                    } else{
                         jQuery.handleError(s, xml, status);
+                        if ( s.error )
+                            s.error(status);
+                    }
                 } catch(e) {
                     status = "error";
                     jQuery.handleError(s, xml, status, e);
@@ -125,6 +128,8 @@ jQuery.extend({
             else{
                 s.uploadform.enctype = 'multipart/form-data';
             }
+            if(s.beforeSend)
+                s.beforeSend();
 
             s.uploadform.submit();
 

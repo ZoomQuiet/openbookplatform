@@ -48,12 +48,13 @@ class ChangeValidator(RegisterValidator):
     portrait = valid.ImageField(required=False)
     __removed_fields__ = ['username']
     
-    def __init__(self, request):
+    def __init__(self, request, user_id):
+        self.user_id = user_id
         self.fields['password'].required = False
         self.fields['password1'].required = False
    
-    def save(self, data, user_id):
-        u = User.objects.get(pk=int(user_id))
+    def save(self, data):
+        u = User.objects.get(pk=int(self.user_id))
         u.email = data['email']
         if data.get('password', ''):
             u.set_password(data['password'])

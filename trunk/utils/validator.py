@@ -250,15 +250,12 @@ class Validator(object):
         else:
             return False, {'_':_(u'There is not data posted.')}
         
-    def validate_and_save(self, request, object_id=None):
+    def validate_and_save(self, request):
         flag, result = self.validate(request)
         if flag:
             #then try do the save
             try:
-                if object_id is None:
-                    obj = self.save(result)
-                else:
-                    obj = self.default_update(result, object_id)
+                obj = self.save(result)
             except:
                 import traceback
                 traceback.print_exc()

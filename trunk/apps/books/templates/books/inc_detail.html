@@ -77,21 +77,14 @@ $(document).ready(function (){
 			this.reset();
 		});
 		$.post('chapters/', {}, handle_list);
-	}
-	var upload_form = new AjaxForm('#upload_form', 
-		{'on_success_finish':on_success_finish, 
-			'messageid':'#addchapter div.message',
-			'errortag':'p'});
+	};
+	$('#upload_form').jform({'on_success_finish':on_success_finish, 
+			'messageid':'#addchapter div.message'});
 	on_modify_success_finish = function(obj, data){
 		$('#modifybook').parent().parent().slideUp('high').hide();
-		$('#book_edit_form').each(function(){
-			this.reset();
-		});
 	}
-	var modify_form = new AjaxIFrame('#book_edit_form', 
-		{'on_success_finish':on_modify_success_finish, 
-			'messageid':'#modifybook div.message',
-			'errortag':'p'});
+	$('#book_edit_form').jfileform({'on_success_finish':on_modify_success_finish, 
+			'messageid':'#modifybook div.message'});
 });
 </script>
 {% catch as header %}
@@ -145,10 +138,8 @@ $(document).ready(function (){
 		on_addauthor_success_finish = function(obj, data){
 			$.post('authors/', {}, handle_authors);
 		}
-		var addauthor_form = new AjaxForm('#addauthor', 
-			{'on_success_finish':on_addauthor_success_finish, 
-				'messageid':'#author_message',
-				'errortag':'p'});
+		$('#addauthor').jform({'on_success_finish':on_addauthor_success_finish, 
+				'messageid':'#author_message'});
 	});
 	</script>
 	<div id="author_message"></div>
