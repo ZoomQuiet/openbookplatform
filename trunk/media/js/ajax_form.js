@@ -4,172 +4,176 @@
 *              jBasicExt.js (also written by limodou)
 *              jQuery
 */
+(function($){
 
-__data_handle = function(target, data){
-    var obj = target;
-    var e = obj.form;
-    //remove all error infos
-    $('.error', e).remove();
+$.fn.jform=function(o, file/* true or false */){
+	var _o = {
+		trigger: $("input.submit,input[@type='submit']", form),
+		errortag:'dd',
+		delaytime: 0,
+		messageid: '#message',
+		loadingimg: '/site_media/img/ajax_loading.gif',
+		file: file || false
+	};
+	return this.each(function(){
+		var t = $(this);
+		$.extend(_o, o);
+		$.jform.hookajax(t, o);
+	});
+};
 
-    //evaluate the result
-    var r = data;
-    if (typeof(data) == 'string')
-        r = data.evalJson();
-    
-    if (r['response'] == 'ok'){ //success
-        //call onsuccess callback
-        if (obj.options['onsuccess'])
-            obj.options['onsuccess'](obj, r);
-        else{
-            //call ondata callback
-            if(r['data'] && obj.options['ondata']){
-                obj.options['ondata'](obj, r['data']);
-            }
-            //if there is a next hidden text, then redirect to next url
-            var next = r['next'];
-            if (next)
-                window.location = next;
-            else if (r['message']){
-                $((obj.options['messageid'] || '#message')).setmessage(r['message']);
-            }
-            if(obj.options['on_success_finish'])
-                obj.options['on_success_finish'](obj, r);
-        }
-    }
-    else{   //error
-        if(obj.options['onerror'])
-            obj.options['onerror'](obj, r['error']);
-        else{
-            $H(r['error']).each(function(k, v){
-                var err = v;
-                if (v.constructor == Array)
-                    err = ','.join(v)
-                if (k == '_')   //global error message
-                    $((obj.options['messageid'] || '#message')).setmessage(v);
-                else{
-                    $("[@name='$0']".template([k]), e).parent().after('<' + obj.options['errortag'] + ' class="error">' + err + '</' + obj.options['messageid'] + '>');
-                }
-            });
-            if (r['message']){
-                $((obj.options['messageid'] || '#message')).setmessage(r['message']);
-            }
-            if(obj.options['on_error_finish'])
-                obj.options['on_error_finish'](obj, r);
-        }
-    }
-    if(obj.options['onfinish'])
-        obj.options['onfinish'](obj, r);
-}
+$.fn.jfileform=function(o){return $(this).jform(o, true)};
 
-/*
-    AjaxForm will make a normal form into an ajax invoke
-    
-    options:
-    
-    messageid(string): message div's id, ajax_form will display message into this element
-    onsuccess(function(this, result)): if user hook this event, after call this function ajax_form will return
-    ondata(function(this, result)): deal the result, default doing nothing
-    on_success_finish(function(this, result)): after the success
-    on_error_finish(function(this, result)): after the fail
-    on_finish(function(this, result)): after the ajax call
-    
-    for example:
-    
-    on_finish = function(obj, r){
-    }
-    
-    var f = AjaxForm('#upload_form', {'on_finish':on_finish});
-*/
-AjaxForm = function(form, options){
-    this.options = {
-        trigger: $("input.submit,input[@type='submit']", form),
-        errortag:'dd'
-    };
-    $.extend(this.options, options);
-    this.form = $(form);
-    this.hookajax();
-}
+$.jform = {
+	setdata: function(e, data){
+		$H(data).each(function(k, v){
+			$("[@name='$0']".template([k]), e).val(v);
+		});
+	},
 
-Object.extend(AjaxForm.prototype, {
-    setdata: function(objs){
-        $H(objs).each(function(k, v){
-            $("[@name='$0']".template([k]), this.e).val(v);
-        });
-        return this;
-    },
-
-    hookajax: function(){
-        var obj = this;
-        var e = this.form;
-        //disable form submit event
-        e.submit(function(){return false;});
-        
-        $(obj.options['trigger']).click(function(){
-            var url = obj.options['url'] || '';
-            if (!url)
-                url = obj.form.attr('action');
-            if (!url.endswith('/'))
-                url = url + '/';
-            callback = function(data){
-                __data_handle(obj, data);
-            }
-            $.post(url, $(e).getdict(), callback);
-        });
-        return this;
-    }
-    
+	hookajax: function(e, o){
+		//disable form submit event
+		e.submit(function(){return false;});
+		var tg = $(o.opts['trigger']);
+		tg.click(function(){
+			var url = o.opts['url'] || '';
+			if (!url)
+				url = o.form.attr('action');
+			if (!url.endswith('/'))
+				url = url + '/';
+			$.jform.call_func(o, 'onbegin', r);
+			if (o.opts['file']){
+				$.ajaxUpload({
+					uploadform: f.get(0),
+					url: url,
+					secureuri: false,
+					dataType: 'text',
+					success: callback
+				});
+			}
+			else{
+				$.ajax({
+					type: 'POST',
+					url: url,
+					data: $(e).getdict(),
+					beforeSend: function(r){
+						tg.attr('disabled', true).before('<img src="$0" class="loading" align="absmiddle"/>'.template([o.opts['loadingimg']]));
+					},
+					success: function(data){
+						$.jform.data_handle(o, data);
+					},
+					error: function(r, e, d){
+						$.jform.disp_message(o, e);
+					},
+					complete: function(){
+						tg.attr('disabled', false).prev('img.loading').remove();
+					}
+				});
+			}
+		});
+	},
+	
+	data_handle = function(t, data){
+		var o = t;
+		var e = o.form;
+		//remove all error infos
+		$('.error', e).remove();
+	
+		//evaluate the result
+		var r = data;
+		if (typeof(data) == 'string')
+			r = data.evalJson();
+		
+		if (r['response'] == 'ok'){ //success
+			//call onsuccess callback
+			if (!$.jform.call_func(o, 'onsuccess', r))
+			{
+				//call ondata callback
+				if(r['data']){
+					$.jform.call_func(o, 'ondata', r['data']);
+				}
+				//if there is a next hidden text, then redirect to next url
+				var next = r['next'];
+				if (next)
+					window.location = next;
+				else{
+					$.jform.disp_message(o, r['message']);
+				}
+				$.jform.call_func(o, 'on_success_finish', r);
+			}
+		}
+		else{   //error
+			if(!$.jform.call_func(o, 'onerror', r))
+			{
+				$H(r['error']).each(function(k, v){
+					var err = v;
+					if (v.constructor == Array)
+						err = ','.join(v)
+					if (k == '_')   //global error message
+						disp_message(o, v);
+					else{
+						$("[@name='$0']".template([k]), e).parent().after('<' + o.opts['errortag'] + ' class="error">' + err + '</' + o.opts['messageid'] + '>');
+					}
+				});
+				$.jform.disp_message(o, r['message']);
+				$.jform.call_func(o, 'on_error_finish', r);
+			}
+		}
+		$.jform.call_func(o, 'onfinish', r);
+	},
+	
+	disp_message = function(o, msg){
+		if (msg)
+			$(o.opts['messageid']).setmessage(msg, o.opts['delaytime']);
+	},
+	
+	call_func = function(o, funcname, r){
+		if(o.opts[funcname]){
+			o.opts[funcname](o, r);
+			return true;
+		}
+		else return false;
+	}
+	
+	
 });
 
-/*
-    AjaxIFrame will make a normal form into an ajax invoke, and it will
-    use iframe to submit the form, so this will support file upload
-    
-    options:
-    
-    messageid(string): message div's id, ajax_form will display message into this element
-    onsuccess(function(this, result)): if user hook this event, after call this function ajax_form will return
-    ondata(function(this, result)): deal the result, default doing nothing
-    on_success_finish(function(this, result)): after the success
-    on_error_finish(function(this, result)): after the fail
-    on_finish(function(this, result)): after the ajax call
-    
-    for example:
-    
-    on_finish = function(obj, r){
-    }
-    
-    var f = AjaxIFrame('#upload_form', {'on_finish':on_finish});
-*/
-AjaxIFrame = function(form, options){
-    this.options = {
-        trigger: "input.submit,input[@type='submit']",
-        errortag:'dd'
-    };
-    $.extend(this.options, options);
-    this.form = $(form);
-    this.hookajax();
+})(jQuery);
+
+
+AjaxIFrame = function(form, opts){
+	this.opts = {
+		trigger: "input.submit,input[@type='submit']",
+		errortag:'dd',
+		delaytime: 0,
+		messageid: '#message',
+		loadingimg: '/site_media/img/ajax_loading.gif'
+	};
+	$.extend(this.opts, opts);
+	this.form = $(form);
+	this.hookajax();
 }
 
 Object.extend(AjaxIFrame.prototype, {
-    hookajax: function(){
-        var obj = this;
-        var f = this.form;
-        $(obj.options['trigger']).click(function(){
-            var url = obj.options['url'] || '';
-            if (!url)
-                url = obj.form.attr('action');
-            if (!url.endswith('/'))
-                url = url + '/';
-            callback = function(data){
-                __data_handle(obj, data);
-            }
-            $.ajaxUpload({
-                uploadform: f.get(0),
-                url: url,
-                secureuri: false,
-                dataType: 'text',
-                success: callback
-            });
-        });
-    }
+	hookajax: function(){
+		var o = this;
+		var f = this.form;
+		$(o.opts['trigger']).click(function(){
+			var url = o.opts['url'] || '';
+			if (!url)
+				url = o.form.attr('action');
+			if (!url.endswith('/'))
+				url = url + '/';
+			callback = function(data){
+				__data_handle(o, data);
+			}
+			$.ajaxUpload({
+				uploadform: f.get(0),
+				url: url,
+				secureuri: false,
+				dataType: 'text',
+				success: callback
+			});
+		});
+	}
 });
