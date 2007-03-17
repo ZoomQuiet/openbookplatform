@@ -69,8 +69,8 @@ $(document).ready(function (){
 			}
 		});
 	});
-	$('#addchapter').model({trigger: '#add', title:'New Chapter', center:true});
-	$('#modifybook').model({trigger: '#modify', title:'Change Book Information', center:true});
+	$('#addchapter').modal({trigger: '#add', title:'New Chapter', center:true});
+	$('#modifybook').modal({trigger: '#modify', title:'Change Book Information', center:true});
 	on_success_finish = function(obj, data){
 		$('#addchapter').parent().parent().slideUp('high').hide();
 		$('#upload_form').each(function(){
@@ -92,7 +92,7 @@ $(document).ready(function (){
     <h3><a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
 {% endcatch %}
 {% catch as content %}
-	<div class="modelform" id="addchapter" style="display:none;">
+	<div class="modalform" id="addchapter" style="display:none;">
 		<form id="upload_form" enctype="multipart/form-data" action="addchapter/" method="post">
 			<div class="bd">
 				<p>{% trans "Create a new book, and fill in information" %}:</p>
@@ -121,7 +121,7 @@ $(document).ready(function (){
 			</div>
 		</form>
 	</div>
-	<div class="modelform" id="modifybook" style="display:none">{% include "books/inc_book_form.html" %}</div>
+	<div class="modalform" id="modifybook" style="display:none">{% include "books/inc_book_form.html" %}</div>
     <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
 	<div id="pages"></div>
 {% endcatch %}
