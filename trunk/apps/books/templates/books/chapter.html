@@ -11,7 +11,7 @@
 {% block nav_footer %}<div class="nav-footer">{% if prev %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="{{ setting.URLROOT }}/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
 
 {% block css %}
-<link href="/site_media/js/model.css" rel="stylesheet" type="text/css" />
+<link href="/site_media/js/modal.css" rel="stylesheet" type="text/css" />
 <link href="/site_media/js/tabs.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
@@ -19,9 +19,9 @@
 <script type="text/javascript" src="/site_media/js/dimensions.js"></script>
 <script type="text/javascript" src="/site_media/js/iutil.js"></script>
 <script type="text/javascript" src="/site_media/js/iresizable.js"></script>
-<script type="text/javascript" src="/site_media/js/model.js"></script>
-<script type="text/javascript" src="/site_media/js/ifxslide.js"></script>
-<script type="text/javascript" src="/site_media/js/ifx.js"></script>
+<script type="text/javascript" src="/site_media/js/modal.js"></script>
+<!-- <script type="text/javascript" src="/site_media/js/ifxslide.js"></script>
+<script type="text/javascript" src="/site_media/js/ifx.js"></script> -->
 <script type="text/javascript" src="/site_media/js/jquery.tabs.pack.js"></script>
 <script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
 <script type="text/javascript" src="/site_media/js/jq-corner.js"></script>
@@ -46,7 +46,7 @@ function createcomments(data, fresh){
         $(div).appendTo(this).click(function(){
             $('#highlight-floater').remove();
             $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 135px; top: $0; height: $1;"/>'.template([top+'px', height]));
-            $('#modelwindow').show();
+            $('#modalwindow').show();
             if (data[id]){
                 $('#comments').triggerTab(2);
                 $.post(id+'/', {}, function(data){
@@ -69,7 +69,7 @@ function createcomments(data, fresh){
         });
     });
     if (fresh == 'yes'){
-        $('#comments').tabs({onClick:onClick}).model({trigger:'div.comment-indicator'}, null, unload);
+        $('#comments').tabs({onClick:onClick}).modal({trigger:'div.comment-indicator'}, null, unload);
     }
 }
 
@@ -103,7 +103,7 @@ onClick = function(t, o){
 }
 
 function unload(w){
-    w.slideUp('high').hide();
+    w.fadeOut('high');
     $('#highlight-floater').remove();
 }
 
@@ -130,7 +130,7 @@ $(document).ready(function (){
     }
     $('#commentform').jform({'trigger':'#comment-submit', 
         'messageid':'#comments-message','delaytime':2000,
-        'on_success_finish':on_success_finish});
+        'on_success_finish':on_success_finish,'errortag':'span'});
 });
 </script>
 {% endblock %}

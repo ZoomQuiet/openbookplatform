@@ -1,6 +1,6 @@
-$.fn.model = function(opts, onload, unload){
+$.fn.modal = function(opts, onload, unload){
     var _o = {
-    trigger: '.jqModel',
+    trigger: '.jqmodal',
     close: '.windowClose',
     min:'.windowMin',
     max:'.windowMax',
@@ -8,7 +8,7 @@ $.fn.model = function(opts, onload, unload){
     height:400,
     title:'Comments',
     center:false,
-    };
+    }
     var t = $(this);
     var w;
     var w_id;
@@ -19,16 +19,15 @@ $.fn.model = function(opts, onload, unload){
         if (!w.get(0).isMinimized) {
             windowContentEl.css('height', size.height - 48 + 'px');
         }
-    }
-    
+    };
     function build(target){
         var id = ++$.modal.no;
         $(target).css('display', 'block');
-        var wrap = $('<div id="modelwindow' + id + '" class="modelwindow">'
+        var wrap = $('<div id="modalwindow' + id + '" class="modalwindow">'
             +'<div class="windowTop">'
                 +'<div class="windowTopContent">' + _o.title + '</div>'
-                +'<img src="/site_media/img/window_min.jpg" class="windowMin" />'
-                +'<img src="/site_media/img/window_max.jpg" class="windowMax" />'
+               /* +'<img src="/site_media/img/window_min.jpg" class="windowMin" />'*/
+               /* +'<img src="/site_media/img/window_max.jpg" class="windowMax" />'*/
                 +'<img src="/site_media/img/window_close.jpg" class="windowClose" />'
             +'</div>'
             +'<div class="windowBottom"><div class="windowBottomContent">&nbsp;</div></div>'
@@ -55,7 +54,7 @@ $.fn.model = function(opts, onload, unload){
                 w.css({'top':t+'px', 'left':left+'px'});
             }
             resize({'height':_o.height, 'width':_o.width});
-            w.slideDown('high');
+            w.fadeIn('high');
         }
         this.blur();
     });
@@ -63,10 +62,11 @@ $.fn.model = function(opts, onload, unload){
         if (unload)
             unload(w);
         else
-            w.slideUp('high').hide();
+            w.fadeOut('high').hide();
     });
+    /*
     w.find(_o.min).click(function(){
-        $('.windowContent', w).SlideToggleUp(300);
+        $('.windowContent', w).slideToggle(300);
         $('.windowBottom, .windowBottomContent', w).animate({height: 10}, 300);
         $(w).animate({height:40},300).get(0).isMinimized = true;
         $(this).hide();
@@ -74,13 +74,14 @@ $.fn.model = function(opts, onload, unload){
         $('.windowMax', w).show();
     });
     w.find(_o.max).click(function(){
-        var windowSize = $.iUtil.getSize($('.windowContent', w).get(0));
-        $('.windowContent', w).SlideToggleUp(300);
+        var windowSize = getSize($('.windowContent', w).get(0));
+        $('.windowContent', w).slideToggle(300);
         $('.windowBottom, .windowBottomContent', w).animate({height: windowSize.hb + 13}, 300);
         $(w).animate({height:windowSize.hb+43}, 300).get(0).isMinimized = false;
         $(this).hide();
         $('.windowMin, .windowResize', w).show();
     });
+    */
     w.Resizable(
 	{
 		minWidth: 500,
@@ -93,7 +94,7 @@ $.fn.model = function(opts, onload, unload){
 		},
 		onResize : resize
 	});
-}
+};
 $.modal = {
     no:0
-}
+};
