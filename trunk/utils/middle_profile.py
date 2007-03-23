@@ -1,11 +1,10 @@
 # Author: limodou@gmail.com
-# version: 0.2
+# version: 0.3
 # Profile request of django
 #
 
 import hotshot
 import os
-import time
 from django.conf import settings
 
 PROFILE_DATA_DIR = "./profile"
@@ -25,11 +24,20 @@ class ProfileMiddleware(object):
             self.prof = None
         
 #    def process_view(self, request, callback, callback_args, callback_kwargs):
+#        path = getattr(settings, 'PROFILE_DIR', PROFILE_DATA_DIR)
+#        if not os.path.exists(path):
+#            os.makedirs(path)
+#            os.chmod(path, 0755)
+#        profname = "%s.prof" % (request.path.strip("/").replace('/', '.'))
+#        profname = os.path.join(PROFILE_DATA_DIR, profname)
 #        try:
-#            return prof.runcall(callback, request, *callback_args, **callback_kwargs)
+#            prof = hotshot.Profile(profname)
+#            prof.start()
+#            return callback(request, *callback_args, **callback_kwargs)
 #        finally:
+#            prof.stop()
 #            prof.close()
-#            
+            
             
     def process_response(self, request, response):
         if self.prof:

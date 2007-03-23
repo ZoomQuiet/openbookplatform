@@ -1,0 +1,15 @@
+1. Install Python+Django
+2. Instll Docutils, pygments, PIL
+3. Download openbookplatform source code from svn
+4. Modify settings.py, change the DATABASE parameters
+5. Run cmd in openbookplatform directory::
+
+        python manage.py syncdb
+
+6. Start develop server::
+
+        python manage.py runserver
+
+7. Ok, test it in browser::
+
+        http://localhost:8000
