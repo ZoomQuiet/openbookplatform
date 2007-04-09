@@ -8,7 +8,7 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
-# Version 1.5 2007-02-08
+# Version 1.6 2007-04-09
 #
 # Update 1.0 2007-01-18
 #
@@ -29,10 +29,13 @@
 # Update 1.5 2007-02-08
 #    * If the filename is not exists, then skip it
 #
+# Update 1.6 2007-04-09
+#    * Add float support
 
 import os, sys
 from optparse import OptionParser
 import datetime
+import decimal
 
 def _get_table_order(app_labels):
     from django.db.models import get_app, get_apps, get_models
@@ -337,6 +340,9 @@ def _pre_data(row):
             row[i] = row[i].strftime('%Y-%m-%d %H:%M:%S') # + '.' + str(row[i].microsecond).rstrip('0')
         elif isinstance(fd, datetime.date):
             row[i] = row[i].strftime('%Y-%m-%d')
+        elif isinstance(fd, decimal.Decimal):
+            row[i] = row[i].__float__()
+        
     return row
 
 def dump_many2many(model):

@@ -80,7 +80,7 @@ $(document).ready(function (){
             $.post(ajax_url, {}, handle_list);
         }, 1000);
     }
-    var ajax_iframe = new AjaxIFrame('#upload_form', {'on_success_finish':on_success_finish});
+    $('#upload_form').jfileform({'on_success_finish':on_success_finish});
 });
 </script>
 {% catch as header %}
