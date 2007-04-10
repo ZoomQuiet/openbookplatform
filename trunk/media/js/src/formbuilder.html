@@ -1,0 +1,20 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="jquery.jbasicext.pack.js"></script>
+<script type="text/javascript" src="jquery.formbuilder.js"></script>
+<script type="text/javascript">
+$().ready(function(){
+    var form = $('#test').formbuilder({layout:'table'});
+    form.add(form.Line(form.Label('Text Field'), form.Text({name:'text',value:'text field'})));
+    form.add(form.Line(form.Label('Password Field'), form.Password({name:'password',value:'password field'})));
+    form.add(form.Line(form.Label('Select field'), form.Select({name:'select',value:[3],options:[{value:1},{value:2},{value:3},{value:4}]})));
+    form.add(form.Line(form.Label('Textarea field'), form.Textarea({name:'textarea',value:'This is a textarea field'})));
+    form.add(form.Line(form.Label('Hidden field'), form.Hidden({name:'hidden',value:'This is a textarea field'})));
+});
+</script>
+</head>
+<body>
+<div id="test"></div>
+</body>
+</html>

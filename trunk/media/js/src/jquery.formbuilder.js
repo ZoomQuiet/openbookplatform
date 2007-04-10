@@ -63,6 +63,7 @@ $.extend(FB.prototype, {
     File:function(o){return this.Input('file',o)},
     Checkbox:function(o){return this.Input('checkbox',o)},
     Radio:function(o){return this.Input('radio',o)},
+    Hidden:function(o){return this.Input('hidden',o)},
     Textarea:function(o){
         var text=o.value||'';
         safe_del(o,'value');
