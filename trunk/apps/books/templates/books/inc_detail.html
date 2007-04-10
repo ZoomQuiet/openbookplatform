@@ -72,16 +72,13 @@ $(document).ready(function (){
 	$('#addchapter').modal({trigger: '#add', title:'New Chapter', center:true});
 	$('#modifybook').modal({trigger: '#modify', title:'Change Book Information', center:true});
 	on_success_finish = function(obj, data){
-		$('#addchapter').parent().parent().slideUp('high').hide();
-		$('#upload_form').each(function(){
-			this.reset();
-		});
+		$('#addchapter').parent().parent().hide();
 		$.post('chapters/', {}, handle_list);
 	};
 	$('#upload_form').jform({'on_success_finish':on_success_finish, 
 			'messageid':'#addchapter div.message'});
 	on_modify_success_finish = function(obj, data){
-		$('#modifybook').parent().parent().slideUp('high').hide();
+		$('#modifybook').parent().parent().hide();
 	}
 	$('#book_edit_form').jfileform({'on_success_finish':on_modify_success_finish, 
 			'messageid':'#modifybook div.message'});

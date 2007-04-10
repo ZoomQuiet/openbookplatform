@@ -19,7 +19,7 @@ $.fn.jform = function(o, file/* true or false */){
 	return this.each(function(){
 		var t = $(this);
 		$.extend(_o, o);
-		t.opts = _o
+		t.opts = _o;
 		$.jform.hookajax(t);
 	});
 };
@@ -35,15 +35,13 @@ $.jform = {
 
 	hookajax: function(e){
 		//disable form submit event
-		e.submit(function(){return false;});
+		e.submit(function(){return false});
 		var o = e.opts;
 		var tg = $(o.trigger);
 		tg.click(function(){
 			var url = o.url || '';
-			if (!url)
-				url = $(e).attr('action');
-			if (!url.endswith('/'))
-				url = url + '/';
+			if (!url) url = $(e).attr('action');
+			if (!url.endswith('/')) url = url + '/';
 			$.jform.call_func(e, 'onbegin', null);
 			if (o.file){
 				$.ajaxUpload({
@@ -59,6 +57,7 @@ $.jform = {
 					},
 					error: function(err){
 						$.jform.disp_message(e, err);
+						tg.attr('disabled', false).prev('img.loading').remove();
 					},
 					complete: function(){
 						tg.attr('disabled', false).prev('img.loading').remove();
@@ -78,6 +77,7 @@ $.jform = {
 					},
 					error: function(r, err, d){
 						$.jform.disp_message(e, err);
+						tg.attr('disabled', false).prev('img.loading').remove();
 					},
 					complete: function(){
 						tg.attr('disabled', false).prev('img.loading').remove();
@@ -93,24 +93,17 @@ $.jform = {
 	
 		//evaluate the result
 		var r = data;
-		if (typeof(data) == 'string')
-			r = data.evalJson();
+		if (typeof(data) == 'string') r = data.evalJson();
 		
 		if (r.response == 'ok'){ //success
 			//call onsuccess callback
-			if (!$.jform.call_func(e, 'onsuccess', r))
-			{
+			if (!$.jform.call_func(e, 'onsuccess', r)){
 				//call ondata callback
-				if(r.data){
-					$.jform.call_func(e, 'ondata', r.data);
-				}
+				if(r.data){$.jform.call_func(e, 'ondata', r.data)};
 				//if there is a next hidden text, then redirect to next url
 				var next = r.next;
-				if (next)
-					window.location = next;
-				else{
-					$.jform.disp_message(e, r.message);
-				}
+				if(next){window.location = next}
+				else{$.jform.disp_message(e, r.message)};
 				$.jform.call_func(e, 'on_success_finish', r);
 				if(e.opts.reset) e.get(0).reset();
 			}
@@ -120,10 +113,8 @@ $.jform = {
 			{
 				$H(r.error).each(function(k, v){
 					var err = v;
-					if (v.constructor == Array)
-						err = ','.join(v)
-					if (k == '_')   //global error message
-						$.jform.disp_message(e, err);
+					if (v.constructor == Array) err = ','.join(v);
+					if (k == '_') $.jform.disp_message(e, err);
 					else{
 						var p = $("[@name='$0']".template([k]), e).parent();
 						var tag = p.get(0).tagName;
@@ -139,8 +130,7 @@ $.jform = {
 	},
 	
 	disp_message : function(e, msg){
-		if (msg)
-			$(e.opts.messageid).setmessage(msg, e.opts.delaytime);
+		if(msg) $(e.opts.messageid).setmessage(msg, e.opts.delaytime);
 	},
 	
 	call_func : function(e, funcname, r){
@@ -150,6 +140,6 @@ $.jform = {
 		}
 		return false;
 	}
-}
+};
 
 })(jQuery);
