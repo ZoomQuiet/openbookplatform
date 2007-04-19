@@ -108,7 +108,12 @@ $.extend(FB.prototype, {
             pos.append(arguments[i]);
         }
         return line;
-    }
+    },
+	addline:function(label,f,o){
+		var _o ={};
+		if(o.required) _o.class='required';
+		return this.add(this.line($.LABEL('{% trans "Username" %}:',_o),f));
+	}
 });
 $.LABEL=function(msg,o){return $.create('label',o,msg)};
 $.INPUT=function(t,o){

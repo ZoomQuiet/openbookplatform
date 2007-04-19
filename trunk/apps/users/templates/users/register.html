@@ -5,43 +5,24 @@
 <link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 {% block js %}
+<script type="text/javascript" src="/site_media/js/jquery.formbuilder.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
 <script type="text/javascript">
 $(document).ready(function (){
-	$('#register').jform();
+	var form = $('#register').formbuilder({action:"{{ setting.URLROOT }}/register/", id:"form_register"});
+	form.add($.DIV({id:"message"}));
+	form.addSimpleLine('{% trans "Username" %}:', $.TEXT({name:'username',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Email" %}:', $.TEXT({name:'email',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Password" %}:', $.PASSWORD({name:'password',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Enter again" %}:', $.PASSWORD({name:'password1',className:'field'}), {required:true});
+	var footer=form.line($.SUBMIT({name:'submit', value:'Submit'})).attr({className:'ft'});
+	form.add(footer);
+	$('#form_register').jform({delaytime:3000});
 });
 </script>
 {% endblock %}
 
 {% block content %}
 <h2>{% trans "Register" %}</h2>
-<div class="basic_form">
-	<form action="{{ setting.URLROOT }}/register/" method="post" id="register">
-	<div id="message"></div>
-	<p class="blockintro">Basic Information</p>
-	<div class="block">
-		<dl>
-			<dt class="required">{% trans "Username" %}:</dt>
-			<dd><input type="text" name="username" value=""/><dd>
-		</dl>
-		<dl>
-			<dt class="required">{% trans "Email" %}:</dt>
-			<dd><input type="text" name="email" value=""/><dd>
-		</dl>
-	</div>
-	<p class="blockintro">Password setup</p>
-	<div class="block">
-		<dl>
-			<dt class="required">{% trans "Password" %}:</dt>
-			<dd><input type="password" name="password" value=""/><dd>
-		</dl>
-		<dl>
-			<dt class="required">{% trans "Enter again" %}:</dt>
-			<dd><input type="password" name="password1" value=""/><dd>
-		</dl>
-	</div>
-	<div class="action">
-		<input type="submit" value="Submit" />
-	</div>
-	</form>
-</div>
+<div id="register" class="simple_form"></div>
 {% endblock %}

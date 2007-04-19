@@ -108,7 +108,12 @@ $.extend(FB.prototype, {
             pos.append(arguments[i]);
         }
         return line;
-    }
+    },
+	addSimpleLine:function(label,f,o){
+		var _o={};
+		if(o.required) _o.className='required';
+		return this.add(this.line($.LABEL(label,_o),f));
+	}
 });
 $.LABEL=function(msg,o){return $.create('label',o,msg)};
 $.INPUT=function(t,o){

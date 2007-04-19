@@ -7,9 +7,9 @@ $.fn.modal = function(opts, onload, unload){
     width:500,
     height:400,
     title:'Comments',
-    center:false,
-    }
-    var t = $(this);
+    center:false
+    };
+    var t=$(this);
     var w;
     var w_id;
     

@@ -123,10 +123,10 @@ $(document).ready(function (){
 	$.post(ajax_url, {}, handle_list);
     on_success_finish = function(obj, r){
         $.post(ajax_url, {}, handle_post);
-    }
-    $('#commentform').jform({'trigger':'#comment-submit', 
-        'messageid':'#comments-message','delaytime':2000,
-        'on_success_finish':on_success_finish,'errortag':'span'});
+    };
+    $('#commentform').jform({trigger:'#comment-submit', 
+        messageid:'#comments-message',delaytime:2000,
+        'on_success_finish':on_success_finish,errortag:'span'});
 });
 </script>
 {% endblock %}

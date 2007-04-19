@@ -9,26 +9,13 @@
 <script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
 <script type="text/javascript">
 $(document).ready(function (){
-	var form = $('#login').formbuilder({action:"{{ setting.URLROOT }}/login/", id:"user_login"});	{% if next %}$.HIDDEN({name:"next", value:"{{ next }}"});{% endif %}
+	var form = $('#login').formbuilder({action:"{{ setting.URLROOT }}/login/", id:"form_login"});	{% if next %}$.HIDDEN({name:"next", value:"{{ next }}"});{% endif %}
 	form.add($.DIV({id:"message"}));
-	form.add(form.line($.LABEL('{% trans "Username" %}:'), $.TEXT({name:'username',class:'field'})));	form.add(form.line($.LABEL('{% trans "Password" %}:'), $.PASSWORD({name:'password',class:'field'})));
-	var footer=form.line($.SUBMIT({name:'submit', value:'Login'})).attr({'class':'ft'});
-	form.add(footer);	$('#user_login').jform();
+	form.addSimpleLine('{% trans "Username" %}:', $.TEXT({name:'username',className:'field'}), {required:true});	form.addSimpleLine('{% trans "Password" %}:', $.PASSWORD({name:'password',className:'field'}), {required:true});
+	var footer=form.line($.SUBMIT({name:'submit', value:'Login'})).attr({className:'ft'});
+	form.add(footer);	$('#form_login').jform({delaytime:3000});
 });
 </script>
-<style type="text/css">
-<!--
-* {padding:0;margin:0;}
-.simple_form{border:6px solid #CCC;padding:10px;width:300px;background-color:white;}
-.simple_form label{display:block;}
-.simple_form p{margin:0;}
-.simple_form .field{width:100%;}
-.simple_form .ft{text-align:center;}
-.simple_form .error{color:red;}
-* {padding:0;margin:0;}
--->
-</style>
-
 {% endblock %}
 {% block content %}
 <h2>{% trans "Login" %}</h2>
