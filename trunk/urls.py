@@ -37,6 +37,7 @@ urlpatterns = patterns('',
     (r'^book/(?P<book_id>\d+)/(?P<chapter_num>[^/]+)/$', 'apps.books.views.chapter'),
     
     (r'^rss/', include('apps.rss.urls')),
-    (r'^site_media/(.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA}),
+#    (r'^site_media/(.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA}),
+    (r'^site_media/(.*)$', 'utils.staticview.serve', {'document_root': settings.SITE_MEDIA, 'media_folder':'media'}),
     (r'^admin/', include('django.contrib.admin.urls')),
 )
