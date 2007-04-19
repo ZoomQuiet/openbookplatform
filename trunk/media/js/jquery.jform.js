@@ -111,7 +111,8 @@ $.jform = {
 		else{   //error
 			if(!$.jform.call_func(e, 'onerror', r))
 			{
-				$H(r.error).each(function(k, v){
+				for(var k in r.error){
+					var v=r.error[k];
 					var err = v;
 					if (v.constructor == Array) err = ','.join(v);
 					if (k == '_') $.jform.disp_message(e, err);
@@ -121,7 +122,7 @@ $.jform = {
 						if(e.opts.errortag) tag = e.opts.errortag;
 						p.after('<' + tag + ' class="error">' + err + '</' + tag + '>');
 					}
-				});
+				}
 				$.jform.disp_message(e, r.message);
 				$.jform.call_func(e, 'on_error_finish', r);
 			}

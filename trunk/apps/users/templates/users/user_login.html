@@ -5,34 +5,32 @@
 <link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 {% block js %}
+<script type="text/javascript" src="/site_media/js/jquery.formbuilder.js"></script>
 <script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
-<script type="text/javascript" src="/site_media/js/jq-corner.js"></script>
 <script type="text/javascript">
 $(document).ready(function (){
-	$('#user_login').jform();
+	var form = $('#login').formbuilder({action:"{{ setting.URLROOT }}/login/", id:"user_login"});	{% if next %}$.HIDDEN({name:"next", value:"{{ next }}"});{% endif %}
+	form.add($.DIV({id:"message"}));
+	form.add(form.line($.LABEL('{% trans "Username" %}:'), $.TEXT({name:'username',class:'field'})));	form.add(form.line($.LABEL('{% trans "Password" %}:'), $.PASSWORD({name:'password',class:'field'})));
+	var footer=form.line($.SUBMIT({name:'submit', value:'Login'})).attr({'class':'ft'});
+	form.add(footer);	$('#user_login').jform();
 });
 </script>
+<style type="text/css">
+<!--
+* {padding:0;margin:0;}
+.simple_form{border:6px solid #CCC;padding:10px;width:300px;background-color:white;}
+.simple_form label{display:block;}
+.simple_form p{margin:0;}
+.simple_form .field{width:100%;}
+.simple_form .ft{text-align:center;}
+.simple_form .error{color:red;}
+* {padding:0;margin:0;}
+-->
+</style>
+
 {% endblock %}
 {% block content %}
 <h2>{% trans "Login" %}</h2>
-<div class="basic_form">
-	<form action="{{ setting.URLROOT }}/login/" method="post" id="user_login">
-	{% if next %}<input type="hidden" name="next" value="{{ next }}"/>{% endif %}
-	<div id="message"></div>
-	<p class="blockintro">{% trans "Input username and password" %}</p>
-	<div class="block">
-		<dl>
-			<dt>{% trans "Username" %}:</dt>
-			<dd><input name="username" type="text"/></dd>
-			<dt>{% trans "Password" %}:</dt>
-			<dd>
-			  <input name="password" type="password"/>
-			</dd>
-			<div class="action">
-				<input type="submit" value="{% trans "Login" %}" />
-			</div>
-		</dl>
-	</div>
-	</form>
-</div>
+<div id="login" class="simple_form"></div>
 {% endblock %}
