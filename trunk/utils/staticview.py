@@ -9,7 +9,7 @@ import rfc822
 import stat
 import urllib
 
-def serve(request, path, document_root='', media_folder='', show_indexes=False):
+def serve(request, path, document_root='', app_media_folder='', show_indexes=False):
     """
     Serve static files below a given point in the directory structure.
 
@@ -40,7 +40,7 @@ def serve(request, path, document_root='', media_folder='', show_indexes=False):
     if newpath and path != newpath:
         return HttpResponseRedirect(newpath)
     
-    fullpath = get_fullpath(newpath, document_root, media_folder)
+    fullpath = get_fullpath(newpath, document_root, app_media_folder)
 #    fullpath = os.path.join(document_root, newpath)
     if os.path.isdir(fullpath):
         if show_indexes:

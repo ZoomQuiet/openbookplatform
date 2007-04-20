@@ -38,6 +38,6 @@ urlpatterns = patterns('',
     
     (r'^rss/', include('apps.rss.urls')),
 #    (r'^site_media/(.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA}),
-    (r'^site_media/(.*)$', 'utils.staticview.serve', {'document_root': settings.SITE_MEDIA, 'media_folder':'media'}),
+    (r'^site_media/(.*)$', 'utils.staticview.serve', {'document_root': settings.SITE_MEDIA, 'app_media_folder':'media'}),
     (r'^admin/', include('django.contrib.admin.urls')),
 )
