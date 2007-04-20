@@ -52,6 +52,8 @@ class ChangeValidator(RegisterValidator):
         self.user_id = user_id
         self.fields['password'].required = False
         self.fields['password1'].required = False
+        
+        print self.fields
    
     def save(self, data):
         u = User.objects.get(pk=int(self.user_id))

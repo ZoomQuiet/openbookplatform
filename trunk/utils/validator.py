@@ -26,7 +26,7 @@
 #    
 #This module is new, so many things could be changed.
 #
-#Version: 0.5
+#Version: 0.6
 #Author: limodou<limodou AT gmail.com>
 #Update:
 #    * 2007/02/17 0.1
@@ -35,6 +35,7 @@
 #                     from GET, POST, COOKIES, FILES
 #    * 2007/03/06 0.4 Add FileField, ImageField support
 #    * 2007/03/14 0.5 Add model support
+#    * 2007/04/20 0.6 Fix removed_fields bug
 
 
 import datetime
@@ -181,11 +182,11 @@ class ValidatorMetaclass(type):
                 obj.field_name = field_name
                 fields.append((field_name, obj))
         fields.sort(lambda x, y: cmp(x[1].creation_counter, y[1].creation_counter))
-
+        
         for base in bases[::-1]:
             if hasattr(base, 'base_fields'):
-                fields = base.base_fields.items() + fields
-
+                fields = [(k,v) for k,v in base.base_fields.items() if k not in removed_fields] + fields
+                
         attrs['base_fields'] = SortedDictFromList(fields)
         
         old_init = attrs.get('__init__', None)
