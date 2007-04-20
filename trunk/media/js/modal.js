@@ -50,7 +50,10 @@ $.fn.modal = function(opts, onload, unload){
         else {
             if (_o.center){
                 var left = $(window).width()/2 - w.width()/2;
-                var t = window.scrollY + $(window).height()/2 - w.height()/2;
+                
+                //IE中不存在window.scrollY属性
+                //var t = window.scrollY + $(window).height()/2 - w.height()/2;
+                var t = $(window).height()/2 - w.height()/2;
                 w.css({'top':t+'px', 'left':left+'px'});
             }
             resize({'height':_o.height, 'width':_o.width});
