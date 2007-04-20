@@ -65,7 +65,9 @@ $.fn.modal = function(opts, onload, unload){
         if (unload)
             unload(w);
         else
-            w.fadeOut('high').hide();
+            //这种效果有闪动
+            //w.fadeOut('high').hide();
+            w.hide();
     });
     /*
     w.find(_o.min).click(function(){
