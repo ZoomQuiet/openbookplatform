@@ -81,13 +81,18 @@ $(document).ready(function (){
         }, 1000);
     }
     $('#upload_form').jfileform({'on_success_finish':on_success_finish});
+    $('#form_new').dialog({trigger:'#new'});
 });
 </script>
+<script type="text/javascript" src="/site_media/js/jqDnR.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.dialog.js"></script>
+<link href="/site_media/css/dialog.css" rel="stylesheet" type="text/css" />
 {% catch as header %}
     <h1>{{ subtitle|default:"Book Manager" }}</h1>
     <h3><img src="/site_media/img/opentriangle.gif"/><a class="admin" href="#" id="a_upload">{% trans "New Book" %}</a> | <a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
 {% endcatch %}
 {% catch as content %}
+    <div id="form_new"></div>
     <form id="upload_form" enctype="multipart/form-data" action="new/" method="post">
         <div class="basic_form" id="upload" style="display:none">
             <div id="message"></div>
@@ -135,6 +140,7 @@ $(document).ready(function (){
 {% catch as sidebar %}
     <h1>{% trans "Functions" %}</h1>
     {% if is_manager %}
+        <p><a href="#" class="admin" id="new">{% trans "Create a new book" %}</a></p>
         <p><a href="#" class="admin" id="delete">{% trans "Delete selected book" %}</a></p>
     {% endif %}
 {% endcatch %}

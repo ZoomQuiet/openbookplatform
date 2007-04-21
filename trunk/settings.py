@@ -85,6 +85,10 @@ INSTALLED_APPS = (
     'apps.books',
     'apps.common',
     'apps.portal',
+    
+    #ui app
+    'apps.ui_dialog',
+    'apps.ui_border',
 )
 
 #user defined variable

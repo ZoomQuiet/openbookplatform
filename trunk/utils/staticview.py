@@ -138,10 +138,9 @@ def get_fullpath(path, document_root, app_media_folder):
         try:
             model = __import__(app, {}, {}, [''])
             basepath = os.path.dirname(model.__file__)
-            fullpath = os.path.join(basepath, app_media_folder, path)
+            fullpath = os.path.normcase(os.path.join(basepath, app_media_folder, path))
             if os.path.exists(fullpath):
                 return fullpath
-            print path
         except:
             print 'Cannot import model %s' % app
             
