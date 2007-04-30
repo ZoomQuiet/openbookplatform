@@ -75,3 +75,35 @@
 	text-align: center;
 }
 
+.dialogContent div.content
+{
+overflow: auto;
+text-align:left;
+padding: 4px;
+}
+
+.dialogContent .ft
+{
+height:40px;
+background-color:#179F00;
+}
+.dialogContent .actions
+{
+clear:both;
+padding-left:6px;
+padding-right:6px;
+}
+.dialogContent .message
+{
+float:left;
+}
+.dialogContent .buttons
+{
+float:right;
+}
+
+.dialog label{display:block;}
+.dialog p{margin:0;}
+.dialog .field{width:98%;}
+.dialog .error{color:red;}
+.dialog .required{font-weight:bold;}

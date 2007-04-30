@@ -15,7 +15,7 @@ function createtable(target, data){
     });
     $(target).empty().append(table);
 //  $("tbody tr:even", target).addClass("alt");
-    $("tbody tr")
+    $("tbody tr", target)
         .mouseover(function(){
             $(this).addClass("over");
         })
@@ -72,16 +72,24 @@ $(document).ready(function (){
     });
     on_success_finish = function(obj, data){
         setTimeout(function(){
-            $('#a_upload').click();
-            $('#message').clearmessage();
-            $('#upload_form').each(function(){
-                this.reset();
-            });
             $.post(ajax_url, {}, handle_list);
+            dialog.close();
         }, 1000);
     }
-    $('#upload_form').jfileform({'on_success_finish':on_success_finish});
-    $('#form_new').dialog({trigger:'#new'});
+    var dialog=$('#new_book').dialog({trigger:'#new'});
+    dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Create" %}",id:'submit'}));
+    
+    var form = $('#new_book').formbuilder({action:"new/", id:"form_new_book"});
+    form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field'}), {required:true});
+    form.addSimpleLine('{% trans "Folder Name" %}:', $.TEXT({name:'slug',className:'field'}), {required:true});
+    form.addSimpleLine('{% trans "Description" %}:', $.TEXTAREA({name:'description',className:'field'}), {required:true});
+    form.addSimpleLine('{% trans "License" %}:', $.TEXTAREA({name:'license',className:'field',value:"{% trans "Writedown your license here." %}"}));
+    form.addSimpleLine('{% trans "Text Format" %}:', $.SELECT({name:'textformat',className:'field',options:[{value:"",text:"-----------"},{value:"rst",text:"reStructureText"},{value:"markdown",text:"MarkDown"}]}), {required:true});
+    form.addSimpleLine('{% trans "Logo" %}:', $.FILE({name:'icon',className:'field'}));
+    $('#form_new_book').jfileform({delaytime:3000,
+        messageid:dialog.message,trigger:"#submit",
+        on_success_finish:on_success_finish});
+    
 });
 </script>
 <script type="text/javascript" src="/site_media/js/jqDnR.js"></script>
@@ -89,51 +97,10 @@ $(document).ready(function (){
 <link href="/site_media/css/dialog.css" rel="stylesheet" type="text/css" />
 {% catch as header %}
     <h1>{{ subtitle|default:"Book Manager" }}</h1>
-    <h3><img src="/site_media/img/opentriangle.gif"/><a class="admin" href="#" id="a_upload">{% trans "New Book" %}</a> | <a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
+    <h3><a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
 {% endcatch %}
 {% catch as content %}
-    <div id="form_new"></div>
-    <form id="upload_form" enctype="multipart/form-data" action="new/" method="post">
-        <div class="basic_form" id="upload" style="display:none">
-            <div id="message"></div>
-            <p class="blockintro">Create a new book, and fill in information:</p>
-            <div class="block">
-                <dl>
-                    <dt class="required"><lable>{% trans "Title" %}:</lable></dt>
-                    <dd><input type="text" name="title" value=""/><dd>
-                </dl>
-                <dl>
-                    <dt class="required"><lable>{% trans "Slug" %}:</lable></dt>
-                    <dd><input type="text" name="slug" value=""/><dd>
-                </dl>
-                <dl>
-                    <dt class="required"><lable>{% trans "Description" %}:</lable></dt>
-                    <dd><textarea rows="3" cols="40" name="description"></textarea><dd>
-                </dl>
-                <dl>
-                    <dt class="required"><lable>{% trans "License" %}:</lable></dt>
-                    <dd><textarea rows="2" cols="40" name="license">{% trans "Writedown your license here." %}</textarea><dd>
-                </dl>
-                <dl>
-                    <dt class="required">{% trans "Text Format" %}:</dt>
-                    <dd>
-                        <select name="textformat">
-                            <option value="">---------</option>
-                            <option value="rst">reStructureText</option>
-                            <option value="markdown">MarkDown</option>
-                        </select>
-                    </dd>
-                </dl>
-                <dl>
-                    <dt class="required"><lable>{% trans "Logo" %}:</lable></dt>
-                    <dd><input type="file" name="icon"/><dd>
-                </dl>
-            </div>
-            <div class="action">
-                <input type="submit" value="{% trans "Create" %}" />
-            </div>
-        </div>
-    </form>
+    <div id="new_book"></div>
     <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
     <div id="pages"></div>
 {% endcatch %}

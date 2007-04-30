@@ -32,15 +32,28 @@ $.extend(Dialog.prototype, {
             +'<div class="dialogBottom"><div class="dialogBottomContent">&nbsp;</div></div>'
             +'<div class="dialogContent"></div>'
             +'<img src="/site_media/img/dialog_resize.gif" class="dialogResize" />'
-        +'</div>').hide();
-        wrap.appendTo('body').find('.dialogContent').append(self.target);
-        wrap.css({'z-index':3000, 'position':'absolute', 
+        +'</div>').hide()
+        .appendTo('body')
+        .css({'z-index':3000, 'position':'absolute', 
             'height':self.o.height + 'px', 'width':self.o.width + 'px'});
         self.target.css('display', 'block');
         self.wrap=wrap;
+        self._addTableContent()._addButtons();
+        self.content.append(self.target);
         self._bind();
         
         return self;
+    },
+    _addTableContent:function(){
+        this.wrap.find('div.dialogContent').append('<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%"><tr><td><div class="content"></div></td></tr><tr><td class="ft"></td></tr></table>');
+        this.content=this.wrap.find('div.dialogContent div.content');
+        return this;
+    },
+    _addButtons:function(){
+        this.wrap.find('div.dialogContent td.ft').append('<div class="actions"><div class="message"></div><div class="buttons"></div></div>');
+        this.message=this.wrap.find('div.dialogContent div.message');
+        this.buttons=this.wrap.find('div.dialogContent div.buttons');
+        return this;
     },
     _bind:function(){
         var self=this;
@@ -85,6 +98,10 @@ $.extend(Dialog.prototype, {
         var self=this;
         $('.dialogBottom, .dialogBottomContent', self.wrap).css('height', h-33 + 'px');
         $('.dialogContent', self.wrap).css('width', w - 25 + 'px').css('height', h-48    + 'px');
+        $('.dialogContent .content', self.wrap).css({width:w-34+'px',height:h-98+'px'});
+    },
+    close:function(){
+        this.wrap.hide();
     }
 
 });
