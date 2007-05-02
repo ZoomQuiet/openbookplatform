@@ -13,7 +13,7 @@ function createtable(target, data){
 	});
 	$(target).empty().append(table);
 //	$("tbody tr:even", target).addClass("alt");
-	$("tbody tr")
+	$("tbody tr", target)
 	    .mouseover(function(){
 	        $(this).addClass("over");
 	    })
@@ -69,19 +69,43 @@ $(document).ready(function (){
 			}
 		});
 	});
-	$('#addchapter').modal({trigger: '#add', title:'New Chapter', center:true});
-	$('#modifybook').modal({trigger: '#modify', title:'Change Book Information', center:true});
+	
+	/* add chapter  */
 	on_success_finish = function(obj, data){
-		$('#addchapter').parent().parent().hide();
+		add_dialog.close();
 		$.post('chapters/', {}, handle_list);
 	};
-	$('#upload_form').jform({'on_success_finish':on_success_finish, 
-			'messageid':'#addchapter div.message'});
+	var add_dialog=$('#addchapter').dialog({trigger:'#add',title:'{% trans "New Chapter" %}'});
+	add_dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Create" %}",id:'submit'}));
+	
+	var form = $('#addchapter').formbuilder({action:"addchapter/", id:"form_add"});
+	form.addSimpleLine('{% trans "Chapter Order Num" %}:', $.TEXT({name:'num',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Abstract" %}:', $.TEXTAREA({name:'abstract',className:'field'}));
+	form.addSimpleLine('{% trans "Content" %}:', $.TEXTAREA({name:'content',className:'field'}), {required:true});
+	$('#form_add').jfileform({delaytime:3000,
+	    messageid:add_dialog.message,trigger:"#submit",
+	    on_success_finish:on_success_finish});
+	
+	/* modify book */
 	on_modify_success_finish = function(obj, data){
-		$('#modifybook').parent().parent().hide();
+		modi_dialog.close();
 	}
-	$('#book_edit_form').jfileform({'on_success_finish':on_modify_success_finish, 
-			'messageid':'#modifybook div.message'});
+
+	var modi_dialog=$('#modifybook').dialog({trigger:'#modify',title:'{% trans "Change Book Information" %}'});
+	modi_dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Save" %}",id:'modify_submit'}));
+	
+	var form = $('#modifybook').formbuilder({action:"edit/", id:"form_modify_book"});
+	form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field',value:'{{ book.title }}'}), {required:true});
+	form.addSimpleLine('{% trans "Folder Name" %}:', $.TEXT({name:'slug',className:'field',value:'{{ book.slug }}'}), {required:true});
+	form.addSimpleLine('{% trans "Description" %}:', $.TEXTAREA({name:'description',className:'field',value:'{{ book.description }}'}), {required:true});
+	form.addSimpleLine('{% trans "License" %}:', $.TEXTAREA({name:'license',className:'field',value:'{{ book.license }}'}));
+	form.addSimpleLine('{% trans "Text Format" %}:', $.SELECT({name:'textformat',className:'field',value:['{{ book.textformat }}'],options:[{value:"",text:"-----------"},{value:"rst",text:"reStructureText"},{value:"markdown",text:"MarkDown"}]}), {required:true});
+	form.addSimpleLine('{% trans "Logo" %}:', $.FILE({name:'icon',className:'field'}));
+	$('#form_modify_book').jfileform({delaytime:3000,reset:false,
+		messageid:modi_dialog.message,trigger:"#modify_submit",
+		on_success_finish:on_modify_success_finish});
+			
 });
 </script>
 {% catch as header %}
@@ -89,36 +113,8 @@ $(document).ready(function (){
     <h3><a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
 {% endcatch %}
 {% catch as content %}
-	<div class="modalform" id="addchapter" style="display:none;">
-		<form id="upload_form" enctype="multipart/form-data" action="addchapter/" method="post">
-			<div class="bd">
-				<p>{% trans "Create a new book, and fill in information" %}:</p>
-				<p>
-					<lable class="require">{% trans "Chapter Order Num" %}:</lable>
-					<input type="text" name="num" value=""/>
-				</p>
-				<p>
-					<lable class="require">{% trans "Title" %}:</lable>
-					<input type="text" name="title" value=""/>
-				</p>
-				<p>
-					<lable>{% trans "Abstract" %}:</lable>
-					<textarea rows="2" cols="40" name="abstract"></textarea>
-				</p>
-				<p>
-					<lable class="require">{% trans "Content" %}:</lable>
-					<textarea rows="8" cols="40" name="content"></textarea>
-				</p>
-			</div>
-			<div class="ft">
-				<div class="message" class="" style="display:none;">Loading comments...</div>
-				<div class="submit-wrapper">
-					<input type="submit" value="{% trans "Create" %}" />
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="modalform" id="modifybook" style="display:none">{% include "books/inc_book_form.html" %}</div>
+	<div id="addchapter"></div>
+	<div id="modifybook"></div>
     <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
 	<div id="pages"></div>
 {% endcatch %}
@@ -135,8 +131,8 @@ $(document).ready(function (){
 		on_addauthor_success_finish = function(obj, data){
 			$.post('authors/', {}, handle_authors);
 		}
-		$('#addauthor').jform({'on_success_finish':on_addauthor_success_finish, 
-				'messageid':'#author_message'});
+		$('#addauthor').jform({on_success_finish:on_addauthor_success_finish, 
+				messageid:'#author_message'});
 	});
 	</script>
 	<div id="author_message"></div>

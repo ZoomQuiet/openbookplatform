@@ -76,7 +76,7 @@ $(document).ready(function (){
             dialog.close();
         }, 1000);
     }
-    var dialog=$('#new_book').dialog({trigger:'#new'});
+    var dialog=$('#new_book').dialog({trigger:'#new',title:'{% trans "Create a new book" %}'});
     dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Create" %}",id:'submit'}));
     
     var form = $('#new_book').formbuilder({action:"new/", id:"form_new_book"});
@@ -92,9 +92,6 @@ $(document).ready(function (){
     
 });
 </script>
-<script type="text/javascript" src="/site_media/js/jqDnR.js"></script>
-<script type="text/javascript" src="/site_media/js/jquery.dialog.js"></script>
-<link href="/site_media/css/dialog.css" rel="stylesheet" type="text/css" />
 {% catch as header %}
     <h1>{{ subtitle|default:"Book Manager" }}</h1>
     <h3><a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>

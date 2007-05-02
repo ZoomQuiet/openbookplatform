@@ -53,8 +53,8 @@ def user_book_edit(request, object_id, book_id=None):
     v = BookValidator(request, book_id)
     flag , obj = v.validate_and_save(request)
     if flag:
-        return ajax.ajax_ok(_('Success!'))
-    return ajax.ajax_fail(obj)
+        return ajax.ajax_ok(message=_('Success!'))
+    return ajax.ajax_fail(obj,message=_('Fail!'))
 
 def user_book_detail(request, object_id, book_id):
     user = User.objects.get(pk=int(object_id))
