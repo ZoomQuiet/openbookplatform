@@ -26,7 +26,7 @@ $.extend(Dialog.prototype, {
         var self=this;
         var wrap = $('<div class="dialog">'
             +'<div class="dialogTop">'
-                +'<div class="dialogTopContent">' + _o.title + '</div>'
+                +'<div class="dialogTopContent">' + self.o.title + '</div>'
                 +'<img src="/site_media/img/dialog_close.jpg" class="dialogClose" />'
             +'</div>'
             +'<div class="dialogBottom"><div class="dialogBottomContent">&nbsp;</div></div>'
