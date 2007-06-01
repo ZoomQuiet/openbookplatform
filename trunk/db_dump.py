@@ -265,7 +265,10 @@ def get_model_stru(model):
     return fields, default
 
 def get_model_many2many_stru(model):
-    from django.db.models import GenericRel
+    try:
+        from django.db.models import GenericRel
+    except:
+        from django.contrib.contenttypes.generic import GenericRel
     
     opts = model._meta
     for f in opts.many_to_many:

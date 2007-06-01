@@ -83,7 +83,7 @@ $.fn.formbuilder=function(o){
         form.append('<table><tbody></tbody></table>');
         settings.target=$('tbody', form);
     }
-    form.appendTo(this);
+	$(this).append(form);
     return new FB(form,settings);
 };
 FB=function(f,o){

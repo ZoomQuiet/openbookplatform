@@ -83,7 +83,7 @@ $.fn.formbuilder=function(o){
         form.append('<table><tbody></tbody></table>');
         settings.target=$('tbody', form);
     }
-    form.appendTo(this);
+	$(this).append(form);
     return new FB(form,settings);
 };
 FB=function(f,o){
@@ -109,10 +109,10 @@ $.extend(FB.prototype, {
         }
         return line;
     },
-	addline:function(label,f,o){
-		var _o ={};
-		if(o.required) _o.class='required';
-		return this.add(this.line($.LABEL('{% trans "Username" %}:',_o),f));
+	addSimpleLine:function(label,f,o){
+		var _o={};
+		if(o&&o.required) _o.className='required';
+		return this.add(this.line($.LABEL(label,_o),f));
 	}
 });
 $.LABEL=function(msg,o){return $.create('label',o,msg)};
@@ -127,7 +127,7 @@ $.PASSWORD=function(o){return $.INPUT('password',o)};
 $.BUTTON=function(o){return $.INPUT('button',o)};
 $.SUBMIT=function(o){var b=$.INPUT('submit',o);b.type='submit';return b;};
 $.RESET=function(o){return $.INPUT('reset',o)};
-$.File=function(o){return $.INPUT('file',o)};
+$.FILE=function(o){return $.INPUT('file',o)};
 $.CHECKBOX=function(o){return $.INPUT('checkbox',o)};
 $.RADIO=function(o){return $.INPUT('radio',o)};
 $.HIDDEN=function(o){return $.INPUT('hidden',o)};
