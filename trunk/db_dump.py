@@ -8,6 +8,10 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
+# Version 1.7 2007-05-28
+#    * keep up with the change of GenericRel, so you can use db_dump.py
+#      in trunk and version before 0.97
+#
 # Version 1.6 2007-04-09
 #
 # Update 1.0 2007-01-18
