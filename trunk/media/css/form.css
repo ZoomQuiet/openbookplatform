@@ -131,3 +131,5 @@ font-size: 9pt;
 .simple_form .ft{text-align:center;}
 .simple_form .error{color:red;}
 .simple_form .required{font-weight:bold;}
+
+.alignTop {vertical-align:top;}

@@ -20,7 +20,7 @@ class Book(models.Model):
     class Meta:
         ordering = ['-modifydate']
         
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     def isAuthor(self, user):
@@ -46,7 +46,7 @@ class Chapter(models.Model):
     class Meta:
         ordering = ['num']
         
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     def save(self):
@@ -91,7 +91,7 @@ class Comment(models.Model):
     class Meta:
         ordering = ['createtime']
         
-    def __str__(self):
+    def __unicode__(self):
         return self.content
     
 def pre_save_comment(sender, instance, signal, *args, **kwargs):

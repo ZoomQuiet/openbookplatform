@@ -131,7 +131,7 @@ def do_call(parser, token):
        for i in argslist:
            if '=' in i:
                a, b = i.split('=', 1)
-               a = a.strip()
+               a = str(a).strip()
                b = b.strip()
                buf = StringIO.StringIO(a)
                keys = list(tokenize.generate_tokens(buf.readline))

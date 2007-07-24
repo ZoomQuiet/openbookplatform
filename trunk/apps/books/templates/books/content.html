@@ -20,4 +20,4 @@
 </ol>
 {% endblock %}
 {% block nav1 %}<a href="{{ setting.URLROOT }}/booklist/">{% trans "The Open Book Platform" %}</a>{% endblock %}
-{% block license %}{{ book.license|default:"Writedonw your license here." }}{% endblock %}
+{% block license %}{% trans "The license of this book: " %}{{ book.license|default:"Writedonw your license here." }}{% endblock %}

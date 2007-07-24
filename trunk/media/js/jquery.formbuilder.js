@@ -6,58 +6,58 @@
 (function($){
 
 $.defineTag = function(tag) {
-	$[tag.toUpperCase()] = function(){
-		var s=[tag];
-		for(var i=0;i<arguments.length;i++){
-			s[s.length]=arguments[i];
-		}
-		return $.create.apply(null, s);
-	}
+    $[tag.toUpperCase()] = function(){
+        var s=[tag];
+        for(var i=0;i<arguments.length;i++){
+            s[s.length]=arguments[i];
+        }
+        return $.create.apply(null, s);
+    }
 };
 
 (function() {
-	var tags = [
-		'a', 'br', 'button', 'canvas', 'div', 'fieldset', 'form',
-		'h1', 'h2', 'h3', 'hr', 'img', 'input', 'label', 'legend',
-		'li', 'ol', 'optgroup', 'option', 'p', 'pre', 'select',
-		'span', 'strong', 'table', 'tbody', 'td', 'textarea',
-		'tfoot', 'th', 'thead', 'tr', 'tt', 'ul' ];
-	for(var i=tags.length-1; i>=0; i--){
-		$.defineTag( tags[i] );
-	}
+    var tags = [
+        'a', 'br', 'button', 'canvas', 'div', 'fieldset', 'form',
+        'h1', 'h2', 'h3', 'hr', 'img', 'input', 'label', 'legend',
+        'li', 'ol', 'optgroup', 'option', 'p', 'pre', 'select',
+        'span', 'strong', 'table', 'tbody', 'td', 'textarea',
+        'tfoot', 'th', 'thead', 'tr', 'tt', 'ul' ];
+    for(var i=tags.length-1; i>=0; i--){
+        $.defineTag( tags[i] );
+    }
 })();
 
 $.create = function(/*tag, arguments*/){
-	var fix = {'class':'className', 'Class':'className'};
-	var e;
-	var tag=arguments[0];
-	var attrs={}
-	if(arguments.length>=2)
-		attrs=arguments[1];
-	e = document.createElement(tag);
-	for(var attr in attrs){
-		var a = fix[attr]||attr;
-		e[a]=attrs[attr];
-	}
-	for(var i=2; i<arguments.length; i++){
-		var arg = arguments[i];
-		if( arg == null ) continue;
-		if( arg.constructor != Array ) append(arg);
-		else for(var j=0; j<arg.length; j++)
-			append(arg[j]);
-	}
-	
-	function append(arg){
-		if(arg == null) return;
-		var c = arg.constructor;
-		switch(typeof arg) {
-			case 'number': arg = '' + arg;  // fall through
-			case 'string': arg = document.createTextNode(arg);
-		}
-		e.appendChild(arg);
-	};
-	
-	return e;
+    var fix = {'class':'className', 'Class':'className'};
+    var e;
+    var tag=arguments[0];
+    var attrs={}
+    if(arguments.length>=2)
+        attrs=arguments[1];
+    e = document.createElement(tag);
+    for(var attr in attrs){
+        var a = fix[attr]||attr;
+        e[a]=attrs[attr];
+    }
+    for(var i=2; i<arguments.length; i++){
+        var arg = arguments[i];
+        if( arg == null ) continue;
+        if( arg.constructor != Array ) append(arg);
+        else for(var j=0; j<arg.length; j++)
+            append(arg[j]);
+    }
+    	
+    function append(arg){
+        if(arg == null) return;
+        var c = arg.constructor;
+        switch(typeof arg) {
+            case 'number': arg = '' + arg;  // fall through
+            case 'string': arg = document.createTextNode(arg);
+        }
+        e.appendChild(arg);
+    };
+    	
+    return e;
 };
 
 var _o={
@@ -80,10 +80,10 @@ $.fn.formbuilder=function(o){
     var form=$($.create('form', opts));
     settings.target=form;
     if(settings.layout=='table'){
-        form.append('<table><tbody></tbody></table>');
+        form.append('<table width="100%"><tbody></tbody></table>');
         settings.target=$('tbody', form);
     }
-	$(this).append(form);
+    $(this).append(form);
     return new FB(form,settings);
 };
 FB=function(f,o){
@@ -99,28 +99,34 @@ $.extend(FB.prototype, {
     },
     line:function(/*els*/){
         var line=$('<p></p>');
-        var pos=line;
+        var tag=null;
         if(this.o.layout=='table'){
-            line=$('<tr><td></td></tr>');
-            pos=$('td', line);
+            line=$('<tr></tr>');
+            tag='td';
         }
         for(var i=0;i<arguments.length;i++){
-            pos.append(arguments[i]);
+            if (tag){
+                var p=$('<$0 class="alignTop"></$0>'.template([tag]));
+                p.append($(arguments[i]));
+                line.append(p);
+            }
+            else
+                line.append($(arguments[i]));
         }
         return line;
     },
-	addSimpleLine:function(label,f,o){
-		var _o={};
-		if(o&&o.required) _o.className='required';
-		return this.add(this.line($.LABEL(label,_o),f));
-	}
+    addSimpleLine:function(label,f,o){
+        var _o={};
+        if(o&&o.required) _o.className='required';
+        return this.add(this.line($.LABEL(label,_o),f));
+    }
 });
 $.LABEL=function(msg,o){return $.create('label',o,msg)};
 $.INPUT=function(t,o){
-	var opt=$.extend({'type':t},o||{});
-	var b=$.create('input',opt);
-	if(opt.value) b.value=opt.value;
-	return b;
+    var opt=$.extend({'type':t},o||{});
+    var b=$.create('input',opt);
+    if(opt.value) b.value=opt.value;
+    return b;
 };
 $.TEXT=function(o){return $.INPUT('text',o)};
 $.PASSWORD=function(o){return $.INPUT('password',o)};
@@ -147,7 +153,7 @@ $.SELECT=function(o/*value: optiones*/){
     for(var i=0;i<options.length;i++){
         var opt=options[i];
         if(typeof(opt.text)=='undefined') opt.text=opt.value;
-		var option=$.create('option',opt);
+        var option=$.create('option',opt);
         var pos=s.options.length;
         s.options[pos]=option;
         if(value.index(opt.value)>-1) s.options[pos].selected=true;

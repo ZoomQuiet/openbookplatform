@@ -11,7 +11,7 @@ class Group(models.Model):
     public = models.BooleanField(default=True)  #group is public or private
     freejoin = models.BooleanField(default=True)#group can free join in
     
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     
     class Admin: pass
@@ -50,7 +50,7 @@ class UserProfile(models.Model):
     portrait = models.ImageField(_('Photo'), upload_to='photo', blank=True)
     user = models.ForeignKey(User, unique=True)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.user.username
 
     class Admin: pass

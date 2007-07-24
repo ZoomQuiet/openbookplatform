@@ -78,7 +78,7 @@ $(document).ready(function (){
 	var add_dialog=$('#addchapter').dialog({trigger:'#add',title:'{% trans "New Chapter" %}'});
 	add_dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Create" %}",id:'submit'}));
 	
-	var form = $('#addchapter').formbuilder({action:"addchapter/", id:"form_add"});
+	var form = $('#addchapter').formbuilder({action:"addchapter/", id:"form_add", layout:"table"});
 	form.addSimpleLine('{% trans "Chapter Order Num" %}:', $.TEXT({name:'num',className:'field'}), {required:true});
 	form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field'}), {required:true});
 	form.addSimpleLine('{% trans "Abstract" %}:', $.TEXTAREA({name:'abstract',className:'field'}));
@@ -95,7 +95,7 @@ $(document).ready(function (){
 	var modi_dialog=$('#modifybook').dialog({trigger:'#modify',title:'{% trans "Change Book Information" %}'});
 	modi_dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Save" %}",id:'modify_submit'}));
 	
-	var form = $('#modifybook').formbuilder({action:"edit/", id:"form_modify_book"});
+	var form = $('#modifybook').formbuilder({action:"edit/", id:"form_modify_book", layout:"table"});
 	form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field',value:'{{ book.title }}'}), {required:true});
 	form.addSimpleLine('{% trans "Folder Name" %}:', $.TEXT({name:'slug',className:'field',value:'{{ book.slug }}'}), {required:true});
 	form.addSimpleLine('{% trans "Description" %}:', $.TEXTAREA({name:'description',className:'field',value:'{{ book.description }}'}), {required:true});
