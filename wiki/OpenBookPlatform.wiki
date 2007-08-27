@@ -5,7 +5,7 @@ http://www.woodpecker.org.cn/share/projects/OpenBookPlatform.png
 
 来源自:
 [http://code.google.com/p/openbookproject OpenBookProject]
-http://www.woodpecker.org.cn/share/projects/OpenBookPlatform-default.png
+http://www.woodpecker.org.cn/share/projects/OpenBookProject-default.png
 
 = Details =
 
