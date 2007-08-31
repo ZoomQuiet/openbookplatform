@@ -8,6 +8,10 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
+# Version 1.8 2007-08-30
+#    * Fix backend.quote_name to backend.DatabaseOperations().quote_name
+#      Thanks to richardh
+#
 # Version 1.7 2007-05-28
 #    * keep up with the change of GenericRel, so you can use db_dump.py
 #      in trunk and version before 0.97
@@ -121,9 +125,9 @@ def loaddb(app_labels, format, options):
         m = models[:]
         m.reverse()
         for model in m:
-            cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(model._meta.db_table))
+            cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(model._meta.db_table))
             for table, fields in get_model_many2many_stru(model):
-                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(table))
+                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(table))
     
     success = True
     for model in models: 
@@ -232,8 +236,8 @@ def load_model(cursor, model, format, options):
                 if v is not None:
                     sql_fields.append(fd)
                     sql_values.append(v)
-            e_sql = sql % (backend.quote_name(table), 
-                ','.join(map(backend.quote_name, sql_fields)), ','.join(['%s'] * len(sql_fields)))
+            e_sql = sql % (backend.DatabaseOperations().quote_name(table), 
+                ','.join(map(backend.DatabaseOperations().quote_name, sql_fields)), ','.join(['%s'] * len(sql_fields)))
             if stdout:
                 print e_sql, sql_values, '\n'
             else:
@@ -326,7 +330,7 @@ def dump_model(model):
     cursor = connection.cursor()
     fields, default = get_model_stru(model)
     cursor.execute('select %s from %s' % 
-        (','.join(map(backend.quote_name, fields)), backend.quote_name(opts.db_table)))
+        (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(opts.db_table)))
     return call_cursor(opts.db_table, fields, cursor)
 
 def call_cursor(table, fields, cursor):
@@ -359,7 +363,7 @@ def dump_many2many(model):
 
     for table, fields in get_model_many2many_stru(model):
         cursor.execute('select %s from %s' % 
-            (','.join(map(backend.quote_name, fields)), backend.quote_name(table)))
+            (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
         yield call_cursor(table, fields, cursor)
 
 def write_result(result, format, options):

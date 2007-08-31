@@ -119,6 +119,15 @@ $.extend(FB.prototype, {
         var _o={};
         if(o&&o.required) _o.className='required';
         return this.add(this.line($.LABEL(label,_o),f));
+    },
+    addOneLine:function(/*colspan, els*/){
+        var colspan=arguments[0];
+        var t=$('<tr><td colspan="$0"></td></tr>'.template([colspan]));
+        var p=t.find('td');
+        for(var i=1;i<arguments.length;i++){
+            p.append($(arguments[i]));
+        }
+        return t;
     }
 });
 $.LABEL=function(msg,o){return $.create('label',o,msg)};

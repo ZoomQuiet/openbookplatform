@@ -10,7 +10,7 @@ def thumbnail(filename, size=(50, 50), output_filename=None):
 
     # get the thumbnail data in memory.
     if not output_filename:
-        output_filename = get_default_thumbnail_filename(output_filename)
+        output_filename = get_default_thumbnail_filename(filename)
     image.save(output_filename, image.format) 
     return output_filename
 
