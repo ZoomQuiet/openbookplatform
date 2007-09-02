@@ -8,6 +8,10 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
+# Version 1.9 2007-09-02 (Merge from RichardH)
+#    * Adds try-except to catch the changes in db.backend refactoring in
+#      svn version. So db_dump.py can support old version except trunk.
+#
 # Version 1.8 2007-08-30
 #    * Fix backend.quote_name to backend.DatabaseOperations().quote_name
 #      Thanks to richardh
@@ -125,8 +129,18 @@ def loaddb(app_labels, format, options):
         m = models[:]
         m.reverse()
         for model in m:
+            try:
+                # Earlier Django versions.
+                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(model._meta.db_table))
+            except AttributeError:
+                # Django after backend refactoring.
             cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(model._meta.db_table))
             for table, fields in get_model_many2many_stru(model):
+                try:
+                    # Earlier Django versions.
+                    cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(table))
+                except:
+                    # Django after backend refactoring.
                 cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(table))
     
     success = True
@@ -257,7 +271,7 @@ def load_model(cursor, model, format, options):
         raise
 
 def get_model_stru(model):
-    from django.db.models.fields import DateField, DateTimeField, TimeField
+    from django.db.models.fields import DateField, DateTimeField, TimeField, IntegerField
     
     fields = []
     default = {}
@@ -270,6 +284,9 @@ def get_model_stru(model):
             if f.auto_now or f.auto_now_add:
                 v = datetime.datetime.now()
                 default[f.column] = ('value', f.get_db_prep_save(v))
+        # Need to fix sqlite defaulting None values to ''
+        if isinstance(f, IntegerField):
+            default[f.column] = ('value', None)
     return fields, default
 
 def get_model_many2many_stru(model):
@@ -329,6 +346,12 @@ def dump_model(model):
     opts = model._meta
     cursor = connection.cursor()
     fields, default = get_model_stru(model)
+    try:
+        # Earlier Django versions.
+        cursor.execute('select %s from %s' % 
+        (','.join(map(backend.quote_name, fields)), backend.quote_name(opts.db_table)))        
+    except AttributeError:
+        # Django after backend refactoring.
     cursor.execute('select %s from %s' % 
         (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(opts.db_table)))
     return call_cursor(opts.db_table, fields, cursor)
@@ -362,6 +385,12 @@ def dump_many2many(model):
     cursor = connection.cursor()
 
     for table, fields in get_model_many2many_stru(model):
+        try:
+            # Earlier Django versions.
+            cursor.execute('select %s from %s' % 
+                (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
+        except AttributeError:
+            # Django after backend refactoring.
         cursor.execute('select %s from %s' % 
             (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
         yield call_cursor(table, fields, cursor)
