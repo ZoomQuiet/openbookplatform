@@ -134,14 +134,14 @@ def loaddb(app_labels, format, options):
                 cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(model._meta.db_table))
             except AttributeError:
                 # Django after backend refactoring.
-            cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(model._meta.db_table))
+                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(model._meta.db_table))
             for table, fields in get_model_many2many_stru(model):
                 try:
                     # Earlier Django versions.
                     cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(table))
                 except:
                     # Django after backend refactoring.
-                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(table))
+                    cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(table))
     
     success = True
     for model in models: 
@@ -349,11 +349,11 @@ def dump_model(model):
     try:
         # Earlier Django versions.
         cursor.execute('select %s from %s' % 
-        (','.join(map(backend.quote_name, fields)), backend.quote_name(opts.db_table)))        
+            (','.join(map(backend.quote_name, fields)), backend.quote_name(opts.db_table)))        
     except AttributeError:
         # Django after backend refactoring.
-    cursor.execute('select %s from %s' % 
-        (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(opts.db_table)))
+        cursor.execute('select %s from %s' % 
+            (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(opts.db_table)))
     return call_cursor(opts.db_table, fields, cursor)
 
 def call_cursor(table, fields, cursor):
@@ -391,8 +391,8 @@ def dump_many2many(model):
                 (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
         except AttributeError:
             # Django after backend refactoring.
-        cursor.execute('select %s from %s' % 
-            (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
+            cursor.execute('select %s from %s' % 
+                (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
         yield call_cursor(table, fields, cursor)
 
 def write_result(result, format, options):
