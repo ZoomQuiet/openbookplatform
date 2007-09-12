@@ -8,6 +8,9 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
+# Version 2.0 2007-09-11
+#    * refact, and add aoto reset postgres sequence
+#
 # Version 1.9 2007-09-02 (Merge from RichardH)
 #    * Adds try-except to catch the changes in db.backend refactoring in
 #      svn version. So db_dump.py can support old version except trunk.
@@ -21,33 +24,33 @@
 #      in trunk and version before 0.97
 #
 # Version 1.6 2007-04-09
+#    * Add float support
 #
-# Update 1.0 2007-01-18
+# Version 1.5 2007-02-08
+#    * If the filename is not exists, then skip it
 #
-# Update 1.1 2007-01-19
-#    * if no arguments after db_dump.py, then it'll show help infomation
+# Version 1.4 2007-01-21
+#    * support mysql
 #
-# Update 1.2 2007-01-20
-#    * change dumpdb to use model info but not cursor.description,
-#      because some database backend does not support cursor.description
-#
-# Update 1.3 2007-01-20
+# Version 1.3 2007-01-20
 #    * change the output format of data file, and improve the process
 #      effective of dumpping and loading
 #
-# Update 1.4 2007-01-21
-#    * support mysql
+# Version 1.2 2007-01-20
+#    * change dumpdb to use model info but not cursor.description,
+#      because some database backend does not support cursor.description
 #
-# Update 1.5 2007-02-08
-#    * If the filename is not exists, then skip it
+# Version 1.1 2007-01-19
+#    * if no arguments after db_dump.py, then it'll show help infomation
 #
-# Update 1.6 2007-04-09
-#    * Add float support
+# Version 1.0 2007-01-18
+#
 
 import os, sys
 from optparse import OptionParser
 import datetime
 import decimal
+quote_flag = None
 
 def _get_table_order(app_labels):
     from django.db.models import get_app, get_apps, get_models
@@ -113,8 +116,7 @@ def _find_key(d, key):
                 return result
 
 def loaddb(app_labels, format, options):
-    from django.db import connection, transaction, backend
-    
+    from django.db import connection, transaction
 
     if options.verbose: 
         print "Begin to load data for %s format...\n" % format 
@@ -129,26 +131,18 @@ def loaddb(app_labels, format, options):
         m = models[:]
         m.reverse()
         for model in m:
-            try:
-                # Earlier Django versions.
-                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(model._meta.db_table))
-            except AttributeError:
-                # Django after backend refactoring.
-                cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(model._meta.db_table))
+            cursor.execute('DELETE FROM %s WHERE 1=1;' % quote_name(model._meta.db_table))
             for table, fields in get_model_many2many_stru(model):
-                try:
-                    # Earlier Django versions.
-                    cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.quote_name(table))
-                except:
-                    # Django after backend refactoring.
-                    cursor.execute('DELETE FROM %s WHERE 1=1;' % backend.DatabaseOperations().quote_name(table))
+                cursor.execute('DELETE FROM %s WHERE 1=1;' % quote_name(table))
     
     success = True
     for model in models: 
         try:
             load_model(cursor, model, format, options)
+            setSequence(cursor, model)
             for table, fields in get_model_many2many_stru(model):
                 load_model(cursor, (table, fields), format, options)
+                setSequence(cursor, model)
         except Exception, e: 
             success = False
             errornum += 1
@@ -164,8 +158,6 @@ def loaddb(app_labels, format, options):
         print "Successful!"
     
 def load_model(cursor, model, format, options): 
-    from django.db import backend
-
     datadir, verbose, stdout = options.datadir, options.verbose, options.stdout
     sql = 'INSERT INTO %s (%s) VALUES (%s);'
 
@@ -250,8 +242,8 @@ def load_model(cursor, model, format, options):
                 if v is not None:
                     sql_fields.append(fd)
                     sql_values.append(v)
-            e_sql = sql % (backend.DatabaseOperations().quote_name(table), 
-                ','.join(map(backend.DatabaseOperations().quote_name, sql_fields)), ','.join(['%s'] * len(sql_fields)))
+            e_sql = sql % (quote_name(table), 
+                ','.join(map(quote_name, sql_fields)), ','.join(['%s'] * len(sql_fields)))
             if stdout:
                 print e_sql, sql_values, '\n'
             else:
@@ -341,19 +333,13 @@ def dumpdb(app_labels, format, options):
         print "Successful!"
 
 def dump_model(model):
-    from django.db import connection, backend
+    from django.db import connection
 
     opts = model._meta
     cursor = connection.cursor()
     fields, default = get_model_stru(model)
-    try:
-        # Earlier Django versions.
-        cursor.execute('select %s from %s' % 
-            (','.join(map(backend.quote_name, fields)), backend.quote_name(opts.db_table)))        
-    except AttributeError:
-        # Django after backend refactoring.
-        cursor.execute('select %s from %s' % 
-            (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(opts.db_table)))
+    cursor.execute('select %s from %s' % 
+        (','.join(map(quote_name, fields)), quote_name(opts.db_table)))        
     return call_cursor(opts.db_table, fields, cursor)
 
 def call_cursor(table, fields, cursor):
@@ -380,19 +366,13 @@ def _pre_data(row):
     return row
 
 def dump_many2many(model):
-    from django.db import connection, backend
+    from django.db import connection
     
     cursor = connection.cursor()
 
     for table, fields in get_model_many2many_stru(model):
-        try:
-            # Earlier Django versions.
-            cursor.execute('select %s from %s' % 
-                (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
-        except AttributeError:
-            # Django after backend refactoring.
-            cursor.execute('select %s from %s' % 
-                (','.join(map(backend.DatabaseOperations().quote_name, fields)), backend.DatabaseOperations().quote_name(table)))
+        cursor.execute('select %s from %s' % 
+            (','.join(map(quote_name, fields)), quote_name(table)))
         yield call_cursor(table, fields, cursor)
 
 def write_result(result, format, options):
@@ -419,7 +399,25 @@ def write_result(result, format, options):
         print '(Total %d records)\n' % i
     if not options.stdout:
         f.close()
-    
+
+def quote_name(s):
+    from django.db import backend
+    if quote_flag == 'old':
+        return backend.quote_name(s)
+    else:
+        return backend.DatabaseOperations().quote_name(s)
+        
+def setSequence(cursor, model):
+    from django.conf import settings
+
+    # postgresql: reset sequence
+    if settings.DATABASE_ENGINE in ('postgresql_psycopg2', 'postgresql'):
+        cursor.execute('SELECT count(*) + 1 FROM %s;' % quote_name(model._meta.db_table))
+        nb = cursor.fetchall()[0][0]
+        
+        seq = quote_name(model._meta.db_table + '_id_seq')
+        cursor.execute('ALTER SEQUENCE %s RESTART WITH %d;' % (seq, nb))
+
 def get_usage():
     usage = """
   %prog [options] action [applist]:
@@ -463,7 +461,17 @@ def execute_from_command_line(argv=None):
             sys.exit()
             
         setup_environ(settings)
-        
+    
+    global quote_flag
+    import django.db
+    try:
+        # Earlier Django versions.
+        django.db.backend.quote_name
+        quote_flag = 'old'
+    except AttributeError:
+        # Django after backend refactoring.
+        quote_flag = 'new'
+    
     if action == 'dump':
         dumpdb(apps, 'py', options)
     elif action == 'load':
