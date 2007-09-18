@@ -8,6 +8,9 @@
 # For now, it only support .py format, so the output result will 
 # be saved as python source code, and you can import it.
 #
+# Version 2.1 2007-09-18
+#    * add Time type support
+#
 # Version 2.0 2007-09-11
 #    * refact, and add aoto reset postgres sequence
 #
@@ -232,6 +235,12 @@ def load_model(cursor, model, format, options):
                                 v = datetime.date.today().strftime('%Y-%m-%d')
                             else:
                                 v = value
+                        #add time support
+                        elif kind == 'time':
+                            if not value or value == 'now':
+                                v = datetime.datetime.now().strftime('%H:%M:%S')
+                            else:
+                                v = value
                         elif kind == 'datetime':
                             if not value or value == 'now':
                                 v = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -360,6 +369,8 @@ def _pre_data(row):
             row[i] = row[i].strftime('%Y-%m-%d %H:%M:%S') # + '.' + str(row[i].microsecond).rstrip('0')
         elif isinstance(fd, datetime.date):
             row[i] = row[i].strftime('%Y-%m-%d')
+        elif isinstance(fd, datetime.time):
+            row[i] = row[i].strftime('%H:%M:%S')
         elif isinstance(fd, decimal.Decimal):
             row[i] = row[i].__float__()
         
