@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block subject %}About the comment system{% endblock %}
+{% block content %}
+<p>
+The comment system of this site is referred to DjangoBook.com, but
+I use jQuery to implement it. And the operatation is similar with
+DjangoBook.com. Instead of commenting on an entire chapter, you can 
+leave comments on any individual "block" in the chapter. A "block" 
+with comments looks like this:
+</p>
+<p class="image">
+<img src="/site_media/img/comments1.png">
+</p>
+<p>The balloon shows the number of comments on that block.</p>
+<p>
+A "block" is a paragraph, list item, subject.  It'll get highlighted 
+when you select it:
+</p>
+<p class="image">
+<img src="/site_media/img/comments2.png">
+</p>
+<p>
+To post a comment on a block, just click in the gutter next to the
+bit you want to comment on:
+</p>
+<p class="image">
+<img src="/site_media/img/comments3.png">
+</p>
+<p>
+Many, many thanks to <a href="http://www.djangobook.com/">DjangoBook.com</a>, 
+I got many ideas from it, and also thanks to <a href="http://jquery.com">jQuery.com</a>,
+I didn't use Yui-Ext but jQuery to do the similar effect.
+</p>
+{% endblock %}
+{% block css %}
+<style type="text/css" media="screen">
+	p.image { text-align: center; }
+	p.image img { padding: 4px; border: 1px #406b4e solid; }
+</style>
+{% endblock %}
+

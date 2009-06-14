@@ -1,0 +1,50 @@
+{% load i18n %}
+{% extends "base.html" %}
+{% block subject %}{% trans "Book List" %} <a href="{{ setting.URLROOT }}/rss/book/" class="rss"><img src="/site_media/img/feed.png" title="subscribe booklist"/></a>{% endblock %}
+{% block content %}
+<div id="documents" class="booklist">{% trans "Loading..." %}{% include "utils/ajax_loading.html" %}</div>
+<div id="pages"></div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+var ajax_url = 'ajax_list/';
+function createtable(target, data){
+	var table = $('<table width="100%"><tbody></tbody></table>')
+	$.each(data, function(n){
+		var tr = $('<tr><td width="1%">$icon</td><td><dl><dt><i>$title</i></dt><dd><p><span class="keyword">Author</span>: <span class="info">$author</span></p><p><span class="keyword">Lastest Update</span>: <span class="info">$modifydate</span></p><p class="description">$description</p></dd></dl></td></tr>'.template(this));
+		table.append(tr);
+		var d = this;
+		tr.click(function(){
+			window.location = '{{ setting.URLROOT }}/book/$id/'.template(d);
+		});
+	});
+	$(target).empty().append(table);
+//	$("tbody tr:even", target).addClass("alt");
+	$("tbody tr", target)
+	    .mouseover(function(){
+	        $(this).addClass("over");
+	    })
+	    .mouseout(function(e){
+	        $(this).removeClass("over");
+	    });
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createtable('#documents', data[2]);
+		$('#pages').empty().paginate(ajax_url, data[0], data[1]).append('<br style="clear:both;"/>');
+		$('#pages a').click(function(){
+			var href = this.href;
+			$.get(href, handle_list);
+			return false;
+		});
+	}
+}
+
+$(document).ready(function (){
+	$.post(ajax_url, {}, handle_list);
+});
+</script>
+{% endblock %}

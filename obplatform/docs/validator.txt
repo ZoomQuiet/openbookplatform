@@ -1,0 +1,14 @@
+======================
+Validator使用说明
+======================
+
+:作者: limodou
+:联系: limodou@gmail.com
+:版本: 0.1
+:BLOG: http://www.donews.net/limodou
+:版权: FDL
+
+.. contents:: 目录
+.. sectnum::
+
+Validator是根据newforms开发出来的纯校验的模块，因为现有的newforms在一些地方，如：字段级的validator_list，相关字段的支持，如：FileField等，从个人角度感觉没有老的Manipulator做得灵活和方便，因此我开发了这个模块。同时这个模块去掉了Html代码的生成，我希望以后这块工作可以通过手写Html和通过js来生成，而后台的处理尽量少与前端发生直接的关系。同时为了减少编写Form的Html代码，可以考虑使用一个工具来生成Form的Html代码。

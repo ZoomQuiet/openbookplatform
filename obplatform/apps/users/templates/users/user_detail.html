@@ -1,0 +1,41 @@
+{% extends "setting_base.html" %}
+{% load i18n utiltags %}
+{% block submenu %}{% call "personsubmenu.html" with currentpage="info" %}{% endblock %}
+{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+
+{% block body %}
+{% catch as header %}
+    <h1>{{ person.username }}</h1>
+    <p><img src="/site_media/{{ person.get_profile.get_portrait_url|default:"img/user.jpg" }}" /></p>
+{% endcatch %}
+{% catch as content %}
+    <div class="basic_form">
+        <h2>{% trans "Basic Information" %}</h2>
+        <div class="block">
+            <p><b>{% trans "Username" %}:</b>{{ person.username }}</p>
+            <p><b>{% trans "Email" %}:</b>{{ person.email }}</p>
+        </div>
+        {% if person.is_superuser %}
+            <h2>{% trans "Status" %}</h2>
+            <p>{% trans "He is administrator." %}</p>
+        {% endif %}
+    </div>
+{% endcatch %}
+{% catch as sidebar %}
+    <h2>{% trans "Functions" %}</h2>
+    {% pyif not user.is_anonymous() and user.is_superuser and person.username != 'admin' and person.id != user.id %}
+        <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/delete/">{% trans "Delete user" %}</a></p>
+        {% if person.is_superuser %}
+            {% ifnotequal person.username "admin" %}
+                <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/removesysmanager/">{% trans "Remove the admin priority" %}</a></p>
+            {% endifnotequal %}
+        {% else %}
+            <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/addsysmanager/">{% trans "Set as administrator" %}</a></p>
+        {% endif %}
+    {% endif %}
+    {% pyif person.id == user.id %}
+        <p><a class="admin" href="{{ setting.URLROOT }}/user/{{ person.id }}/edit/">{% trans "Update personal information" %}</a></p>
+    {% endif %}
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}
+{% endblock %}
