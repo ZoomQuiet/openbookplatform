@@ -1,0 +1,142 @@
+{% load i18n utiltags %}
+<script type="text/javascript">
+function createtable(target, data){
+	var table = $('<table width="100%"><tbody></tbody></table>')
+	$.each(data, function(n){
+		var tr = $('<tr><td width="1%">$checkbox</td><td><dl><dt><i>$title ($date)</i></dt><dd>$abstract</dd></dl></td></tr>'.template(this));
+		var id = this['id'];
+		$('td', tr).eq(1).click(function(){
+			window.location = '{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/chapter/$id/'.template({id:id});
+		});
+		table.append(tr);
+		var d = this;
+	});
+	$(target).empty().append(table);
+//	$("tbody tr:even", target).addClass("alt");
+	$("tbody tr", target)
+	    .mouseover(function(){
+	        $(this).addClass("over");
+	    })
+	    .mouseout(function(e){
+	        $(this).removeClass("over");
+	    });
+}
+
+function create_authors(target, data){
+	var ul = $('<ul></ul>')
+	$.each(data, function(n){
+		var li = $('<li>$username</li>'.template(this));
+		ul.append(li);
+	});
+	$(target).empty().append(ul);
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createtable('#documents', data);
+	}
+}
+
+function handle_authors(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		create_authors('#authors', data);
+	}
+}
+
+$(document).ready(function (){
+	$.post('chapters/', {}, handle_list);
+	$.post('authors/', {}, handle_authors);
+	$('#select').click(function(){
+		$('#documents input[@type="checkbox"]').each(function(){
+			this.checked = true;
+		});
+	});
+	$('#diselect').click(function(){
+		$('#documents input[@type="checkbox"]').each(function(){
+			this.checked = '';
+		});
+	});
+	$('#delete').click(function(){
+		$.post('deletechapters/', $('#documents').getdict(), function(data){
+			var result = data.evalJson();
+			if (result.response == 'ok'){
+				if (result.next)
+					window.location = result.next;
+			}
+		});
+	});
+	
+	/* add chapter  */
+	on_success_finish = function(obj, data){
+		add_dialog.close();
+		$.post('chapters/', {}, handle_list);
+	};
+	var add_dialog=$('#addchapter').dialog({trigger:'#add',title:'{% trans "New Chapter" %}'});
+	add_dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Create" %}",id:'submit'}));
+	
+	var form = $('#addchapter').formbuilder({action:"addchapter/", id:"form_add", layout:"table"});
+	form.addSimpleLine('{% trans "Chapter Order Num" %}:', $.TEXT({name:'num',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Abstract" %}:', $.TEXTAREA({name:'abstract',className:'field'}));
+	form.addSimpleLine('{% trans "Content" %}:', $.TEXTAREA({name:'content',className:'field'}), {required:true});
+	$('#form_add').jfileform({delaytime:3000,
+	    messageid:add_dialog.message,trigger:"#submit",
+	    on_success_finish:on_success_finish});
+	
+	/* modify book */
+	on_modify_success_finish = function(obj, data){
+		modi_dialog.close();
+	}
+
+	var modi_dialog=$('#modifybook').dialog({trigger:'#modify',title:'{% trans "Change Book Information" %}'});
+	modi_dialog.buttons.append($.SUBMIT({name:'submit', value:"{% trans "Save" %}",id:'modify_submit'}));
+	
+	var form = $('#modifybook').formbuilder({action:"edit/", id:"form_modify_book", layout:"table"});
+	form.addSimpleLine('{% trans "Title" %}:', $.TEXT({name:'title',className:'field',value:'{{ book.title }}'}), {required:true});
+	form.addSimpleLine('{% trans "Folder Name" %}:', $.TEXT({name:'slug',className:'field',value:'{{ book.slug }}'}), {required:true});
+	form.addSimpleLine('{% trans "Description" %}:', $.TEXTAREA({name:'description',className:'field',value:'{{ book.description }}'}), {required:true});
+	form.addSimpleLine('{% trans "License" %}:', $.TEXTAREA({name:'license',className:'field',value:'{{ book.license }}'}));
+	form.addSimpleLine('{% trans "Text Format" %}:', $.SELECT({name:'textformat',className:'field',value:['{{ book.textformat }}'],options:[{value:"",text:"-----------"},{value:"rst",text:"reStructureText"},{value:"markdown",text:"MarkDown"}]}), {required:true});
+	form.addSimpleLine('{% trans "Logo" %}:', $.FILE({name:'icon',className:'field'}));
+	$('#form_modify_book').jfileform({delaytime:3000,reset:false,
+		messageid:modi_dialog.message,trigger:"#modify_submit",
+		on_success_finish:on_modify_success_finish});
+			
+});
+</script>
+{% catch as header %}
+    <h1>{{ book.title }}</h1>
+    <h3><a href="#" class="admin" id="select" />{% trans "Select All" %}</a> | <a href="#" class="admin" id="diselect" />{% trans "Deselect All" %}</a></h3>
+{% endcatch %}
+{% catch as content %}
+	<div id="addchapter"></div>
+	<div id="modifybook"></div>
+    <div id="documents">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
+	<div id="pages"></div>
+{% endcatch %}
+{% catch as sidebar %}
+	<h1>{% trans "Functions" %}</h1>
+	{% if is_manager %}
+		<p><a href="#" class="admin" id="modify">{% trans "Change Book Information" %}</a></p>
+		<p><a href="#" class="admin" id="add">{% trans "New Chapter" %}</a></p>
+		<p><a href="#" class="admin" id="delete">{% trans "Delete Selected Chapters" %}</a></p>
+	{% endif %}
+	<h1>{% trans "Authors" %}</h1>
+	<script type="text/javascript">
+	$(function(){
+		on_addauthor_success_finish = function(obj, data){
+			$.post('authors/', {}, handle_authors);
+		}
+		$('#addauthor').jform({on_success_finish:on_addauthor_success_finish, 
+				messageid:'#author_message'});
+	});
+	</script>
+	<div id="author_message"></div>
+	<p><form id="addauthor" action="addauthor/" method="post"><input type="text" name="username" value=""/><input type="submit" name="addauthor" value="{% trans "Add Author" %}"/></form></p>
+	<div id="authors">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}

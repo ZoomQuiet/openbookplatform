@@ -1,0 +1,58 @@
+{% extends "setting_base.html" %}
+{% load i18n utiltags %}
+{% block submenu %}{% call "personsubmenu.html" with currentpage="edit" %}{% endblock %}
+{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+{% block body %}
+<script type="text/javascript">
+$(document).ready(function (){
+	$('#user_edit').jfileform();
+});
+</script>
+{% catch as header %}
+    <h1>{{ person.username }} - {% trans "Personal Information" %}</h1>
+{% endcatch %}
+{% catch as content %}
+<form enctype="multipart/form-data" action="{{ setting.URLROOT }}/user/{{ person.id }}/edit/" method="post" id="user_edit">
+    <div class="basic_form">
+        <div id="message"></div>
+        <h2>{% trans "Basic Information" %}</h2>
+        <p class="blockintro">{% trans "Input email address" %}</p>
+	   <div class="block">
+	       <dl>
+	           <dt class="required"><lable>{% trans "Email" %}:</lable></dt>
+	           <dd><input type="text" name="email" value="{{ person.email }}"/><dd>
+	       </dl>
+	   </div>
+       <p class="blockintro">{% trans "Setup a new password. If you don't want to set, you can leave it blank." %}</p>
+        <div class="block">
+            <dl>
+                <dt><lable>{% trans "Password" %}:</lable></dt>
+                <dd><input type="password" name="password"/><dd>
+            </dl>
+            <dl>
+                <dt><lable for="">{% trans "Enter Again" %}:</lable></dt>
+                <dd><input type="password" name="password1"/><dd>
+            </dl>
+        </div>
+		<p class="blockintro">{% trans "Select a picture for your portrait" %}</p>
+		<div class="block">
+		    <dl>
+		        <dt class="required"><lable>{% trans "File" %}:</lable></dt>
+		        <dd><input type="file" name="portrait"/><dd>
+		    </dl>
+		</div>
+        <div class="action">
+            <input type="submit" value="{% trans "Save" %}" />
+        </div>
+    </div>
+</form>
+{% endcatch %}
+{% catch as sidebar %}
+    <h1>{{ person.username }}</h1>
+    {% if user.get_profile.portrait %}
+        <img src="/site_media/{{ person.get_profile.get_portrait_url }}" />
+    {% endif %}
+    <p>{% trans "Email" %}: {{ person.email }}</p>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}
+{% endblock %}

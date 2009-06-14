@@ -1,0 +1,86 @@
+/*
+
+Tabs - important styles to ensure accessibility in print
+
+*/
+@media projection, screen { /* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+    .tabs-hide {
+        display: none;
+    }
+}
+@media print {
+    .anchors {
+        display: none;
+    }
+}
+
+/*
+
+Tabs - not important for accessibility, just for the look of it...
+
+*/
+.anchors, .anchors li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.anchors {margin: 5px 0px 0px 5px;font-family:verdana;font-size:78%;font-size-adjust:none;}
+.anchors:after { /* clearing without presentational markup, IE gets extra treatment */
+    display: block;
+    clear: both;
+    content: " ";
+}
+.anchors li {
+    float: left;
+}
+.anchors a {
+    font-weight: bold;
+    display: block;
+    position: relative;
+    text-decoration: none;
+    background:#487858 url(/site_media/img/tr_999.gif) no-repeat top right;
+    margin:0 0 0 4px;
+}
+.anchors .tabs-selected a {
+    color:#000;
+    background:#fff url(/site_media/img/tr_999.gif) no-repeat top right;
+}
+.anchors li a strong{
+    display: block;
+    padding:2px 5px 2px 5px;
+    margin:0;
+}
+
+.anchors li.tabs-selected strong{
+    background:transparent url(/site_media/img/tl_999.gif) no-repeat;
+    border-bottom:1px solid #fff;
+}
+
+.anchors li strong{
+    background:transparent url(/site_media/img/tl_999.gif) no-repeat;
+}
+
+.anchors .tabs-selected a:link, .anchors .tabs-selected a:visited,
+.anchors .tabs-disabled a:link, .anchors .tabs-disabled a:visited { /* @ Opera, use pseudo classes otherwise it confuses cursor... */
+    cursor: text;
+    color: black;
+}
+.anchors a:hover, .anchors a:focus, .anchors a:active , .anchors a:visited, .anchors a:link{
+    cursor: pointer;
+    color: white;
+}
+.anchors .tabs-disabled {
+    opacity: .4;
+}
+.anchors .tabs-disabled a:hover, .anchors .tabs-disabled a:focus, .anchors .tabs-disabled a:active {
+    background: transparent;
+}
+.fragment {
+    padding: 0 10px;
+}
+.anchors .tabs-selected .tabs-loading {
+    padding-left: 25px;
+    background-image: url(loading.gif);
+    background-position: 4px 50%;
+    background-repeat: no-repeat;
+}

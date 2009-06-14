@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+{% block css %}
+<link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/site_media/js/jquery.formbuilder.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
+<script type="text/javascript">
+$(document).ready(function (){
+	var form = $('#login').formbuilder({action:"{{ setting.URLROOT }}/login/", id:"form_login", layout:"table"});	{% if next %}$.HIDDEN({name:"next", value:"{{ next }}"});{% endif %}
+	form.add($.DIV({id:"message"}));
+	form.addSimpleLine('{% trans "Username" %}:', $.TEXT({name:'username',className:'field'}), {required:true});	form.addSimpleLine('{% trans "Password" %}:', $.PASSWORD({name:'password',className:'field'}), {required:true});
+	var footer=form.addOneLine(2, $.SUBMIT({name:'submit', value:'Login'})).attr({className:'ft'});
+	form.add(footer);	$('#form_login').jform({delaytime:3000, useparent:false});
+});
+</script>
+{% endblock %}
+{% block content %}
+<h2>{% trans "Login" %}</h2>
+<div id="login" class="simple_form" style="width:300px"></div>
+{% endblock %}

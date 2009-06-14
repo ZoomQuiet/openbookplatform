@@ -1,0 +1,64 @@
+{% load utiltags i18n %}
+<script type="text/javascript">
+function createtable(target, data){
+    var ul = $('<ul></ul>')
+    $.each(data, function(n){
+        var li = $('<li>$html</li>'.template(this));
+        var d = this;
+        ul.append(li);
+        $('.delete', li).click(function(){
+            $.post('deletecomment/', {'comment_id':d['id']}, function(data){
+                li.remove();
+            });
+        });
+    });
+    $(target).empty().append(ul);
+}
+
+function handle_list(data){
+    var result = data.evalJson();
+    if (result.response == 'ok'){
+        var data = result.data;
+        createtable('#comments', data);
+    }
+}
+
+$(function(){
+    $('#upload_form').jform();
+    $.post('comments/', {}, handle_list);
+});
+</script>
+{% catch as header %}
+    <h1><a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ chapter.num }}/">{{ chapter.title }}</a></h1>
+{% endcatch %}
+{% catch as content %}
+    <form id="upload_form" action="{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" method="post">
+        <div class="basic_form" id="upload">
+			<div id="message"></div>
+            <p class="blockintro">Create a new book, and fill in information:</p>
+            <div class="block">
+                <dl>                    <dt class="required"><lable>{% trans "Chapter Num" %}:</lable></dt>                    <dd><input type="text" name="num" value="{{ chapter.num }}"/><dd>                </dl>                <dl>
+                    <dt class="required"><lable>{% trans "Title" %}:</lable></dt>
+                    <dd><input type="text" size="50" name="title" value="{{ chapter.title }}"/><dd>
+                </dl>
+                <dl>
+                    <dt><lable>{% trans "Abstract" %}:</lable></dt>
+                    <dd><textarea rows="2" cols="40" name="abstract">{{ chapter.abstract|escape }}</textarea><dd>
+                </dl>
+                <dl>
+                    <dt class="required"><lable>{% trans "Content" %}:</lable></dt>
+                    <dd><textarea rows="30" cols="40" name="content">{{ chapter.content|escape }}</textarea><dd>
+                </dl>
+            </div>
+            <div class="action">
+                <input type="submit" value="{% trans "Save" %}" />
+            </div>
+        </div>
+    </form>
+{% endcatch %}
+{% catch as sidebar %}
+    <p><a href="{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/" class="admin" id="delete">{% trans "Return to table of contents" %}</a></p>
+    <h2>{% trans "Comments Manager" %}</h2>
+    <div id="comments">{% trans "Loading" %}...{% include "utils/ajax_loading.html" %}</div>
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="user" %}{% endblock %}
+{% block body %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#deleteuser').click(function(){
+            $.post('{{ setting.URLROOT }}/user/delete/', $('#users').getdict(), function(data){
+                var result = data.evalJson();
+                if (result['response'] == 'ok'){
+                    if (result['next'])
+                        window.location = result['next'];
+                }
+            });
+        });
+        $('#addsysuser').click(function(){
+            $.post('{{ setting.URLROOT }}/user/addsysmanager/', $('#users').getdict(), function(data){
+                var result = data.evalJson();
+                if (result['response'] == 'ok'){
+                    if (result['next'])
+                        window.location = result['next'];
+                }
+            });
+        });
+    });
+</script>
+{% catch as header %}
+    <h1>成员信息</h1>
+{% endcatch %}
+{% catch as content %}
+    <table width="100%" cellpadding="8px" id="users">
+        <tr>
+        {% for item in users %}
+            {% pyif not forloop['counter0'] % 5 %}</tr><tr>{% endif %}
+            <td width="20%"><a class="admin" href="{{ setting.URLROOT }}/user/{{ item.id }}/"><img class="link" src="/site_media/{{ item.userprofile.get_portrait_url|default:"img/user.jpg" }}"/></a><p><input type="checkbox" name="userid" value="{{ item.id }}"/>{{ item.username }}</p></td>
+        {% endfor %}
+        {% expr range(users.count() % 5) as number %}
+        {% for i in number %}
+            <td>&nbsp;</td>
+        {% endfor %} 
+        </tr>
+    </table>
+{% endcatch %}
+{% catch as sidebar %}
+    <h1>系统管理员</h1>
+    <ul>
+        {% for u in users %}
+            {% if u.is_superuser %}
+                <li>{{ u.username }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <h1>功能</h1>
+    {% if user.is_superuser %}
+    <p><a class="admin" href="#" id="deleteuser">删除选中成员</a></p>
+    <p><a class="admin" href="#" id="addsysuser">将选中成员设置为系统管理员</a></p>
+    {% endif %}
+{% endcatch %}
+{% call "utils/contentframe.html" with header content sidebar %}
+{% endblock %}

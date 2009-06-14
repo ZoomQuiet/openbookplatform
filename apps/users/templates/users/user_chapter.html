@@ -1,0 +1,17 @@
+{% extends "setting_base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="book" %}{% endblock %}
+{% block body %}
+    {% expr person.id == user.id as is_manager %}
+    {% include "books/inc_chapter.html" %}
+{% endblock %}
+{% block css %}
+{{ block.super }}
+<link href="/site_media/js/modal.css" rel="stylesheet" type="text/css" />
+<link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script type="text/javascript" src="/site_media/js/iresizable.js"></script>
+<script type="text/javascript" src="/site_media/js/modal.js"></script>
+{% endblock %}

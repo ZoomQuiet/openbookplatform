@@ -1,0 +1,30 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="jquery.jbasicext.js"></script>
+<script type="text/javascript" src="jquery.formbuilder.js"></script>
+<script type="text/javascript">
+$().ready(function(){
+    var form = $('#test').formbuilder({layout:'simple','class':'basic_form'});
+    form.add(form.line($.LABEL('Text Field'), $.TEXT({name:'text',value:'text field'})));
+    form.add(form.line($.LABEL('Password Field'), $.PASSWORD({name:'password',value:'password field'})));
+    form.add(form.line($.LABEL('Select field'), $.SELECT({name:'select',value:[3],options:[{value:1},{value:2},{value:3},{value:4}]})));
+    form.add(form.line($.LABEL('Textarea field'), $.TEXTAREA({name:'textarea',value:'This is a textarea field'})));
+    form.add(form.line($.LABEL('Hidden field'), $.HIDDEN({name:'hidden',value:'This is a textarea field'})));
+    form.add(form.line($.LABEL('Submit'), $.SUBMIT({name:'submit',value:'Login'})));
+    form.add(form.line($.LABEL('Reset'), $.RESET({name:'reset',value:'Rest'})));
+    form.add(form.line($.LABEL('Button'), $.BUTTON({name:'button',value:'Button'})));
+});
+</script>
+<style type="text/css">
+<!--
+* {padding:0;margin:0;}
+.basic_form label{display:block;}
+-->
+</style>
+
+</head>
+<body>
+<div id="test"></div>
+</body>
+</html>
