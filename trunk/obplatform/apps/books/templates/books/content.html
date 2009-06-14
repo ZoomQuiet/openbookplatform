@@ -1,0 +1,23 @@
+{% load i18n %}
+{% extends "base.html" %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block subject %}{% trans "Table of Contents" %}  <a href="{{ setting.URLROOT }}/rss/book/{{ book.id }}/" class="rss"><img src="/site_media/img/feed.png" title="subscribe this book"/></a> <a href="{{ setting.URLROOT }}/rss/book/{{ book.id }}/comments/" class="rss"><img src="/site_media/img/feed.png" title="subscribe the comments of this book"/></a>{% endblock %}
+{% block content %}
+<ol class="toc">    
+{% for obj in book.chapter_set.all %}
+    <li>
+      <span class="release-date">
+          {{ obj.modifydate|date:"F j,Y" }}
+      </span>
+      <a href="{{ obj.num }}/" title="{{ obj.abstract }}">
+          {{ obj.title }}
+      </a>
+      {% if obj.comment_count %}
+      <span class="comment_num"> ( {{ obj.comment_count }} )</span>
+      {% endif %}
+    </li>
+{% endfor %}
+</ol>
+{% endblock %}
+{% block nav1 %}<a href="{{ setting.URLROOT }}/booklist/">{% trans "The Open Book Platform" %}</a>{% endblock %}
+{% block license %}{% trans "The license of this book: " %}{{ book.license|default:"Writedonw your license here." }}{% endblock %}

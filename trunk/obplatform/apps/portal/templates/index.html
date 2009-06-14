@@ -1,0 +1,22 @@
+{% load i18n %}
+{% extends "base.html" %}
+{% block title %}{% trans "The Open Book Platform" %}{% endblock %}
+{% block subject %}{% trans "Platform Introduction" %}{% endblock %}
+{% block content %}
+<p>
+	The Open Book Platform is used for free writing, and this platform is free platform, so if 
+	the author don't announce the copyright of his books, these books will be automatically
+	applied GFDL licence. So please careful.
+</p>
+<p>
+	开放写作平台是由CPUG(China Python User Group)发起并提供服务。在这个平台上，你可以写作，接受读者的评论。
+    本平台为免费服务，因此所有存放于本平台上的文档如果未经作者声明将自动按照GFDL协议处理。
+</p>
+<p class="wowza"><a href="{{ setting.URLROOT }}/booklist/">{% trans "Enter" %} &raquo;</a></p>            
+{% endblock %}
+{% block css %}
+<style type="text/css" media="screen">
+	#bd { font-size: 15px; text-align: justify;}
+	p.wowza { text-align: right; font-size: 24px; } 
+</style>
+{% endblock %}

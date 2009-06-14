@@ -1,0 +1,7 @@
+{% extends "setting_base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="book" %}{% endblock %}
+{% block body %}
+    {% expr person.id == user.id as is_manager %}
+    {% include "books/inc_list.html" %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n utiltags %}
+{% block menu %}{% call "menu.html" with currentpage="personal" %}{% endblock %}
+{% block css %}
+<link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/site_media/js/jquery.formbuilder.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
+<script type="text/javascript">
+$(document).ready(function (){
+	var form = $('#register').formbuilder({action:"{{ setting.URLROOT }}/register/", id:"form_register", layout:"table"});
+	form.addOneLine(2, $.DIV({id:"message"}));
+	form.addSimpleLine('{% trans "Username" %}:', $.TEXT({name:'username',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Email" %}:', $.TEXT({name:'email',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Password" %}:', $.PASSWORD({name:'password',className:'field'}), {required:true});
+	form.addSimpleLine('{% trans "Enter again" %}:', $.PASSWORD({name:'password1',className:'field'}), {required:true});
+	var footer=form.addOneLine(2, $.SUBMIT({name:'submit', value:'Submit'})).attr({className:'ft'});
+	form.add(footer);
+	$('#form_register').jform({delaytime:3000, useparent:false});
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>{% trans "Register" %}</h2>
+<div id="register" class="simple_form" style="width:400px"></div>
+{% endblock %}

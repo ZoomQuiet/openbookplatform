@@ -1,0 +1,48 @@
+{% load i18n utiltags %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 TRANSITIONAL//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="/site_media/css/admin.css" rel="stylesheet" type="text/css">
+<link href="/site_media/css/reset-fonts-grids.css" rel="stylesheet" type="text/css">
+<link href="/site_media/css/form.css" rel="stylesheet" type="text/css" />
+<link href="/site_media/css/dialog.css" rel="stylesheet" type="text/css" />
+{% block css %}{% endblock %}
+<script type="text/javascript" src="/site_media/js/jquery.js"></script>
+<script type="text/javascript" src="/site_media/js/full.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.formbuilder.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.jform.js"></script>
+<script type="text/javascript" src="/site_media/js/jqDnR.js"></script>
+<script type="text/javascript" src="/site_media/js/jquery.dialog.js"></script>
+{% block js %}{% endblock %}
+<title>{% block pagetitle %}Open Book Platform Admin{% endblock %}</title>
+</head>
+
+<body>
+<div id="doc2" class="yui-t2">
+    <div id="hd">
+        <div class="nav">
+            {% if not user.is_anonymous %}
+            {{ user.username }} (<a href="{{ setting.URLROOT }}/logout/">{% trans "Logout" %}</a>)
+            {% else %}
+            <a href="{{ setting.URLROOT }}/register/">{% trans "Register" %}</a>
+            {% endif %}
+             <a href="{{ setting.URLROOT }}/help/"><img src="/site_media/img/helpbutton.gif" align="absmiddle" alt="Help"></a>
+        </div>
+        <h1>{% block title %}{% trans "Open Book Platform Admin" %}{% endblock %}</h1>
+        {% block menu %}{% call "menu.html" with currentpage="homepage" %}{% endblock %}
+    </div>
+    <div id="bd">
+        <div id="submenu">{% block submenu %}{% endblock %}</div>
+        {% block body %}{% endblock %}
+    </div>
+    <div id="ft">
+        <p>&copy;2006 Author & Designer: <a href="http://www.donews.net/limodou">limodou</a> <b>|</b> <b>SharePlat 0.1</b></p>
+        <p><a href="http://python.org" title="python powered"><img src="/site_media/img/python.png" alt="python powered" width="80" height="15" /></a>
+           <a href="http://djangoproject.com" title="django powered"><img src="/site_media/img/django.gif" %}" alt="django site" width="80" height="15" /></a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

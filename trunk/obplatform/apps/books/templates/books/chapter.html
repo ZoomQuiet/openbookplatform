@@ -1,0 +1,182 @@
+{% load utiltags i18n %}
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }}{% pyif book.isAuthor(user) %}<a href="{{ setting.URLROOT }}/user/{{ user.id }}/book/{{ book.id }}/chapter/{{ chapter.id }}/" title="{% trans "Edit this chapter" %}"><img src="/site_media/img/pencil.gif"/></a>{% endif %}{% endblock %}
+
+{% block subject %}{{ chapter.title }}{% endblock %}
+
+{% block nav1 %}<a href="{{ setting.URLROOT }}/booklist/">The Open Book Platform</a>{% endblock %}
+
+{% block nav %}<div class="nav">{% if prev %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="{{ setting.URLROOT }}/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+{% block nav_footer %}<div class="nav-footer">{% if prev %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ prev.num }}/">&laquo; {{ prev.title }}</a>{% endif %} | <a href="{{ setting.URLROOT }}/book/{{ book.id }}/"> table of contents </a>| {% if next %}<a href="{{ setting.URLROOT }}/book/{{ book.id }}/{{ next.num }}/">{{ next.title }} &raquo;</a>{% endif %}</div>{% endblock %}
+
+{% block css %}
+<link href="/site_media/js/modal.css" rel="stylesheet" type="text/css" />
+<link href="/site_media/js/tabs.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/iresizable.js"></script>
+<script type="text/javascript" src="/site_media/js/modal.js"></script>
+<!-- <script type="text/javascript" src="/site_media/js/ifxslide.js"></script>
+<script type="text/javascript" src="/site_media/js/ifx.js"></script> -->
+<script type="text/javascript" src="/site_media/js/jquery.tabs.pack.js"></script>
+<script type="text/javascript">
+var ajax_url = 'commentsinfo/';
+var comment_num;
+function createcomments(data, fresh){
+    var fresh = fresh || 'yes';
+    if (fresh == 'no'){
+        $('div.comment-indicator').remove();
+    }
+    $('.cn').each(function(){
+        var id = $(this).attr('id');
+        var div;
+        var height = $(this).css('height');
+        var top = this.offsetTop + 20;
+        if (data[id]){
+            div = '<div class="comment-indicator has-comments" style="height: $0;"><span>$1</span></div>'.template([height, data[id]]);
+        }else{
+            div = '<div class="comment-indicator" style="height: $0;"><span></span></div>'.template([$(this).css('height')]);
+        }
+        $(div).appendTo(this).click(function(){
+            $('#highlight-floater').remove();
+            $('body').append('<div id="highlight-floater" style="visibility: visible; opacity: 0.3; width: 730px; left: 135px; top: $0; height: $1;"/>'.template([top+'px', height]));
+            $('#modalwindow').show();
+            if (data[id]){
+                $('#comments').triggerTab(2);
+                $.post(id+'/', {}, function(data){
+                    var result = data.evalJson();
+                    if (result.response == 'ok'){
+                    	var data = result.data;
+                    	createcommentslist(data, $('#comment-tabs'));
+                    }
+                });
+            }
+            else
+                $('#comments').triggerTab(1);
+            $('input[@name="comment_num"]', '#comments').val(id);
+            comment_num = id;
+            var win = $('#comments').parent().parent();
+            var left = $(window).width()/2 - win.width()/2;
+            var t = window.scrollY + $(window).height()/2 - win.height()/2;
+            win.css({'top':t+'px', 'left':left+'px'});
+            $('#comments').parent().parent().show();
+        });
+    });
+    if (fresh == 'yes'){
+        $('#comments').tabs({onClick:onClick}).modal({trigger:'div.comment-indicator'}, null, unload);
+    }
+}
+
+createcommentslist = function(data, o){
+    var ol = $('<ol></ol>');
+    $.each(data, function(){
+        ol.append('<li class="comment"><dl><dt>$username <span class="meta">$createtime</span> $status</dt><dd><p>$content</p></dd></dl></li>'.template(this));
+    });
+    $(o).empty().append(ol);
+}
+
+onClick = function(t, o){
+    if($(t).attr('tabindex') == 2){
+        $.post(comment_num+'/', {}, function(data){
+            var result = data.evalJson();
+            if (result.response == 'ok'){
+            	var data = result.data;
+            	createcommentslist(data, o);
+            }
+        });
+    }
+    if($(t).attr('tabindex') == 3){
+        $.post('allcomments/', {}, function(data){
+            var result = data.evalJson();
+            if (result.response == 'ok'){
+                var data = result.data;
+                createcommentslist(data, o);
+            }
+        });
+    }
+}
+
+function unload(w){
+    w.fadeOut('high');
+    $('#highlight-floater').remove();
+}
+
+function handle_list(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createcomments(data);
+	}
+}
+
+function handle_post(data){
+	var result = data.evalJson();
+	if (result.response == 'ok'){
+		var data = result.data;
+		createcomments(data, 'no');
+	}
+}
+
+$(document).ready(function (){
+	$.post(ajax_url, {}, handle_list);
+    on_success_finish = function(obj, r){
+        $.post(ajax_url, {}, handle_post);
+    };
+    $('#commentform').jform({trigger:'#comment-submit', 
+        messageid:'#comments-message',delaytime:2000,
+        'on_success_finish':on_success_finish,errortag:'span'});
+});
+</script>
+{% endblock %}
+
+{% block content %}
+{{ chapter.html }}
+{% endblock %}
+
+{% block other %}
+<div id="comments" style="display: none;">
+    <ul class="anchors">
+        <li><a href="#comment-tabs-form" tabindex="1"><strong>Post a comment</strong></a></li>
+        <li><a href="#comment-tabs" tabindex="2"><strong>Comments on this block</strong></a></li>
+        <li><a href="#comment-tabs-all" tabindex="3"><strong>All comments</strong></a></li>
+    </ul>
+
+    <div class="tab" id="comment-tabs-form">
+        <div class="bd">
+            <form id="commentform" method="post" action="{{ setting.URLROOT }}/book/{{ book.id }}/{{ chapter.num }}/addcomment/">
+                <p>
+                    <input type="hidden" value="" name="comment_num"/>
+                    <label class="required">Name (required)</label>
+                    <input type="text" value="{{ COOKIES.username }}" name="username"/>
+                </p>
+                <p>
+                    <label class="required">E-mail (required; will not be displayed)</label>
+                    <input type="text" value="{{ COOKIES.email }}" name="email"/>
+                </p>
+                <p>
+                    <label>Website</label>
+                    <input type="text" value="{{ COOKIES.website }}" name="website"/>
+                </p>
+                <p>
+                    <label class="required">Comment (required)</label>
+                    <textarea rows="6" cols="30" name="content"/></textarea>
+                </p>
+            </form>
+        </div>
+        <div class="ft">
+            <div id="comments-message" class="" style="display:none;">Loading comments...</div>
+            <div id="comments-submit-wrapper">
+                <input type="submit" value="Post comment" id="comment-submit" style="visibility: visible;"/>
+            </div>
+        </div>
+    </div>
+    <div class="tab yui-ext-tabitembody comment-tabs" id="comment-tabs">
+    </div>
+    <div class="tab yui-ext-tabitembody comment-tabs" id="comment-tabs-all">
+    </div>
+    
+</div>
+{% endblock %}
+{% block license %}{{ book.license|default:"Writedonw your license here." }}{% endblock %}

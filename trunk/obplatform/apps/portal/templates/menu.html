@@ -1,0 +1,18 @@
+{% load utiltags %}
+{% catch as ROOT %}{{ setting.URLROOT }}{% endcatch %}
+{% expr [('homepage', 'Homepage', ROOT + '/booklist/'), ('personal', 'Personal', ROOT + '/user/%d/' % user.id), ('book', 'Book', ROOT + '/user/%d/book/' % user.id)] as menuitems %}
+{% pyif not user.is_anonymous() and user.is_superuser %}
+    {% expr [('admin', 'Admin', ROOT + '/admin/')] as adminmenuitems %}
+{% endif %}
+<div id="Tabs">
+    <ul id="MainTabs">
+    {% for item in menuitems %}
+        {% expr item[0] as name %}
+        <li><a href="{{ item.2 }}"{% ifequal name currentpage %} class="current"{% endifequal %}>{{ item.1 }}</a></li>
+    {% endfor %}
+    {% for item in adminmenuitems %}
+        {% expr item[0] as name %}
+        <li><a href="{{ item.2 }}" style="float: right;{% if forloop.first %} margin-right: 30px{% endif %}"{% ifequal name currentpage %} class="current"{% endifequal %}>{{ item.1 }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
