@@ -1,0 +1,14 @@
+{%include "doc_trans/trans/include/paragraph-info.html"%}
+{% load i18n %}
+{%if user_joined%}
+	<strong style="font-size:12px;">
+	{%with paragraph.latest_translation as latest_translation%}
+	{%if latest_translation%}
+	&nbsp;
+		<input style="height:14px;" type="checkbox"  {%if latest_translation.reviewed%} checked="checked" {%endif%} name="reviewed-{{latest_translation.id}}" id="id-reviewed-{{latest_translation.id}}" />
+		<label for="id-reviewed-{{latest_translation.id}}" class="vCheckboxLabel" style="padding-left:4px;">{% trans 'Marked as reviewed' %}</label>
+		<input type="hidden" name="reviewed-{{latest_translation.id}}-before" value="{{latest_translation.reviewed}}" id="id-reviewed-{{latest_translation.id}}-before" />
+	{%endif%}
+	{%endwith%}
+	</strong>
+{%endif%}

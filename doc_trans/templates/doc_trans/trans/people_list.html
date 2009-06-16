@@ -1,0 +1,94 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	{% trans "People" %}
+
+	
+</div>
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th class="sorted ascending" style="text-align:left">
+               {% trans 'People' %} 
+            </th>
+            <th class="sorted ascending">
+                {% trans 'Information' %} 
+            </th>
+			
+        </tr>
+    </thead>
+    <tbody>
+		
+    	{%for people in current_people_list%}
+        <tr class="{% cycle 'row1' 'row2' %}" id="people{{people.id}}">
+            <th style="width:200px;">
+				{%include "doc_trans/trans/include/user-info.html"%}
+            </th>
+			
+            <td style="text-align:left;">
+				<p><strong>
+					{% trans 'Joined Projects' %} :
+					{%for project in people.joined_projects.all%}
+					<a href="{{project.page_list_url}}">{{project.name}}</a>&nbsp;&nbsp;
+					{%endfor%}
+					</strong></p>
+				
+				<p><strong>
+					{% trans 'Translations' %} : {{people.num_translations}}
+					</strong></p>
+				
+				
+            </td>
+			
+			
+        </tr>
+		{%endfor%}
+    </tbody>
+</table>
+
+<p class="paginator">
+{% for i in p.page_range %}
+    {%ifequal i page_num%}
+		<span class="this-page">{{i}}</span>
+	{%else%}
+		<a href="?page_num={{i}}">{{i}}</a>
+	{%endifequal%}
+{% endfor %}
+
+&nbsp;&nbsp;&nbsp;&nbsp; {{p.count}} people
+
+</p>
+
+
+
+</div>
+
+</div>
+{% endblock %}

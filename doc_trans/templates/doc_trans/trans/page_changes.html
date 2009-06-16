@@ -1,0 +1,81 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+     {{page_object.path}}
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{%include "doc_trans/trans/include/object-tools.html"%}
+{% endblock %}
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th class="sorted ascending">
+                {% trans 'Changed Versions' %}
+            </th>
+            <th class="sorted ascending">
+                {% trans 'Paragraphs' %}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	{%for paragraph in paragraphs%}
+        <tr class="{% cycle 'row1' 'row2' %}" id="{{paragraph.ordinal}}">
+            <th style="white-space:nowrap;">
+				<ul class="actionlist" style="margin-left:0.3em;">
+					{% for history_p in paragraph.history_paragraphs %}
+						<li class="changelink" style="list-style-type:none">
+						<a href="{{paragraph.histories_url}}#paragraph{{history_p.id}}">{% trans "Version" %} {{ history_p.current_version.revision }}</a>
+						<br /><span class="mini quiet">{{history_p.current_version.created}}</span>
+						<br /><br />
+						</li>
+					{%endfor%}
+				</ul>
+            </th>
+			
+            <td>
+            	<p>
+					{%include "doc_trans/trans/include/paragraph-info.html"%}
+				</p>
+				<hr   style="background-color:#E1E1E1;height:1px;"  />
+{{paragraph|highlight}}
+            </td>
+			
+        </tr>
+		{%endfor%}
+    </tbody>
+</table>
+
+</div>
+</div>
+{% endblock %}

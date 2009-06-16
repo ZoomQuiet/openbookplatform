@@ -1,0 +1,39 @@
+{% load i18n %}
+<tr>
+	<th>
+	</th>
+	<td style="text-align:left;">
+	<style type="text/css">
+	textarea {
+		width:610px;
+	}
+	input {
+		width:30em;
+	}
+	
+	</style>
+	<form action="." method="post">
+	  <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+	  {% for field in form %}
+	    {% if field.is_hidden %}
+	      {{ field }}
+	    {% else %}
+	      {% if field.errors %}{{ field.errors }}{% endif %}
+	      <p
+	        {% if field.errors %} class="error"{% endif %}
+	        {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}
+				
+			{% ifequal field.name "name" %}{%if  user.is_authenticated%} style="display:none;"{%endif%}{% endifequal %}
+			{% ifequal field.name "email" %}{%if  user.is_authenticated%} style="display:none;"{%endif%}{% endifequal %}>
+				
+			{% ifequal field.name "url" %}Blog{%else%}{{ field.label_tag }}{% endifequal %}
+	        {{ field }}
+	      </p>
+	    {% endif %}
+	  {% endfor %}
+	  <p class="submit">
+	    <input type="submit" name="post" class="submit-post" style="width:8em;" value="{% trans "Submit" %}" />
+	  </p>
+	</form>
+	</td>
+</tr>

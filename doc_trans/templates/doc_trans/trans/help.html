@@ -1,0 +1,92 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<style type="text/css">
+li {
+	font-size:12px;
+	margin-left:40px;
+}
+
+p {
+	font-size:12px;
+	margin-left:30px;
+}
+
+h4 {
+	margin-left:15px;
+}
+a {
+	font-weight:bold;
+}
+span {
+	background:#F7F7F7;
+	border:1px solid #D7D7D7;
+	padding-top:2px;
+	padding-bottom:2px;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	{% trans "Help Center" %}
+
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div id="content-main">
+  <h3 id="about">关于本协同文档翻译平台</h3>
+  	<p>本协同文档翻译平台基于 Python+Django 搭建，目前主要专注于Python及其相关项目的文档翻译，同时也不排除以后组织翻译其他项目的文档的可能性。</p>
+	<p>同时，如果您有好的建议或问题，也欢迎与我联系（jinhao7773-126-com）。</p>
+
+  <h3 id="feature">平台特点</h3>
+
+  	<p><strong>智能分段，协同翻译</strong>：将一篇文档分段成多个具有足够上下文信息的段落，通常表现为 段落标题+段落内容 的形式。</p>
+	<p><strong>版本控制，同步更新</strong>：英文文档是在不断变化中的，中文文档也需要及时跟进，所以对英文文档进行了版本变化的跟踪，使中文的翻译过程与英文文档的更新可以同步进行。</p>
+  	<p><strong>格式输出，即翻即转</strong>：Python及其相关项目的文档通常采用Sphinx或reStructuredText的格式进行编写，翻译时的格式也是一样，所以可以输出成和英文文档相同的多种格式。同时对于翻译的文档也是翻译后马上可以看到HTML格式输出的效果。</p>
+
+  
+
+  <h3 id="join">如何开始翻译</h3>
+  	<p>首先你需要先<a href="/accounts/register/">注册</a>一个账号，在登陆后，如果你想要翻译某个项目的文档，还需要先<strong>加入</strong>该项目，然后就可以开始翻译所加入的项目。</p>
+  	<p>加入的项目随时可以退出，之所以要有这个过程，是为了在英文文档有更新时，我们可以发邮件给项目成员，通知他们进行相应翻译的更新。</p>
+	<p>在加入到某个项目的翻译小组后，打开该项目下的任意一个文档页面，可以看到页面呈两列布局：</p>
+	<p style="margin-left:50px;">左边一列是英文文档的段落，进行了<strong>语法高亮</strong>显示，以方便翻译者区分HTML或reStructuredText中的特殊标记。同时在这里你也可以对有疑问的单词，通过鼠标进行<strong>划词翻译</strong>。</p>
+	<p style="margin-left:50px;">右边一列是中文文档的翻译，默认情况下是显示未翻译的原文或最后一个翻译的结果，在加入该项目后（<strong>必须</strong>），可以通过<strong>鼠标单击</strong>需要翻译或改进翻译的段落，就会自动变为可编辑的textarea。</p>
+  
+  <h3 id="trans">翻译协定</h3>
+  	<h4>原文理解</h4>
+	<p>在翻译之前，您应该阅读并理解原文，如果有例子最好实践一下，能自己延伸写一些代码更好。</p>
+	<p>对于英文的语言技巧无法体现在中文中的句子，或者描述不够确切、恰当的句子，应适当添加译注。</p>
+	<p>避免英文逐词翻译，因为一些英文句法在中文中并不适用，对于这类的翻译，最好理解之后，用中文的方式重新叙述。</p>
+	
+	<h4>人称代词</h4>
+	<p>第二人称统一使用“您”</p>
+	
+	<h4>标点符号</h4>
+	<p>正文中除特殊情况外，应统一使用的全角标点符号有： <span>，。？！、“”——……：；《》‘’（）</span></p>
+	<p>正文中除特殊情况外，应统一使用的半角标点符号有： <span><>\+-*/@#$%^&_=[]{}~`</span></p>
+	
+	<h4>其他</h4>
+	<p>虽然已经通过原文的语法高亮，大都数人可以直接看到原文中使用的特殊标记，但是还是建议先阅读一下 Sphinx 文档 和 reStructuredText Primer</p>
+	<p>由于网页宽度限制的问题，可能原文中某些比较长的行被自动换行了，并且如果长行对文档生成是有意义的话，请注意翻译过程中保持这些长行。</p>
+	
+  <h3 id="docs">文档的更新，同步，导出</h3>
+  	<p>文档的更新和版本同步，是由后台管理员来进行的。</p>
+	<p>文档的导出过程既可以由后台管理员进行，也可能因用户提交翻译而进行重新导出。</p>
+	<p><strong>用户翻译了某个段落进行提交时，也会自动重新生成该页面翻译后的HTML格式的文档，以方便用户进行及时的查看。</strong>由于这个原因，所以在提交段落的翻译时，可能会等待比较长的时间。</p>
+	
+  <h3 id="license">授权协议</h3>
+    <p>在授权范围内进行翻译的文档，原文授权对演绎作品的授权协议有明确规定的，译文的授权协议应符合该规定。</p>
+	<p>在授权范围内进行翻译的文档，原文授权对演绎作品的授权协议没有明确规定的，译文的授权采用知识共享组织的"标示版权归属-以相同方式共享协议（Creative Commons Attribution-ShareAlike License）"。</p>
+	<p>如果所翻译的文档侵犯了您的版权，请与<a href="mailto:jinhao7773-126-com">本人</a>进行联系解决。</p>
+</div>
+
+{% endblock %}
+

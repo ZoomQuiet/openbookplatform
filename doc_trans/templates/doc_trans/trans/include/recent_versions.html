@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="module" id="recent-actions-module">
+    <h2>{% trans 'Recent Updates' %}</h2>
+    <h3>{% trans 'Recent Versions' %}</h3>
+	
+        <ul class="actionlist">
+        {% for version in versions %}
+        <li class="changelink">
+			<a href="{{ version.detail_url }}">{{version.project.name}} {% trans "Version" %} {{version.revision}}</a><br />
+			<span class="mini quiet">{{version.created}}</span></li>
+        {% endfor %}
+        </ul>
+        
+</div>
