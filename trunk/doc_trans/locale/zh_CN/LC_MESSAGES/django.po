@@ -1,0 +1,515 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-06-14 17:26+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: trans_views.py:28
+msgid "Project List"
+msgstr "项目列表"
+
+#: trans_views.py:42 trans_views.py:45
+#, python-format
+msgid "%s | Documentation Pages"
+msgstr "%s | 文档页面"
+
+#: trans_views.py:56
+#, python-format
+msgid "Versions of project %s"
+msgstr "项目 %s 的版本"
+
+#: trans_views.py:85
+#, python-format
+msgid "Comments of project %s"
+msgstr "项目 %s 的评论"
+
+#: trans_views.py:96
+#, python-format
+msgid "Comments of page %s"
+msgstr "页面  %s 的评论"
+
+#: trans_views.py:108
+#, python-format
+msgid "Comments of paragraph #%(ordinal)s, page %(page)s"
+msgstr "页面%(page)s，段落#%(ordinal)s 的评论"
+
+#: trans_views.py:129
+#, python-format
+msgid "You have joined in project %s"
+msgstr "你已经加入项目 %s"
+
+#: trans_views.py:132
+#, python-format
+msgid "You have quited project %s"
+msgstr "你已经退出项目 %s"
+
+#: trans_views.py:135
+#, python-format
+msgid "Confirmation of %(action)s Project %(project)s"
+msgstr "确认 %(action)s 项目 %(project)s"
+
+#: trans_views.py:161
+#, python-format
+msgid "Review status for paragraph #%s changed successfully."
+msgstr "段落 #%s 的审阅状态已经修改成功。"
+
+#: trans_views.py:169
+#, python-format
+msgid "Translating Page %s"
+msgstr "正在翻译页面 %s"
+
+#: trans_views.py:179
+#, python-format
+msgid "Changes of page %s"
+msgstr "页面  %s 的变更记录"
+
+#: trans_views.py:188
+#, python-format
+msgid "Changes of Page %(page)s at Version %(version)s"
+msgstr "页面  %(page)s 在版本 %(version)s 的变更"
+
+#: trans_views.py:219
+#, python-format
+msgid "Changes of paragraph #%s"
+msgstr "段落  %s 的变更记录"
+
+#: trans_views.py:231
+#, python-format
+msgid "Translation Changes of paragraph #%s"
+msgstr "段落  %s 的翻译变更记录"
+
+#: trans_views.py:246
+msgid "People List"
+msgstr "翻译者列表"
+
+#: trans_views.py:273
+#, python-format
+msgid "Translations of People %s"
+msgstr "'%s' 的翻译记录"
+
+#: trans_views.py:278 templates/doc_trans/trans/help.html:36
+msgid "Help Center"
+msgstr "帮助中心"
+
+#: templates/doc_trans/project_list.html:36
+#: templates/doc_trans/trans/index.html:45
+#: templates/doc_trans/trans/people.html:21
+#: templates/doc_trans/trans/people_list.html:21
+#: templates/doc_trans/trans/people_list.html:39
+msgid "People"
+msgstr "翻译者"
+
+#: templates/doc_trans/project_list.html:37
+#: templates/doc_trans/trans/index.html:46
+msgid "Pages"
+msgstr "页面"
+
+#: templates/doc_trans/project_list.html:38
+#: templates/doc_trans/trans/index.html:47
+#: templates/doc_trans/trans/page_changes.html:47
+#: templates/doc_trans/trans/project_page_list.html:81
+msgid "Paragraphs"
+msgstr "段落"
+
+#: templates/doc_trans/project_list.html:39
+#: templates/doc_trans/trans/index.html:48
+#: templates/doc_trans/trans/project_page_list.html:84
+#: templates/doc_trans/trans/include/paragraph-info.html:5
+msgid "Comments "
+msgstr "评论 "
+
+#: templates/doc_trans/project_list.html:42
+#: templates/doc_trans/trans/index.html:55
+#: templates/doc_trans/trans/page_version_changes.html:23
+#: templates/doc_trans/trans/page_version_changes.html:25
+msgid "Versions"
+msgstr "版本"
+
+#: templates/doc_trans/project_list.html:44
+#: templates/doc_trans/trans/index.html:57
+#: templates/doc_trans/trans/project_page_list.html:88
+msgid "View on Site"
+msgstr "在站点上查看"
+
+#: templates/doc_trans/project_list.html:45
+#: templates/doc_trans/trans/index.html:58
+#: templates/doc_trans/trans/page_trans.html:52
+#: templates/doc_trans/trans/people.html:40
+#: templates/doc_trans/trans/project_page_list.html:89
+msgid "Original"
+msgstr "原文"
+
+#: templates/doc_trans/project_list.html:46
+#: templates/doc_trans/trans/index.html:59
+#: templates/doc_trans/trans/page_trans.html:55
+#: templates/doc_trans/trans/paragraph_translation_histories.html:48
+#: templates/doc_trans/trans/people.html:43
+#: templates/doc_trans/trans/project_page_list.html:90
+msgid "Translation"
+msgstr "翻译"
+
+#: templates/doc_trans/trans/base_site.html:5
+#: templates/doc_trans/trans/base_site.html:100
+#: templates/doc_trans/trans/base_site.html:148
+msgid "Collaborative Documentation Translation Platform"
+msgstr "协同文档翻译平台"
+
+#: templates/doc_trans/trans/base_site.html:105
+msgid "Welcome,"
+msgstr "欢迎"
+
+#: templates/doc_trans/trans/base_site.html:106
+msgid "Change password"
+msgstr "修改密码"
+
+#: templates/doc_trans/trans/base_site.html:106
+msgid "Log out"
+msgstr "注销"
+
+#: templates/doc_trans/trans/base_site.html:108
+msgid "Login"
+msgstr "登录"
+
+#: templates/doc_trans/trans/base_site.html:108
+msgid "Create an account"
+msgstr "创建一个帐号"
+
+#: templates/doc_trans/trans/base_site.html:110
+msgid "Help"
+msgstr "帮助"
+
+#: templates/doc_trans/trans/base_site.html:127
+msgid "Home"
+msgstr "首页"
+
+#: templates/doc_trans/trans/base_site.html:148
+msgid "Report Bug or Advice"
+msgstr "报告Bug或建议"
+
+#: templates/doc_trans/trans/help.html:34
+#: templates/doc_trans/trans/page_changes.html:19
+#: templates/doc_trans/trans/page_comments.html:20
+#: templates/doc_trans/trans/page_trans.html:25
+#: templates/doc_trans/trans/page_version_changes.html:19
+#: templates/doc_trans/trans/paragraph_comments.html:20
+#: templates/doc_trans/trans/paragraph_histories.html:19
+#: templates/doc_trans/trans/paragraph_translation_histories.html:19
+#: templates/doc_trans/trans/people.html:19
+#: templates/doc_trans/trans/people_list.html:19
+#: templates/doc_trans/trans/project_comments.html:20
+#: templates/doc_trans/trans/project_join_quit.html:6
+#: templates/doc_trans/trans/project_page_list.html:37
+#: templates/doc_trans/trans/project_versions.html:19
+msgid "Projects"
+msgstr "项目"
+
+#: templates/doc_trans/trans/index.html:51
+msgid "Quit"
+msgstr "退出"
+
+#: templates/doc_trans/trans/index.html:53
+msgid "Join"
+msgstr "加入"
+
+#: templates/doc_trans/trans/page_changes.html:44
+msgid "Changed Versions"
+msgstr "有变更的版本"
+
+#: templates/doc_trans/trans/page_changes.html:58
+#: templates/doc_trans/trans/page_version_changes.html:64
+#: templates/doc_trans/trans/page_version_changes.html:80
+#: templates/doc_trans/trans/paragraph_histories.html:66
+#: templates/doc_trans/trans/project_versions.html:50
+#: templates/doc_trans/trans/include/recent_versions.html:9
+msgid "Version"
+msgstr "版本"
+
+#: templates/doc_trans/trans/page_comments.html:46
+#: templates/doc_trans/trans/paragraph_comments.html:48
+#: templates/doc_trans/trans/project_comments.html:51
+msgid "User"
+msgstr "用户"
+
+#: templates/doc_trans/trans/page_comments.html:50
+#: templates/doc_trans/trans/paragraph_comments.html:52
+#: templates/doc_trans/trans/project_comments.html:55
+msgid "Comments"
+msgstr "评论"
+
+#: templates/doc_trans/trans/page_trans.html:86
+msgid "Save"
+msgstr "保存"
+
+#: templates/doc_trans/trans/page_trans.html:87
+msgid "Cancel"
+msgstr "取消"
+
+#: templates/doc_trans/trans/page_trans.html:88
+msgid "Failed to save translation."
+msgstr "保存翻译失败。"
+
+#: templates/doc_trans/trans/page_trans.html:89
+msgid "Click to translate."
+msgstr "点击这里开始翻译。"
+
+#: templates/doc_trans/trans/page_trans.html:90
+msgid "Saving translation..."
+msgstr "正在保存翻译结果..."
+
+#: templates/doc_trans/trans/page_trans.html:104
+#: templates/doc_trans/trans/page_trans.html:111
+msgid "Show original and translation of this paragraph"
+msgstr "显示本段落的原文和翻译"
+
+#: templates/doc_trans/trans/page_trans.html:109
+msgid "Hide original and translation of this paragraph"
+msgstr "隐藏本段落的原文和翻译"
+
+#: templates/doc_trans/trans/page_trans.html:127
+msgid "Save Review Status"
+msgstr "保存审阅状态"
+
+#: templates/doc_trans/trans/page_version_changes.html:42
+msgid "Page added"
+msgstr "页面被添加"
+
+#: templates/doc_trans/trans/page_version_changes.html:43
+msgid "Page deleted"
+msgstr "页面被删除"
+
+#: templates/doc_trans/trans/page_version_changes.html:50
+msgid "From"
+msgstr "从"
+
+#: templates/doc_trans/trans/page_version_changes.html:53
+msgid "To"
+msgstr "到"
+
+#: templates/doc_trans/trans/page_version_changes.html:64
+#: templates/doc_trans/trans/page_version_changes.html:80
+msgid "created at"
+msgstr "创建时间"
+
+#: templates/doc_trans/trans/paragraph_histories.html:48
+msgid "Paragraph at Version"
+msgstr "段落版本"
+
+#: templates/doc_trans/trans/paragraph_histories.html:53
+msgid "Latest Translation"
+msgstr "最后的翻译"
+
+#: templates/doc_trans/trans/paragraph_histories.html:66
+#: templates/doc_trans/trans/project_page_list.html:86
+msgid "Changes"
+msgstr "变更"
+
+#: templates/doc_trans/trans/paragraph_histories.html:69
+msgid "Page Changes at Version"
+msgstr "页面变更在版本"
+
+#: templates/doc_trans/trans/paragraph_translation_histories.html:52
+msgid "Paragraph Original"
+msgstr "段落原文"
+
+#: templates/doc_trans/trans/people.html:56
+#: templates/doc_trans/trans/people.html:96
+msgid "Page"
+msgstr "页面"
+
+#: templates/doc_trans/trans/people.html:57
+#: templates/doc_trans/trans/people.html:83
+msgid "Project"
+msgstr "项目"
+
+#: templates/doc_trans/trans/people.html:82
+msgid "Filter"
+msgstr "过滤"
+
+#: templates/doc_trans/trans/people.html:86
+msgid "All Projects"
+msgstr "所有项目"
+
+#: templates/doc_trans/trans/people.html:99
+msgid "All Pages"
+msgstr "所有页面"
+
+#: templates/doc_trans/trans/people_list.html:42
+msgid "Information"
+msgstr "信息"
+
+#: templates/doc_trans/trans/people_list.html:57
+msgid "Joined Projects"
+msgstr "加入的项目"
+
+#: templates/doc_trans/trans/people_list.html:64
+#: templates/doc_trans/trans/include/translators.html:10
+msgid "Translations"
+msgstr "翻译"
+
+#: templates/doc_trans/trans/project_comments.html:37
+#: templates/doc_trans/trans/project_versions.html:36
+#: templates/doc_trans/trans/include/object-tools.html:4
+msgid "Quit this project"
+msgstr "退出这个项目"
+
+#: templates/doc_trans/trans/project_comments.html:39
+#: templates/doc_trans/trans/project_versions.html:38
+#: templates/doc_trans/trans/include/object-tools.html:6
+msgid "Join this project"
+msgstr "加入这个项目"
+
+#: templates/doc_trans/trans/project_join_quit.html:16
+msgid "Are you sure you want to join in the project group "
+msgstr "你确定想要加入项目 "
+
+#: templates/doc_trans/trans/project_join_quit.html:17
+msgid ""
+"if you joined this project group, then when this project get updated, we "
+"will send you a email to tell you this update."
+msgstr ""
+"如果你加入这个项目，当这个项目有更新时，我们将发送电子邮件通知你这次更新。"
+
+#: templates/doc_trans/trans/project_join_quit.html:18
+msgid "of course, you can quit this project group any time you want."
+msgstr "当然，你可以随时退出这个项目当你想要时。"
+
+#: templates/doc_trans/trans/project_join_quit.html:22
+msgid "Are you sure you want to quit the project group "
+msgstr "你确定想要退出项目 "
+
+#: templates/doc_trans/trans/project_join_quit.html:23
+msgid ""
+"if you quit this project group, we will stop sending you a email to tell you "
+"this project's update."
+msgstr "如果你退出这个项目，我们将停止发送电子邮件通知你关于这个项目的更新。"
+
+#: templates/doc_trans/trans/project_join_quit.html:24
+msgid "of course, you can join this project group again any time you want."
+msgstr "当然，你可以随时再加入这个项目当你想要时。"
+
+#: templates/doc_trans/trans/project_join_quit.html:31
+msgid "Yes, I'm sure"
+msgstr "是的，我确定"
+
+#: templates/doc_trans/trans/project_page_list.html:62
+msgid "Introduction"
+msgstr "简介"
+
+#: templates/doc_trans/trans/project_page_list.html:82
+msgid "Translated"
+msgstr "已翻译"
+
+#: templates/doc_trans/trans/project_page_list.html:83
+#: templates/doc_trans/trans/include/paragraph-info.html:17
+msgid "Reviewed"
+msgstr "已审阅"
+
+#: templates/doc_trans/trans/project_versions.html:54
+msgid "Changed Pages"
+msgstr "已修改的页面"
+
+#: templates/doc_trans/trans/project_versions.html:85
+msgid "No page changed "
+msgstr "没有页面被修改"
+
+#: templates/doc_trans/trans/include/comment-form.html:35
+msgid "Submit"
+msgstr "提交"
+
+#: templates/doc_trans/trans/include/comment-list.html:11
+#: templates/doc_trans/trans/include/user-info.html:4
+msgid "E-mail"
+msgstr ""
+
+#: templates/doc_trans/trans/include/comment-list.html:19
+msgid "Submit Date"
+msgstr "提交日期"
+
+#: templates/doc_trans/trans/include/comment-list.html:35
+msgid "There are no comments yet, be the first!"
+msgstr "暂时还没有评论，成为第一个！"
+
+#: templates/doc_trans/trans/include/object-tools.html:8
+msgid "Page Changes"
+msgstr "页面变更"
+
+#: templates/doc_trans/trans/include/object-tools.html:10
+msgid "Translate This Page"
+msgstr "翻译这个页面"
+
+#: templates/doc_trans/trans/include/object-tools.html:12
+msgid "View on site"
+msgstr "在站点上查看"
+
+#: templates/doc_trans/trans/include/paragraph-info-with-review.html:9
+msgid "Marked as reviewed"
+msgstr "标记为已审阅"
+
+#: templates/doc_trans/trans/include/paragraph-info.html:8
+msgid "Paragraph Changes"
+msgstr "段落变更"
+
+#: templates/doc_trans/trans/include/paragraph-info.html:13
+msgid "Translation Changes"
+msgstr "翻译变更"
+
+#: templates/doc_trans/trans/include/paragraph-info.html:15
+msgid "Last translation"
+msgstr "最后的翻译"
+
+#: templates/doc_trans/trans/include/recent_versions.html:3
+msgid "Recent Updates"
+msgstr "最近更新"
+
+#: templates/doc_trans/trans/include/recent_versions.html:4
+msgid "Recent Versions"
+msgstr "最近的版本更新"
+
+#: templates/doc_trans/trans/include/translators.html:3
+msgid "Translators"
+msgstr "翻译者"
+
+#: templates/doc_trans/trans/include/translators.html:4
+msgid "Translators top 10"
+msgstr "前10名翻译者"
+
+#: templates/doc_trans/trans/include/user-info.html:3
+msgid "Last Login"
+msgstr "上次登录"
+
+#: templates/doc_trans/trans/include/user_joined.html:5
+msgid ""
+"You haven't joined this project, if you want to translation this project and "
+"get the newest update about this project, please join the project group "
+"first,"
+msgstr ""
+"你还没有加入这个项目，如果你想翻译这个项目以及得到关于这个项目的最新更新消"
+"息，请先加入这个项目。"
+
+#: templates/doc_trans/trans/include/user_joined.html:5
+msgid "Join Now"
+msgstr "现在就加入"
+
+#~ msgid "Documentation"
+#~ msgstr "文档"
+
+#~ msgid "Switch"
+#~ msgstr "切换语言"
+
+#~ msgid "English"
+#~ msgstr "英文"
+
+#~ msgid "Chinese"
+#~ msgstr "中文"

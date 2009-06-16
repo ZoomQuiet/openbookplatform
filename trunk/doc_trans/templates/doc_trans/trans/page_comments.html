@@ -1,0 +1,64 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load comments %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+  
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+     {{page_object.path}}
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{%include "doc_trans/trans/include/object-tools.html"%}
+{% endblock %}
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+        	
+            <th class="sorted ascending">
+                {% trans "User" %}
+            </th>
+			
+            <th class="sorted ascending" style="text-align:left">
+                {% trans "Comments" %}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	{% get_comment_list for page_object as comment_list %}
+		{%include "doc_trans/trans/include/comment-list.html"%}
+		{%include "doc_trans/trans/include/comment-form.html"%}
+		
+    </tbody>
+</table>
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% load i18n %}
+<ul class="object-tools">
+	{%if user_joined%}
+	<li><a href="{{project_object.quit_url}}" class="historylink">{% trans 'Quit this project' %}</a></li>
+	{%else%}
+	<li><a href="{{project_object.join_url}}" class="historylink">{% trans 'Join this project' %}</a></li>
+	{%endif%}
+	<li><a href="{{page_object.changes_url}}" class="historylink">{% trans 'Page Changes' %}</a></li>
+	
+	<li><a href="{{page_object.trans_url}}" class="historylink">{% trans 'Translate This Page' %}</a></li>
+	
+	<li><a href="{{page_object.view_url}}" class="viewsitelink" target="_blank">{% trans 'View on site' %}</a></li>
+</ul>

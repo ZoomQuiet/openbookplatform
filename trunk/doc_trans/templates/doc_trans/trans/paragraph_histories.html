@@ -1,0 +1,98 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+  
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+	 <a href="{{page_object.trans_url}}">{{page_object.path}}</a>  &rsaquo;
+	 
+     {{paragraph_object}}
+	 
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{%include "doc_trans/trans/include/object-tools.html"%}
+{% endblock %}
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+        	{%for paragraph in paragraphs%}
+            <th class="sorted ascending" style="text-align:left;width:50%"  id="paragraph{{paragraph.id}}">
+                {% trans 'Paragraph at Version' %} {{paragraph.current_version.revision}}
+            </th>
+			{%endfor%}
+			{%if latest_translation%}
+            <th class="sorted ascending" style="text-align:left;width:50%">
+                {% trans 'Latest Translation' %}
+            </th>
+			{%endif%}
+        </tr>
+    </thead>
+    <tbody>
+    	
+        <tr class="row2">
+        	{%for paragraph in paragraphs%}
+            <td style="text-align:left;width:50%">
+				<p><strong style="font-size:12px;">
+				{{paragraph.created}}
+				&nbsp;
+				<a href="{{paragraph.current_version.detail_url}}">{% trans 'Version' %} {{paragraph.current_version.revision}} {% trans 'Changes' %}</a>
+				{% comment %} 
+				&nbsp;
+				<a href="{%url doc_trans-trans-page-version-changes paragraph.page.project.slug, paragraph.page.slug, paragraph.current_version.revision%}">{% trans 'Page Changes at Version' %} {{paragraph.current_version.revision}} </a>
+				{% endcomment %}
+				</strong></p>
+				<hr  style="background-color:#E1E1E1;height:1px;" />
+{%if not forloop.first%}
+<pre>{{paragraph.original|linediff:paragraph.history_paragraph.original}}</pre>
+{%else%}
+{{paragraph|highlight}}
+{%endif%}
+            </td>
+			{%endfor%}
+			
+			{%if latest_translation%}
+            <td style="text-align:left;width:50%">
+				<p><strong style="font-size:12px;">
+				{{latest_translation.created}} by <a href="{%url doc_trans-trans-people latest_translation.translator.username%}">{{latest_translation.translator}}</a>
+				</strong>
+				</p>
+				<hr  style="background-color:#E1E1E1;height:1px;" />
+{{latest_translation|highlight}}
+            </td>
+			{%endif%}
+        </tr>
+		
+    </tbody>
+</table>
+
+</div>
+</div>
+{% endblock %}

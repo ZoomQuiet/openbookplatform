@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="module" id="recent-actions-module">
+    <h2>{% trans 'Translators' %}</h2>
+    <h3>{% trans 'Translators top 10' %}</h3>
+	
+        <ul class="actionlist">
+        {% for translator in translators %}
+        <li class="peoplelink">
+			<a href="{%url doc_trans-trans-people translator.username%}" style="font-size:13px;">{{translator}}</a><br />
+			<span class="quiet">{% trans 'Translations' %} : {{translator.num_translations}}</span></li>
+        {% endfor %}
+        </ul>
+    
+</div>

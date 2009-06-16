@@ -1,0 +1,77 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load i18n %}
+{% load comments %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style type="text/css">
+.dashboard #content {
+	width:968px;
+}
+.dashboard #content-main {
+    width: 948px;
+}
+
+.dashboard #content-main th{
+    font-size:12px;
+}
+.dashboard #content-main td{
+    font-size:12px;
+}
+.dashboard #content-main caption{
+    font-size:12px;
+}
+</style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+        <div class="module">
+        <table summary="">
+        <caption>{{title}}</caption>
+        {% for project, joined in projects %}
+            <tr>
+	            <th scope="row"><a href="{{ project.page_list_url }}">{{ project.name }}</a></th>
+				<td> {{project.translators.count}} {% trans "People" %}</td>
+				<td> {{project.current_pages.count}} {% trans "Pages" %}</td>
+				<td> {{project.current_paragraphs.count}} {% trans "Paragraphs" %}</td>
+				<td> <a href="{{ project.comments_url }}">{% get_comment_count for project as comment_count %} {{comment_count}} {% trans "Comments " %}</a></td>
+				<!--<td> {{project.progress|floatformat:2}} % </td>-->
+                {%if joined%}
+				<td><a href="{{ project.quit_url }}" class="deletelink">{% trans "Quit" %}</a></td>
+				{%else%}
+				<td><a href="{{ project.join_url }}" class="addlink">{% trans "Join" %}</a></td>
+				{%endif%}
+				<td><a href="{{ project.versions_url }}" class="versionlink">{% trans "Versions" %}</a></td>
+				{%block view_on_site%}
+				<td>{% trans "View on Site" %}</td>
+				<td><a href="{{ project.view_original_url }}" class="originallink" target="_blank">{% trans "Original" %}</a></td>
+				<td><a href="{{ project.view_translated_url }}" class="translatedlink" target="_blank" >{% trans "Translation" %}</a></td>
+				{% endblock %}
+            </tr>
+        {% endfor %}
+        </table>
+        </div>
+		
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    
+	{%include "doc_trans/trans/include/recent_versions.html"%}
+	
+	{%include "doc_trans/trans/include/translators.html"%}
+</div>
+{% endblock %}
+

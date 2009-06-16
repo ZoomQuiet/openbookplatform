@@ -1,0 +1,148 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  	<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+
+{% endblock %}
+{% block extrahead %}
+  {{ block.super }}
+  
+<script type="text/javascript" src="{%url doc_trans-trans-media "js/prototype.js" %}"></script>
+<script type="text/javascript" src="{%url doc_trans-trans-media "js/editinplace.js" %}"></script>
+
+{% endblock %}
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+     {{page_object.path}}
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{%include "doc_trans/trans/include/object-tools.html"%}
+{% endblock %}
+<form action="" method="post">
+<div class="module " id="changelist">
+
+<table cellspacing="0" id="trans_table">
+	
+		
+    <thead>
+        <tr>
+            <th class="sorted ascending" style="text-align:left; width:50%">
+               {% trans 'Original' %} 
+            </th>
+            <th class="sorted ascending" style="width:50%">
+                {% trans 'Translation' %} 
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	{%for paragraph in paragraphs%}
+        <tr class="{% cycle 'row1' 'row2' %}" id="{{paragraph.ordinal}}">
+            <td style="text-align:left;; width:50%" class="paragraph-ordinal nowrap">
+				<p><strong style="font-size:12px;">
+				#{{paragraph.ordinal}}
+				&nbsp;&nbsp; <a href="javascript:void(0);" id ="listener-{{paragraph.ordinal}}"></a>
+				</strong>
+				</p>
+				<hr  style="background-color:#E1E1E1;height:1px;" id="hr-original-{{paragraph.ordinal}}"/>
+{{paragraph|highlight}}
+            </td>
+			
+            <td  style="width:50%" class="paragraph-ordinal nowrap">
+            	<p>
+						{%include "doc_trans/trans/include/paragraph-info-with-review.html"%}
+				</p>
+				<hr   style="background-color:#E1E1E1;height:1px;" id="hr-translation-{{paragraph.ordinal}}" />
+<pre id = "paragraph{{paragraph.id}}" style="padding-top:5px;padding-bottom:5px;">{{paragraph.original_or_translation}}</pre>
+            </td>
+
+{%if user_joined%}
+<script type="text/javascript">
+	$('paragraph{{paragraph.id}}').editInPlace({
+		form_type: 'textarea',
+		
+		save_url: '{{paragraph.translation_url}}',
+		savebutton_text: '{% trans 'Save' %}',
+		cancelbutton_text: '{% trans 'Cancel' %}',
+		savefailed_text: '{% trans 'Failed to save translation.' %}',
+		edit_title: '{% trans 'Click to translate.' %}',
+		saving_text: '{% trans 'Saving translation...' %}',
+		mouseover_highlight: '#FFFFCC',
+		save_on_enter:false
+		});
+</script>
+{%endif%}
+
+{%with paragraph.latest_translation as latest_translation%}
+{%if latest_translation%}
+{%if latest_translation.reviewed%}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+	$('hr-translation-{{paragraph.ordinal}}').next().hide();
+	$('hr-original-{{paragraph.ordinal}}').next().hide();
+	$('listener-{{paragraph.ordinal}}').update('{% trans "Show original and translation of this paragraph" %}');
+    Event.observe('listener-{{paragraph.ordinal}}', 'click', function(){
+        $('hr-translation-{{paragraph.ordinal}}').next().toggle();
+		$('hr-original-{{paragraph.ordinal}}').next().toggle();
+        if($('hr-original-{{paragraph.ordinal}}').next().visible()){
+            $('listener-{{paragraph.ordinal}}').update('{% trans "Hide original and translation of this paragraph" %}');
+        } else {
+            $('listener-{{paragraph.ordinal}}').update('{% trans "Show original and translation of this paragraph" %}');
+        }
+    });
+});
+</script>
+{%endif%}
+{%endif%}
+{%endwith%}
+
+        </tr>
+		{%endfor%}
+    </tbody>
+	
+	
+	
+</table>
+<p class="paginator"><input class="default" type="submit" value="{% trans 'Save Review Status' %}" name="_save"/></p>
+</div>
+</form>
+</div>
+
+<script type="text/javascript">
+ var iciba_param =new Array();
+iciba_param['skin'] = 1;// 皮肤
+iciba_param['searchInputDisplay'] = 'block';// 搜寻框是否显示 默认是'' 当为 'none'的时候不显示
+iciba_param['searchInputWidth'] =310;////输入框长度 当iciba_param['searchInputDisplay'] !='none'的时候起作用  
+iciba_param['isCanDraw'] = '1';//是否能拖动？0表示不可以拖动 默认为1可拖动 
+iciba_param['selfDeter'] ='0';//是否自己划词自己？0 表示不可以
+iciba_param['width'] = '425'; // 宽度
+iciba_param['height'] = '300';  // 内容高度
+iciba_param['isPopIcon'] ='0';//是否需要 小icon 需要为1 不需要为0
+iciba_param['isInputCan'] ='0';//是否能在文本域输入框内划词 默认不可以 只有'1'的时候才能起作用
+iciba_param['context']=[['Dict',''],['Fy',''],['Dj',''],['Enen',''],['NetDict','']];//词典功能
+</script>
+<script type="text/javascript" src="http://dict-co.iciba.com/ui.php" charset="UTF-8"></script>
+
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+  
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+	 <a href="{{project_object.versions_url}}">{% trans "Versions" %} </a>  &rsaquo; 
+	 
+	 {% trans "Versions" %} {{revision}}
+
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{%include "doc_trans/trans/include/object-tools.html"%}
+{% endblock %}
+
+<div class="module " id="changelist">
+{% ifequal page_change_object.action 'added' %}<h1>{% trans "Page added" %}</h1>{% endifequal %}
+{% ifequal page_change_object.action 'deleted' %}<h1>{% trans "Page deleted" %}</h1>{% endifequal %}
+{% ifequal page_change_object.action 'modified' %}
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th class="sorted ascending" style="text-align:left; width:50%">
+               {% trans 'From' %} 
+            </th>
+            <th class="sorted ascending" style="width:50%">
+                {% trans 'To' %} 
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	{%for paragraph in paragraphs%}
+        <tr class="{% cycle 'row1' 'row2' %}" id="{{paragraph.ordinal}}">
+            <td style="text-align:left;width:50%">
+				<p><strong style="font-size:12px;">
+				{% if paragraph.history_paragraph%}
+				#{{paragraph.history_paragraph.ordinal}}
+				&nbsp;&nbsp; {% trans "created at" %} <a href="{{paragraph.history_paragraph.current_version.detail_url}}">{% trans "Version" %} {{paragraph.history_paragraph.current_version.revision}}</a>
+				&nbsp;&nbsp; {{paragraph.history_paragraph.created}}
+				{%else%}
+					No history paragraph.
+				{%endif%}
+				</strong>
+				</p>
+				<hr  style="background-color:#E1E1E1;height:1px;" />
+{% if paragraph.history_paragraph%}
+{{paragraph.history_paragraph|highlight}}
+{%endif%}
+            </td>
+			
+            <td style="width:50%">
+            	<p>
+					<strong style="font-size:12px;">#{{paragraph.ordinal}}
+					&nbsp;&nbsp; {% trans "created at" %} <a href="{{paragraph.current_version.detail_url}}">{% trans "Version" %} {{paragraph.current_version.revision}}</a>
+					&nbsp;&nbsp; {{paragraph.created}}
+					</strong>
+				</p>
+				<hr   style="background-color:#E1E1E1;height:1px;"  />
+{% if paragraph.history_paragraph%}
+<pre>{{paragraph.original|linediff:paragraph.history_paragraph.original}}</pre>
+{%else%}
+{{paragraph|highlight}}
+{%endif%}
+            </td>
+			
+        </tr>
+		{%endfor%}
+    </tbody>
+</table>
+{% endifequal %}
+</div>
+</div>
+{% endblock %}

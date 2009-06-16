@@ -1,0 +1,4 @@
+{% load i18n %}
+<p><strong><a href="{%url doc_trans-trans-people people.username%}">{{people}}</a></strong></p>
+<p>{% trans 'Last Login' %}:<br /> {{people.last_login}}</p>
+<p>{% trans 'E-mail' %}:<br /> {{people.email}}</p>

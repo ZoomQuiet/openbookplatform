@@ -1,0 +1,110 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load i18n %}
+{% load comments %}
+{% load doc_trans_tags%}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
+
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style type="text/css">
+
+.dashboard #content {
+	width:968px;
+}
+.dashboard #content-main {
+    width:948px;
+}
+.dashboard #content-main th{
+    font-size:12px;
+}
+.dashboard #content-main td{
+    font-size:12px;
+}
+.dashboard #content-main caption{
+    font-size:12px;
+}
+</style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<a href="{%url doc_trans-trans-index%}">{% trans 'Projects' %}</a>&rsaquo;
+	{%if path_sections%}
+	<a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+		{%for path_section in path_sections%}
+			{%if forloop.last%}
+				{{path_section}}
+			{%else%}
+				<a href="{{forloop.revcounter0|level_to_url}}">{{path_section}}</a>  &rsaquo;
+			{%endif%}
+		{%endfor%}
+	{%else%}
+	{{project_object.name}}
+	{%endif%}
+</div>
+	
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+		{%if not path_sections%}
+			<div class="module">
+	        <table summary="">
+	        <caption>
+	        	<a href="./" class="section">{% trans "Introduction" %}</a>
+			</caption>
+	            <tr>
+	                <th scope="row" style="white-space:normal;word-break:break-all;line-height:16px;padding-left:15px;padding-right:0px;">{{ project_object.project_description|linebreaksbr }}</th>
+	            	<td></td>
+					
+				</tr>
+	        </table>
+	        </div>
+		{%endif%}
+        {% for section, pages in content %}
+	        <div class="module">
+	        <table summary="">
+	        <caption>
+	        	<a href="{{section|default:"."}}/" class="section">{{ section|title|default:"Files in this directory" }}</a>
+			</caption>
+	        {% for page in pages %}
+	            <tr>
+	                <th scope="row" style="white-space:normal;word-break:break-all"><a href="{{ page.trans_url }}">{{ page.path }}</a></th>
+					<td> {{page.paragraph_count}} {% trans "Paragraphs" %}</td>
+					<td> {{page.translated_count}} {% trans "Translated" %}
+					({{page.translated_and_reviewd_paragraphs|length}} {% trans "Reviewed" %})</td>
+				<td> <a href="{{ page.comments_url }}">{{page.comment_count}} {% trans "Comments " %}</a></td>
+					<!--<td> {{page.progress|floatformat:2}} % </td>-->
+					<td><a href="{{ page.changes_url }}" class="versionlink">{% trans "Changes" %}</a></td>
+					{%block view_on_site%}
+					<td>{% trans "View on Site" %}</td>
+					<td><a href="{{ page.view_original_url }}" class="originallink" target="_blank">{% trans "Original" %}</a></td>
+					<td><a href="{{ page.view_translated_url }}" class="translatedlink" target="_blank" >{% trans "Translation" %}</a></td>
+					{% endblock %}
+	            </tr>
+	        {% endfor %}
+	        </table>
+	        </div>
+    	{% endfor %}
+		
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    
+	{%include "doc_trans/trans/include/recent_versions.html"%}
+	
+	
+	
+</div>
+{% endblock %}
+

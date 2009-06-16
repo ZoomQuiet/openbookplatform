@@ -1,0 +1,34 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo; 
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+     {{action|title}}
+</div>
+{% endblock %}
+
+{% block content %}
+	{%if not joined%}
+    <p>{% blocktrans %}Are you sure you want to join in the project group {% endblocktrans %}{{ project_object.name }} ? </p>
+	<p>{% blocktrans %}if you joined this project group, then when this project get updated, we will send you a email to tell you this update.{% endblocktrans %}</p>
+	<p>{% blocktrans %}of course, you can quit this project group any time you want.{% endblocktrans %}</p></p>
+    {%endif%}
+	
+	{%if joined%}
+    <p>{% blocktrans %}Are you sure you want to quit the project group {% endblocktrans %}{{ project_object.name }} ? </p>
+	<p>{% blocktrans %}if you quit this project group, we will stop sending you a email to tell you this project's update.{% endblocktrans %}</p>
+	<p>{% blocktrans %}of course, you can join this project group again any time you want.{% endblocktrans %}</p></p>
+    {%endif%}
+	
+    <form action="" method="post">
+    <div>
+    <input type="hidden" name="post" value="yes" />
+	<input type="hidden" name="next" value="{{next}}" />
+    <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+    </div>
+    </form>
+{% endblock %}

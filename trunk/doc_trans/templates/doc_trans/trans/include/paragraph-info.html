@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load comments %}
+<strong style="font-size:12px;">#{{paragraph.ordinal}}
+&nbsp;
+<a href="{{ paragraph.comments_url }}">{% get_comment_count for paragraph as comment_count %} {{comment_count}} {% trans "Comments " %}</a>
+
+{%if paragraph.history_paragraph%}
+&nbsp;<a href="{{paragraph.histories_url}}" >{% trans 'Paragraph Changes' %} </a>
+{%endif%}
+{%with paragraph.latest_translation as latest_translation%}
+{%if latest_translation%}
+{%if latest_translation.history_translation%}
+&nbsp;<a href="{{paragraph.translation_histories_url}}" >{% trans 'Translation Changes' %}</a>
+{%endif%}
+&nbsp;{% trans 'Last translation' %}:{{latest_translation.created}} by <a href="{%url doc_trans-trans-people latest_translation.translator.username%}">{{latest_translation.translator}}</a>
+{%if latest_translation.reviewed%}
+,&nbsp;{% trans 'Reviewed' %} by <a href="{%url doc_trans-trans-people latest_translation.reviewed_by.username%}">{{latest_translation.reviewed_by}}</a>
+{%endif%}
+{%endif%}
+{%endwith%}
+</strong>

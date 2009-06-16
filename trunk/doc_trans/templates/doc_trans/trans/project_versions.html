@@ -1,0 +1,97 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+  
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 {{project_object.name}}
+
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+<ul class="object-tools">
+	{%if user_joined%}
+	<li><a href="{{project_object.quit_url}}" class="historylink">{% trans "Quit this project" %}</a></li>
+	{%else%}
+	<li><a href="{{project_object.join_url}}" class="historylink">{% trans "Join this project" %}</a></li>
+	{%endif%}
+</ul>
+{% endblock %}
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+        	
+            <th class="sorted ascending">
+                {% trans "Version" %}
+            </th>
+			
+            <th class="sorted ascending" style="text-align:left">
+                {% trans "Changed Pages" %}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	{%for version in versions%}
+	        <tr class="{% cycle 'row1' 'row2' %}" id="revision-{{version.revision}}">
+	        	
+	            <th>
+				<p>{{version.revision}}</p>
+            	</th>
+				
+	            <td style="text-align:left;">
+					<p><strong style="font-size:12px;">
+					{{version.created}}
+					</strong>
+					</p>
+					<hr  style="background-color:#E1E1E1;height:1px;" />
+					{%with version.changes.all.select_related as changes%}
+						{% if changes %}
+							<ul class="actionlist">
+								{% for page_change in changes %}
+									<li class="
+									{% ifequal page_change.action 'modified' %}changelink{% endifequal %}
+									{% ifequal page_change.action 'added' %}addlink{% endifequal %}
+									{% ifequal page_change.action 'deleted' %}deletelink{% endifequal %}"  style="list-style-type:none">
+									<a href="{{page_change.detail_url}}">{{ page_change.page.path }}</a>
+									</li>
+								{%endfor%}
+							</ul>
+						{%else%}
+						<p>{% trans "No page changed " %}</p>
+						{%endif%}
+					{%endwith%}
+	            </td>
+				
+	        </tr>
+		{%endfor%}
+    </tbody>
+</table>
+
+</div>
+</div>
+{% endblock %}

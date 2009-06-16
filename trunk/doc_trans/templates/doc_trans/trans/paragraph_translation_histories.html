@@ -1,0 +1,90 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+  
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 <a href="{{project_object.page_list_url}}">{{project_object.name}}</a>  &rsaquo;
+	 
+	 <a href="{{page_object.trans_url}}">{{page_object.path}}</a>  &rsaquo;
+	 
+     {{paragraph_object}}
+	 
+</div>
+
+{%include "doc_trans/trans/include/user_joined.html"%}
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{%include "doc_trans/trans/include/object-tools.html"%}
+{% endblock %}
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+        	{%for translation in translations%}
+            <th class="sorted ascending" style="text-align:left;width:50%"  id="translation{{translation.id}}">
+                {% trans 'Translation' %}
+            </th>
+			{%endfor%}
+			<th class="sorted ascending" style="text-align:left;width:50%"  id="paragraph_object{{paragraph_object.id}}">
+                {% trans 'Paragraph Original' %}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	
+        <tr class="row2">
+        	{%for translation in translations%}
+            <td style="text-align:left;width:50%">
+				<p><strong style="font-size:12px;">
+				{{translation.created}} by <a href="{%url doc_trans-trans-people translation.translator.username%}">{{translation.translator}}</a>
+				</strong></p>
+				<hr  style="background-color:#E1E1E1;height:1px;" />
+{%if not forloop.first%}
+<pre>{{translation.content|linediff:translation.history_translation.content}}</pre>
+{%else%}
+{{translation|highlight}}
+{%endif%}
+            </td>
+			{%endfor%}
+			
+			<td style="text-align:left;width:50%">
+                <p>
+				{%with paragraph_object as paragraph%}
+					{%include "doc_trans/trans/include/paragraph-info.html"%}
+				{%endwith%}
+				</p>
+				<hr  style="background-color:#E1E1E1;height:1px;" />
+{{paragraph_object|highlight}}
+            </td>
+			
+        </tr>
+		
+    </tbody>
+</table>
+
+</div>
+</div>
+{% endblock %}

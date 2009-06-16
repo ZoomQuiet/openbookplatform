@@ -1,0 +1,131 @@
+{% extends "doc_trans/trans/base.html" %}
+{% load adminmedia admin_list i18n %}
+{% load doc_trans_tags%}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ media }}
+
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="{%url doc_trans-trans-index%}">{% trans "Projects" %} </a>  &rsaquo;  
+	 
+	 <a href="{%url doc_trans-trans-people-list%}">{% trans "People" %}</a>  &rsaquo;
+	 
+	 <a href="{%url doc_trans-trans-people user_object.username%}">{{user_object}}</a>
+	
+</div>
+
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+<div class="module " id="changelist">
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th class="sorted ascending" style="text-align:left">
+               {% trans 'Original' %} 
+            </th>
+            <th class="sorted ascending">
+                {% trans 'Translation' %} 
+            </th>
+			
+        </tr>
+    </thead>
+    <tbody>
+		
+    	{%for translation in translations%}
+        <tr class="{% cycle 'row1' 'row2' %}" id="translation{{translation.id}}">
+            <td style="text-align:left;">
+				<p>
+					{%with translation.paragraph as paragraph%}
+						<strong style="font-size:12px;">#{{paragraph.ordinal}}
+						&nbsp;&nbsp;&nbsp;&nbsp; {% trans 'Page' %} : <a href="{{paragraph.page.trans_url}}"> {{paragraph.page.path}}</a>
+						&nbsp;&nbsp;&nbsp;&nbsp; {% trans 'Project' %} : <a href="{{paragraph.page.project.page_list_url}}">{{paragraph.page.project.name}}</a>
+						</strong>
+					{%endwith%}
+				</p>
+				<hr  style="background-color:#E1E1E1;height:1px;" />
+{{translation.paragraph|highlight}}
+            </td>
+			
+            <td>
+            	<p>
+					{%with translation.paragraph as paragraph%}
+						{%include "doc_trans/trans/include/paragraph-info.html"%}
+					{%endwith%}
+				</p>
+				<hr   style="background-color:#E1E1E1;height:1px;"  />
+{{translation|highlight}}
+            </td>
+			
+			
+        </tr>
+		{%endfor%}
+    </tbody>
+</table>
+
+<div id="changelist-filter" style="width:auto;padding-bottom:20px;">
+<h2>{% trans 'Filter' %}</h2>
+<h3>By {% trans 'Project' %}</h3>
+<ul>
+	<li {%ifequal selectd_project_slug ''%} class="selected" {%endifequal%}>
+    	<a href="?project=">{% trans 'All Projects' %}</a>
+	</li>
+{% for translatd_project in joined_projects %}
+    <li {%ifequal selectd_project_slug translatd_project.slug%} class="selected" {%endifequal%}>
+    	<a href="?project={{translatd_project.slug}}">{{ translatd_project.name }}</a>
+	</li>
+{% endfor %}
+</ul>
+
+{%if page_contents%}
+<h3>By {% trans 'Page' %}</h3>
+<ul>
+	<li {%ifequal selectd_page_slug ''%} class="selected" {%endifequal%}>
+    	<a href="?project={{selectd_project_slug}}&page=">{% trans 'All Pages' %}</a>
+	</li>
+{% for section, pages in page_contents %}
+	<h3>{{ section|title|default:"Indices, glossary" }}</h3>
+	{% for page in pages %}
+	    <li {%ifequal selectd_page_slug page.slug%} class="selected" {%endifequal%}>
+	    	<a href="?project={{selectd_project_slug}}&page={{page.slug}}" style="font-size:13px; white-space:nowrap;" >{{ page.path }}</a>
+		</li>
+	{% endfor %}
+{% endfor %}
+</ul>
+{%endif%}
+</div>
+
+<p class="paginator">
+{% for i in p.page_range %}
+    {%ifequal i page_num%}
+		<span class="this-page">{{i}}</span>
+	{%else%}
+		<a href="?page_num={{i}}&project={{selectd_project_slug}}&page={{selectd_page_slug}}">{{i}}</a>
+	{%endifequal%}
+{% endfor %}
+
+&nbsp;&nbsp;&nbsp;&nbsp; {{p.count}} translations
+
+</p>
+
+
+
+</div>
+
+</div>
+{% endblock %}

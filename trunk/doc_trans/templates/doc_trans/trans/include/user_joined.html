@@ -1,0 +1,7 @@
+{% load i18n %}
+{%if not user_joined%}
+<ul class="messagelist" >
+<li>
+	{% blocktrans %}You haven't joined this project, if you want to translation this project and get the newest update about this project, please join the project group first,{% endblocktrans %} <a href="{{project_object.join_url}}" style="color:#5B80B2">{% trans 'Join Now' %}</a>?</li>
+</ul>
+{%endif%}

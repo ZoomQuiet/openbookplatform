@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+{% load i18n %}
+<title>{% block title %}{{ title }} | {% trans 'Collaborative Documentation Translation Platform' %}{% endblock %}</title>
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/base.css{% endblock %}" />
+{% block extrastyle %}{% endblock %}
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% load adminmedia %}{% admin_media_prefix %}css/ie.css{% endblock %}" /><![endif]-->
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" />{% endif %}
+
+{% block extrahead %}
+
+  	{{ block.super }}
+
+<style type="text/css">
+#changelist td{
+	white-space:nowrap;
+}
+
+#changelist .paragraph-ordinal pre{
+	
+	white-space:pre-wrap;
+	word-wrap: break-word;
+	font-family: Verdana,Arial,sans-serif;
+	font-size:12px;
+	line-height:16px;
+}
+
+#changelist .nowrap pre{
+	width:97%;
+}
+#changelist th{
+	white-space:nowrap;
+}
+#changelist table thead th:first-child {
+    text-align: left;
+	width:auto;
+}
+
+div.breadcrumbs {
+	font-size:12px;
+}
+.object-tools li{
+	font-size:12px;
+}
+.originallink {
+background:transparent url({%url doc_trans-trans-media "img/us.png"%}) no-repeat scroll 0 0.2em;
+padding-left:20px;
+}
+
+.translatedlink {
+background:transparent url({%url doc_trans-trans-media "img/cn.png"%}) no-repeat scroll 0 0.2em;
+padding-left:20px;
+}
+
+.versionlink {
+background:transparent url({%url doc_trans-trans-media "img/svn.png"%}) no-repeat scroll 0 0.2em;
+padding-left:12px;
+}
+
+.peoplelink {
+background:transparent url({%url doc_trans-trans-media "img/people.png"%}) no-repeat scroll 0 0.2em;
+padding-left:20px;
+}
+
+#trans_table {
+	table-layout:fixed;
+}
+
+.eip_saving { background-image: url('{%url doc_trans-trans-media "img/ajax-loader.gif"%}'); background-repeat: no-repeat; background-position: left; color: #903; padding: 0 0 0 20px; }
+.eip_empty { color: #afafaf; border: 1px solid #afafaf; padding: 3px;}
+.eip_editfield { background-color: #FFFFCC; }
+.eip_editfield {
+	font-size:12px;
+	line-height:16px;
+	font-family: Verdana,Arial,sans-serif;
+	width:99.5%;
+}
+
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="{%url doc_trans-trans-media "css/highlight.css" %}" />
+
+{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+{% load i18n %}
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+
+<!-- Container -->
+<div id="container">
+
+    {% if not is_popup %}
+    <!-- Header -->
+    <div id="header">
+        <div id="branding">
+        {% block branding %}
+		<h1 id="site-name">{% trans 'Collaborative Documentation Translation Platform' %}</h1>
+		{% endblock %}
+        </div>
+		<div id="user-tools">
+        {% if user.is_authenticated%}
+        {% trans 'Welcome,' %} <strong>{% firstof user.first_name user.username %}</strong>.
+		<a href="/accounts/password/change/">{% trans 'Change password' %}</a> / <a href="/accounts/logout/">{% trans 'Log out' %}</a>
+        {%else%}
+		<a href="/accounts/login/?next={{request.get_full_path}}">{% trans 'Login' %}</a> / <a href="/accounts/register/">{% trans 'Create an account' %}</a>
+		{% endif %}
+		/ <a href="{%url doc_trans-trans-help%}">{% trans 'Help' %}</a>
+		{% block userlinks %}
+		&nbsp;&nbsp;
+		<form action="{%url doc_trans-trans-setlang%}" method="post" style="display:inline;">
+		<input name="next" type="hidden" value="{{request.get_full_path}}" />
+		<select name="language" onchange="this.form.submit();">
+		{% for lang in LANGUAGES %}
+		<option value="{{ lang.0 }}" {%ifequal LANGUAGE_CODE lang.0%}selected="selected"{%endifequal%}>{{ lang.1 }}</option>
+		{% endfor %}
+		</select>
+		
+		</form>
+		{% endblock %}
+		</div>
+        {% block nav-global %}{% endblock %}
+    </div>
+    <!-- END Header -->
+    {% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a>{% if title %} &rsaquo; {{ title }}{% endif %}</div>{% endblock %}
+    {% endif %}
+
+        {% if messages %}
+        <ul class="messagelist">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>
+        {% endif %}
+
+    <!-- Content -->
+    <div id="content" class="{% block coltype %}colM{% endblock %}">
+        {% block pretitle %}{% endblock %}
+        {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+        {% block content %}
+        {% block object-tools %}{% endblock %}
+        {{ content }}
+        {% endblock %}
+        {% block sidebar %}{% endblock %}
+        <br class="clear" />
+    </div>
+    <!-- END Content -->
+
+    {% block footer %}<div id="footer" style="text-align:center">
+    	<p>Copyright © 2009. All rights reserved. <a href="/">{% trans 'Collaborative Documentation Translation Platform' %}</a>. <a href="mailto:jinhao7773-126-com">{% trans 'Report Bug or Advice' %}</a></p>
+    </div>{% endblock %}
+</div>
+<!-- END Container -->
+{% block extrafooter %}
+{% endblock %}
+</body>
+</html>

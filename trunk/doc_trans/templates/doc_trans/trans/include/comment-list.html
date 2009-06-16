@@ -1,0 +1,38 @@
+{% load i18n %}
+{% for comment in comment_list %}
+    <tr class="{% cycle 'row1' 'row2' %}" id="comment-{{comment.id}}">
+    	
+        <th style="width:200px;">
+			{%with comment.user as people%}
+				{%if people.is_authenticated%}
+				{%include "doc_trans/trans/include/user-info.html"%}
+				{%else%}
+				<p><strong>{{comment.user_name}}</strong></p>
+				<p>{% trans 'E-mail' %}:<br /> {{comment.user_email}}</p>
+				{%endif%}
+			{%endwith%}
+		</th>
+		
+        <td style="text-align:left;">
+			<p>
+			<strong style="font-size:12px;">#{{forloop.counter}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+			{% trans "Submit Date" %} : <strong style="font-size:12px;">{{comment.submit_date}}</strong>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			Blog : <strong style="font-size:12px;">{{comment.user_url}}</strong>
+			
+			</p>
+			<hr  style="background-color:#E1E1E1;height:1px;" />
+			<pre>{{comment.comment}}</pre>
+        </td>
+	<tr>
+{%empty%}
+	<tr class="{% cycle 'row1' 'row2' %}" id="comment-{{comment.id}}">
+        <th style="width:260px;">
+			
+		</th>
+		
+        <td style="text-align:left;">
+			{% trans "There are no comments yet, be the first!" %}
+        </td>
+	<tr>
+{%endfor%}
