@@ -1,6 +1,8 @@
 #summary docspot.org 发展规划和思考
 #labels Featured,Phase-Design,Phase-Support
 
+<wiki:toc max_depth="4" />
+
 = docspot.org 规划 =
 {{{
 项目想好，文档得全；社区想好，文档得精！
