@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>安装 &mdash; 协同文档翻译平台 v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="协同文档翻译平台 v0.1 documentation" href="index.html" />
+    <link rel="next" title="扩展源代码" href="code.html" />
+    <link rel="prev" title="平台工作流程" href="workflow.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="code.html" title="扩展源代码"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="workflow.html" title="平台工作流程"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">协同文档翻译平台 v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="id1">
+<h1>安装<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>源代码是以标准的Django App形式组织的。可以通过svn从:</p>
+<div class="highlight-python"><pre>svn checkout http://openbookplatform.googlecode.com/svn/trunk/doc_trans doc_trans</pre>
+</div>
+<p>下载到。</p>
+<div class="section" id="id2">
+<h2>安装需求<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>Linux/Windows</strong> :推荐使用Linux，因为项目是在Linux下开发并测试完成的，Windows下没有经过足够的运行测试。</p>
+</li>
+<li><p class="first"><strong>Python 2.5</strong> :因为是在该Python版本下开发的，其他版本的Python未经过测试。</p>
+</li>
+<li><p class="first"><strong>Django svn版本</strong> :注意，并不兼容1.0版本的django，因为使用了Model的Aggregation功能，这个是在svn版本中才有的。</p>
+</li>
+<li><p class="first"><strong>pysvn 1.7.0或以上</strong></p>
+<blockquote>
+<ul>
+<li><p class="first">Windows 版本下载地址:</p>
+<div class="highlight-python"><pre>http://pysvn.tigris.org/servlets/ProjectDocumentList?folderID=5840&amp;expandFolder=5840&amp;folderID=1768</pre>
+</div>
+</li>
+</ul>
+<blockquote>
+<p>下载后直接双击安装即可。</p>
+</blockquote>
+<ul>
+<li><p class="first">Linux版本需要从源代码编译安装，编译前需要满足pysvn本身的依赖要求，我在ubuntu8.04上编译是遇到一个链接错误，不知道是不是我漏掉了某个库。最后通过修改Makefile文件的第14行:</p>
+<div class="highlight-python"><pre>LDLIBS=-L/usr/lib -Wl,--rpath -Wl,/usr/lib -lsvn_client-1 -lsvn_diff-1 -lsvn_repos-1 -lcom_err -lresolv -lexpat -lneon -lssl</pre>
+</div>
+<p>为:</p>
+<div class="highlight-python"><pre>LDLIBS=-L/usr/lib -Wl,--rpath -Wl,/usr/lib -lsvn_client-1 -lsvn_diff-1 -lsvn_repos-1 -lcom_err -lresolv -lexpat -lssl</pre>
+</div>
+<p>编译通过。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>pygments</strong> :因为通过Web方式进行翻译提交时，需要高亮对照显示原文，所以还需要安装pygments。</p>
+</li>
+<li><p class="first"><strong>Sphinx 0.5.2</strong> :注意，Sphinx目前的最新版是0.6.2，但是某些项目的Sphinx类型的文档只支持0.5.2，
+而有些只支持0.6.2以上，所以在这里通过默认安装版本为0.5.2，但是如果某个项目的文档要求是0.6.2，
+就通过修改sys.path的方式切换到0.6.2版本。</p>
+</li>
+<li><p class="first"><strong>jinja</strong> :注意不是jinja2，而是jinja，Sphinx类型的文档在输出HTML格式的文档需要调用jinja模板。</p>
+</li>
+<li><p class="first"><strong>mercurial</strong> :如果所需要翻译的项目文档是存在mercurial版本控制系统上的话，还需要安装mercurial，只要使 <tt class="docutils literal"><span class="pre">import</span> <span class="pre">mercurial</span></tt> 可以导入或 <tt class="docutils literal"><span class="pre">hg</span></tt> 命令可用就可以了，因为windows下编译mercurial比较麻烦。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>安装过程<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">首先从svn下载源码，并放到任何Python Path可见的地方，即使 <tt class="docutils literal"><span class="pre">import</span> <span class="pre">doc_trans</span></tt> 可用。</p>
+</li>
+<li><p class="first">在你所在的Django项目的setting.py文件中添加以下设置:</p>
+<blockquote>
+<ol class="arabic">
+<li><p class="first">在 <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt> 中加入该app <tt class="docutils literal"><span class="pre">‘doc_trans’</span></tt> 。</p>
+</li>
+<li><p class="first">其他设置:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">PRO_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="p">))</span>
+<span class="n">DOCS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PRO_PATH</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;docs_repository&#39;</span><span class="p">))</span>
+<span class="n">ORIGINAL_LANGUAGE</span> <span class="o">=</span> <span class="s">&#39;en&#39;</span>
+<span class="n">TRANSLATION_LANGUAGE</span> <span class="o">=</span> <span class="s">&#39;zh-cn&#39;</span>
+<span class="n">HG_REPO_NAME</span> <span class="o">=</span> <span class="s">&#39;hg&#39;</span>
+<span class="n">WEB_DOCS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PRO_PATH</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;web_docs_repository&#39;</span><span class="p">))</span>
+<span class="n">SVN_DOCS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PRO_PATH</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;svn_docs_repository&#39;</span><span class="p">))</span>
+<span class="n">SVN_DOCS_BACKUP_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PRO_PATH</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;svn_docs_repository_backup&#39;</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;nt&#39;</span><span class="p">:</span>
+    <span class="n">LOCAL_SVN_URL</span> <span class="o">=</span> <span class="s">&#39;file:///</span><span class="si">%s</span><span class="s">/&#39;</span> <span class="o">%</span> <span class="n">SVN_DOCS_DIR</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\\</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">LOCAL_SVN_URL</span> <span class="o">=</span> <span class="s">&#39;file://</span><span class="si">%s</span><span class="s">/&#39;</span> <span class="o">%</span> <span class="n">SVN_DOCS_DIR</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<blockquote>
+<p>以上这些设置的一些说明。</p>
+</blockquote>
+<ul class="simple">
+<li><strong>DOCS_DIR:</strong> 是用来存放各个项目的文档的目录，包括svn，及其他各种来源的英文文档， 从数据库中导出的中文文档。</li>
+<li><strong>ORIGINAL_LANGUAGE:</strong> 这个网站所翻译的文档的原始语言的名字，可以为其他各种命名方式，只是该字符串也将被用作 <tt class="docutils literal"><span class="pre">DOCS_DIR</span></tt> 目录下存放原文文档的目录名。</li>
+<li><strong>TRANSLATION_LANGUAGE:</strong> 这个网站所翻译的文档的目标语言的名字，可以为其他各种命名方式，只是该字符串也将被用作 <tt class="docutils literal"><span class="pre">DOCS_DIR</span></tt> 目录下存放目标语言文档的目录名。</li>
+<li><strong>HG_REPO_NAME:</strong> 由于很多Python项目使用了mercurial作为版本控制系统，但是mercurial不提供单个目录的下载方式，所以要先将整个项目下载下来存放到此名字的临时目录下，然后再从此目录下拷贝出实际的文档目录。</li>
+<li><strong>WEB_DOCS_DIR:</strong> 用来存放各个项目导出的英文，中文文档的HTML格式文档的目录路径。</li>
+<li><strong>SVN_DOCS_DIR:</strong> 用来存放以非svn方式作为版本控制系统的项目的原文文档的版本仓库路径，此目录应该使用 <tt class="docutils literal"><span class="pre">'svnadmin</span> <span class="pre">create</span> <span class="pre">some_name'</span></tt> 的形式创建。</li>
+<li><strong>SVN_DOCS_BACKUP_DIR:</strong> 用来存放对 <tt class="docutils literal"><span class="pre">SVN_DOCS_DIR</span></tt> 仓库进行自动备份的的备份文件目录，再每次要对 <tt class="docutils literal"><span class="pre">SVN_DOCS_DIR</span></tt> 仓库进行提交时都会进行一次自动的备份。</li>
+<li><strong>LOCAL_SVN_URL:</strong> 用来将 <tt class="docutils literal"><span class="pre">SVN_DOCS_DIR</span></tt> 的本地路径形式转换为SVN所使用的本地仓库路径形式。</li>
+</ul>
+<ol class="arabic" start="3">
+<li><p class="first">可选设置，如果你想将你网站界面所可选的语言限制一定范围内，可设置django提供的 <tt class="docutils literal"><span class="pre">LANGUAGES</span></tt> 选项:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">LANGUAGES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s">&#39;en&#39;</span><span class="p">,</span> <span class="s">u&#39;English&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;zh-cn&#39;</span><span class="p">,</span> <span class="s">u&quot;简体中文&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">以上就是添加 <tt class="docutils literal"><span class="pre">doc_trans</span></tt> 这个app所需要的全部设置。</p>
+</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<ol class="arabic" start="4">
+<li><p class="first">在 <tt class="docutils literal"><span class="pre">urls.py</span></tt> 文件加入本app的urls:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+    <span class="c"># Example:</span>
+    <span class="c">#.........................</span>
+    <span class="p">(</span><span class="s">r&#39;^trans/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">&#39;doc_trans.trans_urls&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">r&#39;^docs/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">&#39;doc_trans.urls&#39;</span><span class="p">)),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>这里有两个urls.py文件需要include：</p>
+</li>
+</ol>
+<blockquote>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">urls.py</span></tt> 主要是项目列表浏览及查看HTML版本的文档浏览。</li>
+<li><tt class="docutils literal"><span class="pre">trans_urls.py</span></tt> 主要是翻译的后台管理，比如翻译提交，项目进度查看等。</li>
+</ul>
+</blockquote>
+<ol class="arabic simple" start="5">
+<li>在配置好以上这些设置后，还需要运行 <tt class="docutils literal"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">syncdb</span></tt> 命令，同步本app所需要的数据库结构。</li>
+</ol>
+</div>
+<div class="section" id="id4">
+<h2>更新，同步，导出文档<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>在安装好本app后，现在数据库中还没有任何可翻译的项目，接下来将如何创建翻译项目。</p>
+<ol class="arabic">
+<li><p class="first">首先，打开你的Django admin 后台，可以看到多了这个app所添加的可管理的Model，打开其中的 <tt class="docutils literal"><span class="pre">Projects</span></tt> Model进行项目的添加。</p>
+</li>
+<li><p class="first">项目添加说明:</p>
+<blockquote>
+<ul>
+<li><p class="first"><strong>Name:</strong> 项目的名字。</p>
+</li>
+<li><p class="first"><strong>Slug:</strong> 项目的Slug,注意不要太复杂，因为这不但会作为项目存放文档的路径名，而且还会作为同步文档时的命令行参数以及编写可扩展代码的一部分文件名。</p>
+</li>
+<li><p class="first"><strong>Project description:</strong> 项目的基本描述。</p>
+</li>
+<li><p class="first"><strong>Repository url:</strong> 项目文档的存放路径，目前支持3种方式:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>svn:</strong> 比如Django 文档的路径为 <tt class="docutils literal"><span class="pre">http://code.djangoproject.com/svn/django/trunk/docs/</span></tt> 。注意，最后的 <strong>docs/</strong> ，这是必须的，因为文档是存放在该目录下。</li>
+<li><strong>hg:</strong> 比如Sphinx 文档的路径为 <tt class="docutils literal"><span class="pre">http://bitbucket.org/birkenfeld/sphinx/</span></tt> 。注意，最后末尾并没有  <strong>doc/</strong> ， 因为hg只能以整个项目的形式下载，所以为了表示文档存放在哪个路径，还需要将文档目录名填写到后面的 <strong>Doc dir name</strong> 这个参数。</li>
+<li><strong>本地文档类型:</strong> 比如 Google App Engine 文档的路径只是简单的一个目录名为 <tt class="docutils literal"><span class="pre">google-appengine-docs-20090508</span></tt> 。但是你需要额外的步骤使这个目录名有意义，比如先从 <a class="reference external" href="http://code.google.com/p/googleappengine/downloads/list">http://code.google.com/p/googleappengine/downloads/list</a> 下载 google-appengine-docs-20090508.zip 这个压缩包，然后在 <tt class="docutils literal"><span class="pre">DOCS_DIR</span></tt> 下新建以 project slug 为名字的目录，然后将压缩包解压为 google-appengine-docs-20090508 ，即 <strong>Repository url</strong> 中所填的路径名。</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>Repository type:</strong> 项目文档所存放的类型选择。</p>
+</li>
+<li><p class="first"><strong>Doc type:</strong> 项目文档所使用的文本格式， 比如Sphinx，HTML等。</p>
+</li>
+<li><p class="first"><strong>Exclude dir names:</strong> 项目文档目录中，通过空格分离的正则表达式，显式指定某些目录中的所有文件都不作为文档文件，比如 Google App Engine 文档不需要翻译 java doc ，此正则表达式为 <tt class="docutils literal"><span class="pre">appengine/docs/java/javadoc/.+</span></tt> 。此项通常不需要设置，因为后面还需要指定 <strong>Doc file extensions</strong> 。</p>
+</li>
+<li><p class="first"><strong>Doc file extensions:</strong> 项目文档文件所使用的文件扩展名，比如Django的为 <tt class="docutils literal"><span class="pre">.txt</span></tt> , Sphinx的为 <tt class="docutils literal"><span class="pre">.rst</span></tt> ,注意点号并不能省略。多个文件扩展名之间可以用空格隔开。</p>
+</li>
+<li><p class="first"><strong>Doc dir name::</strong> 如果文档的来源类型是 hg， 那么此处需要填写文档目录所在的文件夹名。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">在将项目信息添加到数据库后，就可以开始同步文档，这是通过3个相关的Django命令实现的，分别是 update_doc, sync_doc, export_doc . 下面分别按项目文档翻译的流程顺序介绍这3个命令。</p>
+</li>
+<li><p class="first">update_doc:</p>
+<div class="highlight-python"><pre>python manage.py update_doc project-slug [-r]</pre>
+</div>
+</li>
+</ol>
+<blockquote>
+该命令的主要作用是根据项目信息，从远程服务器上或本地文档目录，下载／更新本地的英文文档到指定版本。如果为非svn类型的文档来源，还会自动提交改变到本地的一个svn服务器。
+该命令接受一个项目的slug作为参数，同时还有一个可选参数  <tt class="docutils literal"><span class="pre">-r</span></tt> ，表示要同步到的版本，不填的话表示更新最新版本。
+该命令不涉及任何的数据库写操作，只是简单的对文档目录进行更新，所以在运行了这个命令之后还需要运行第2个命令：sync_doc</blockquote>
+<ol class="arabic" start="5">
+<li><p class="first">sync_doc:</p>
+<div class="highlight-python"><pre>python manage.py sync_doc project-slug</pre>
+</div>
+</li>
+</ol>
+<blockquote>
+由于update_doc只涉及对文档目录的更新，还需要运行这个命令将这些更新信息同步到数据库中。
+同步版本，及文档变化信息到数据库中的这个操作，是封装在一个数据库事务中的，所以中间有任何同步不一致的情况出现，会马上进行回滚，并报告错误信息。
+之所以要将这2个步骤分开操作，主要是为了防止意外的错误导致的不一致，比如网络中断，同步错误等。</blockquote>
+<ol class="arabic" start="5">
+<li><p class="first">export_doc:</p>
+<div class="highlight-python"><pre>python manage.py export_doc project-slug</pre>
+</div>
+</li>
+</ol>
+<blockquote>
+在文档翻译的任何过程中，都可以使用export_doc命令将文档的中英文版本导出，导出的过程包括HTML格式版本的文档生成。</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">安装</a><ul>
+<li><a class="reference external" href="#id2">安装需求</a></li>
+<li><a class="reference external" href="#id3">安装过程</a></li>
+<li><a class="reference external" href="#id4">更新，同步，导出文档</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="workflow.html" title="previous chapter">平台工作流程</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="code.html" title="next chapter">扩展源代码</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/install.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="code.html" title="扩展源代码"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="workflow.html" title="平台工作流程"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">协同文档翻译平台 v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, 金浩.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.2.
+    </div>
+  </body>
+</html>
