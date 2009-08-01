@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>扩展源代码 &mdash; 协同文档翻译平台 v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="协同文档翻译平台 v0.1 documentation" href="index.html" />
+    <link rel="prev" title="安装" href="install.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="安装"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">协同文档翻译平台 v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="id1">
+<h1>扩展源代码<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>本文主要对项目的源代码组织结构进行一个简单的介绍。</p>
+<div class="section" id="id2">
+<h2>主要项目文件及目录<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>trans_urls.py及trans_views.py:</strong> 这两个文件共同组成了翻译管理后台的主要功能，从trans_urls.py的urlpatterns也可以对后台翻译管理的功有一个整体的了解。</p>
+</li>
+<li><p class="first"><strong>utils.py:</strong> 这个文件中主要包含了会被其他各个代码文件使用的公共函数。</p>
+</li>
+<li><p class="first"><strong>management/commands/update_doc.py:</strong> 下载／更新文档的django命令 <tt class="docutils literal"><span class="pre">update_doc</span></tt> 的代码文件，该文件的主要工作就是通过 <tt class="docutils literal"><span class="pre">utils.py</span></tt> 中的 <tt class="docutils literal"><span class="pre">get_update_handlers</span></tt> 得到真正用来更新项目的函数。
+<tt class="docutils literal"><span class="pre">get_update_handlers</span></tt> 先从路径 <tt class="docutils literal"><span class="pre">doc_trans.update_handlers.projects.%s_handler</span></tt>
+（%s表示项目的slug，并且 <tt class="docutils literal"><span class="pre">-</span></tt> 转换为 <tt class="docutils literal"><span class="pre">_</span></tt> 的形式,下同）尝试导入项目特殊的 <tt class="docutils literal"><span class="pre">update_handler</span></tt> 。
+如果没找到的话，再尝试从 <tt class="docutils literal"><span class="pre">doc_trans.update_handlers.%s</span></tt> (%s表示 <tt class="docutils literal"><span class="pre">Repository</span> <span class="pre">type</span></tt> 类型的 <tt class="docutils literal"><span class="pre">update_handler</span></tt> )导入。
+通过此种方式，就可以即为某个项目写专门的 <tt class="docutils literal"><span class="pre">update_handler</span></tt> ，再没有提供时，则使用通用的  <tt class="docutils literal"><span class="pre">update_handler</span></tt> 。后面的介绍的其他命令也运用了很多这种导入方式，可以通过源代码查看详细的导入路径。</p>
+</li>
+<li><p class="first"><strong>management/commands/sync_doc.py:</strong> 同步文档到数据库的django命令 <tt class="docutils literal"><span class="pre">sync_doc</span></tt> 的代码文件，在该文件中主要有3个函数 <tt class="docutils literal"><span class="pre">handle_page_added</span></tt> , <tt class="docutils literal"><span class="pre">handle_page_deleted</span></tt> , <tt class="docutils literal"><span class="pre">handle_page_modified</span></tt> 分别用来处理文档文件的添加，删除，修改3种变化状态。
+同时这些函数中还调用了 <tt class="docutils literal"><span class="pre">utils.py</span></tt> 中的 <tt class="docutils literal"><span class="pre">get_file_handler</span></tt> 来完成对各种格式的文档进行分段，重组的完整性检查等功能。</p>
+</li>
+<li><p class="first"><strong>management/commands/export_doc.py:</strong> 同步文档到数据库的django命令 <tt class="docutils literal"><span class="pre">export_doc</span></tt> 的代码文件，该文件主要是先通过  <tt class="docutils literal"><span class="pre">utils.py</span></tt> 中的 <tt class="docutils literal"><span class="pre">get_export_handler</span></tt> 将数据库中的翻译重组成全文，然后导出到文档目录。
+然后通过  <tt class="docutils literal"><span class="pre">utils.py</span></tt> 中的 <tt class="docutils literal"><span class="pre">get_exported_after_handler</span></tt> 将导出的中英文文档编译成HTML格式，以便读者的直接浏览。
+可以从目录 <tt class="docutils literal"><span class="pre">export_handlers/after_handlers/projects</span></tt> 中看到，在这里几乎为所有当前支持的文档项目写了专门的 <tt class="docutils literal"><span class="pre">get_exported_after_handler</span></tt> ，主要有以下原因：</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Sphinx版本问题：</strong> 很多Python项目使用了不同的Sphinx版本，并且彼此不兼容，所以需要在某些项目导出前修改 sys.path 以使 0.6.2 版本的Sphinx比默认的0.5.2版本先导入。</li>
+<li><strong>Sphinx的配置文件conf.py的问题：</strong> 很多Python项目会在 conf.py 中导入自己项目的一些模块，以读取当前版本，CHANGELOG，等信息写到文档中，所以对这些也需要额外的处理。</li>
+<li><strong>其他各种奇怪的问题：</strong> Sphinx文档的导出经常会出现各种编译错误，所以差不多要为每个项目写专门的 <tt class="docutils literal"><span class="pre">get_exported_after_handler</span></tt> 。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="sphinx">
+<h2>Sphinx类型文档的编译<a class="headerlink" href="#sphinx" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Sphinx类型文档的编译:</strong> 在这里并没有使用常用的 <tt class="docutils literal"><span class="pre">make</span> <span class="pre">html</span></tt> 命令或 <tt class="docutils literal"><span class="pre">sphinx-build</span></tt> 命令，而是通过函数调用的方式，该方式借鉴自django的官方网站的文档的编译方式： <a class="reference external" href="http://code.djangoproject.com/browser/djangoproject.com/djangodocs/bin/update-docs.py">http://code.djangoproject.com/browser/djangoproject.com/djangodocs/bin/update-docs.py</a></li>
+<li><strong>即时编译的实现:</strong> 在Web页面上的每一个翻译的提交都会即时重新编译相应的中文文档，这主要是通过 <tt class="docutils literal"><span class="pre">models.py</span></tt> 中Page Model的re_build_translation方法实现的。该方法也是通过   <tt class="docutils literal"><span class="pre">utils.py</span></tt> 中的 <tt class="docutils literal"><span class="pre">get_exported_after_handler</span></tt> 得到编译用的处理器，但是会传一个额外的参数，即需要导出的单个页面，而不是真个项目文档的所有页面。在 各个 <tt class="docutils literal"><span class="pre">get_exported_after_handler</span></tt> 看到有这个参数时，需要特别处理，以便最快速度的编译单个文档，而不需要重建所有的临时文件。对于Sphinx类型的文档而言就是在最后追加这单个文件的路径为参数。</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">扩展源代码</a><ul>
+<li><a class="reference external" href="#id2">主要项目文件及目录</a></li>
+<li><a class="reference external" href="#sphinx">Sphinx类型文档的编译</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="install.html" title="previous chapter">安装</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/code.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="安装"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">协同文档翻译平台 v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, 金浩.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.2.
+    </div>
+  </body>
+</html>

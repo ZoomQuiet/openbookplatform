@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>平台工作流程 &mdash; 协同文档翻译平台 v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="协同文档翻译平台 v0.1 documentation" href="index.html" />
+    <link rel="next" title="安装" href="install.html" />
+    <link rel="prev" title="简介" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="安装"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="简介"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">协同文档翻译平台 v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="id1">
+<h1>平台工作流程<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>本文主要从平台的整个工作流程进行技术架构方面的介绍，以使读者对整个项目结构有一个基本的了解。
+关于具体的实现及代码细节可以参考下文。</p>
+<p>从整个流程上来说，一个项目的英文文档翻译为中文的过程可以归结为 更新 －&gt; 同步 -&gt; 翻译 -&gt; 导出 这么一个过程。
+其中这些过程又是相互交错，循环进行的。</p>
+<p>整个过程的流程示意图如下：</p>
+<img alt="_images/pic1.png" src="_images/pic1.png" />
+<div class="section" id="id2">
+<h2>更新和同步<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>即将英文文档同步到本地的一个过程，一个项目的文档通常有各自不同的存储方式。
+比如以SVN，Mercurial，或Git等版本控制系统提供，或以文件下载的方式提供。</p>
+<p>由于要将英文文档进行版本控制，以便可以取得变化信息，及时的更新相应的中文翻译。
+但是以上所提供的各种方式所提供的版本控制各自不相同，
+所以为了方便，在本地将以SVN方式的对文档版本进行统一的版本管理。</p>
+<p>对于SVN方式提供文档的项目，可以直接使用该SVN仓库所提供的版本信息，对于其他各种方式提供文档的项目，
+在将文档同步到本地后，还需要再次处理，存入一个本地的SVN仓库，以获得SVN版本控制信息，所以这一步的具体过程表现为如下图所示：</p>
+<img alt="_images/pic2.png" src="_images/pic2.png" />
+<p>在将文档统一下载或更新（因为这是一个循环的过程），并以SVN方式进行统一的版本管理之后，接下来就是
+如何将文档进行智能分段，连同版本信息同步到数据库中，以便提供一个Web的方式让翻译者进行翻译的提交及更新。</p>
+<p>首先是关于如何取得版本信息，这是通过 <a class="reference external" href="http://pysvn.tigris.org/">pysvn</a> 这个Python库来进行的，在此不作详述。</p>
+<p>其次是关于如何为文档进行分段，也就是将文档切分为既有合适的长度，又能够提供足够上下文信息的段落。
+通常项目文档的结构都符合 段落标题+段落内容 的形式，即一篇文档通常是由多个这种形式的段落组成，而其中段落与段落之间又通常符合一定的模式。</p>
+<p>所以在这里，对于智能分段的方法，主要是通过正则表达式来实现的。尤其是对于Python项目的文档来说，基本都是以reStructuredText格式编写的。
+reStructuredText格式的文档，每段基本都是以如下所示的形式表示:</p>
+<div class="highlight-python"><pre>Introduction
+============
+
+This is the documentation for the Jinja2 general purpose templating language.
+Jinja2 is a library for Python 2.4 and onwards that is designed to be flexible,
+fast and secure.
+
+If you have any exposure to other text-based template languages, such as Smarty or
+Django, you should feel right at home with Jinja2.  It's both designer and
+developer friendly by sticking to Python's principles and adding functionality
+useful for templating environments.</pre>
+</div>
+<p>基本上通过一个正则表达式就可以很方便的分段。</p>
+<p>一个文档分段后，就可以将段落内容，版本信息，在整篇文档中的顺序等信息存入数据库给译者进行翻译了。</p>
+</div>
+<div class="section" id="id3">
+<h2>翻译<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>翻译主要是通过Web界面进行提交，可以参考 <a class="reference external" href="http://docspot.org/trans/help/">http://docspot.org/trans/help/</a> 上具体的帮助信息，再此也不作详述。</p>
+</div>
+<div class="section" id="id4">
+<h2>导出<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>在翻译的过程中，应该随时可以进行文档的导出，以便读者可以尽快阅读到翻译后的成果，也有利于信息的及时反馈。
+对于Sphinx类型的文档或reStructuredText类型的文档，均提供了转换到HTML格式功能。</p>
+<p>英文文档得导出可以直接从SVN仓库中 svn export 导出一份记录，作为生成HTML格式或其他格式之用。</p>
+<p>中文文档的导出也可以以直接从SVN仓库中 svn export 导出一份记录，
+然后从数据库中找出每个段落的最新一个相应翻译或直接以段落原文作为翻译（如果尚未翻译的话），按顺序重新组合成全文，
+将全文写回到export出的文档目录中相应文件。</p>
+<p>然后就可以通过提供的转换工具转换成HTML或其他格式的文档了。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">平台工作流程</a><ul>
+<li><a class="reference external" href="#id2">更新和同步</a></li>
+<li><a class="reference external" href="#id3">翻译</a></li>
+<li><a class="reference external" href="#id4">导出</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="intro.html" title="previous chapter">简介</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="install.html" title="next chapter">安装</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/workflow.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="安装"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="简介"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">协同文档翻译平台 v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, 金浩.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.2.
+    </div>
+  </body>
+</html>
