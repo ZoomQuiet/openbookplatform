@@ -1,0 +1,60 @@
+digraph G {
+/*图片生成命令:: need:: apt-get install graphviz-cairo
+$ dot -Tpng:cairo docsport-flow_v9.10.25.dot -o docsport-flow.png
+        style=filled,
+        fillcolor=lightyellow,
+        size="12,9",
+        ratio=compress,fill
+        rankdir=LR,        
+*/
+    graph [label="docsport.org 翻译流程图谱 by ZQ[091025 21:19]",
+        labeljust="l",labelloc="b",
+        fontsize=12.0,
+        fontname="VeraSansYuanTi-Regular.ttf",        
+        center=1,
+        ranksep=0.2,
+        ratio=compress,
+        rankdir=TB,
+        ];
+    node[fontsize=9.0,
+        style=filled,fillcolor=snow,
+        color=gray30,
+        height=0.1,
+        shape=box,
+        ];
+    /*dir=both,shape=ellipse,*/
+    edge [fontsize=9.0,
+        fontcolor=gray25,
+        color=gray30,
+		arrowhead=vee,
+		arrowtail=none,
+        ];
+
+    /*图元声明
+    forget      [label="1.1.忘记口令",];
+    */
+    start       [label="流程开始",shape=point];
+    end         [label="",shape=doublecircle,fillcolor=red];
+    
+    writer      [label="作译者",shape=egg,];
+    reader      [label="读者",shape=egg,];
+    
+    obplatfrom  [label="OBP平台",shape=component,];
+    docsport    [label="docsport.org\n发布网站",shape=component,];
+    sphinx      [label="Sphinx工具集",shape=component,];
+    
+    svn         [label="SVN仓库",shape=box3d,];
+    bookrest    [label="图书reST源文档",shape=note,];
+    bookhtml    [label="图书HTML输出",shape=note,];
+    
+    /*流程关系
+    */    
+    start->writer->svn->bookrest->obplatfrom;
+        obplatfrom->sphinx [label="定期/hooks自动编译",];
+        sphinx->bookhtml->docsport->end;
+    writer->sphinx [label="本地编译测试",];
+    reader->docsport->obplatfrom [label="在线评注",color=green,];
+        writer->obplatfrom->reader [label="在线回复",color=blue,];
+    
+}
+
