@@ -70,7 +70,8 @@
   * 环境和目录的关系,更加直观好记的叙述
   * 版本命名规范 进一步细化,实用化
   * 实施当前规范的过程
- 
+ * 和Git 配合,进行其它插件开发:
+    http://github.com/ZoomQuiet/OpenBookPlatform 
  
 = Others =
  文件类型过滤 ::
